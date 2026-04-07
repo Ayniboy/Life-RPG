@@ -3285,7 +3285,12 @@ function rHero(){
 // Inject avatar SVG after render
 function injectHeroAvatar(){
   var el=document.getElementById("heroAvImg");
-  if(el)el.innerHTML=drawSVG(G.avatarClass||0,totalLv(),120);
+  if(el){
+    el.innerHTML=drawSVG(G.avatarClass||0,totalLv(),120);
+  } else {
+    // retry if not ready yet
+    setTimeout(injectHeroAvatar,100);
+  }
 }
 
 
