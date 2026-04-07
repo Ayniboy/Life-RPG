@@ -1,0 +1,2902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Life RPG">
+<meta name="theme-color" content="#07090f">
+<title>Life RPG</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--bg2:#0d1220;--bg3:#111827;--border:#1e2a3a;--border2:#2a3a50;--text:#c8d4e8;--text2:#6a8aaa;--text3:#3a5570;--gold:#f4c842;--gold-bg:#1a1608;--gold-border:#3a2e08;--health:#e85d3a;--productivity:#4a8fff;--learning:#2ab88a;--mindset:#c456a0;--strength:#e85d3a;--endurance:#e8923a;--focus:#4a8fff;--discipline:#8b6fe8;--wisdom:#2ab88a;--creativity:#5ab83a;--mindset-sk:#c456a0;--serenity:#7ab4ea;--spiritual:#1a3a5a;--legendary:#f4c842;--uncommon:#4a8fff;--common:#6a8aaa;--success:#2ab88a;--danger:#e85d3a;--journal-g:#f4c842;--journal-i:#c456a0;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:680px;margin:0 auto;overflow-x:hidden;width:100%;}
+.header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(7,9,15,.98),rgba(7,9,15,.92));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);width:100%;box-sizing:border-box;}
+.hdr-row1{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:calc(10px + var(--safe-top)) 14px 10px;}
+.hdr-row2{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:1px solid var(--border);}
+.hdr-left{display:flex;align-items:center;gap:8px;}
+.hdr-mid{text-align:center;}
+.hdr-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
+.hdr-game-title{font-family:"Cinzel",serif;font-size:22px;font-weight:700;letter-spacing:4px;background:linear-gradient(135deg,#f4c842,#e8923a,#f4c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(244,200,66,.4));white-space:nowrap;display:flex;align-items:center;gap:8px;justify-content:center;}.hdr-title-icon{font-size:16px;opacity:.7;-webkit-text-fill-color:initial;background:none;}
+.hdr-lv-num{font-family:"Cinzel",serif;font-size:13px;font-weight:700;color:#e8d5a0;white-space:nowrap;flex-shrink:0;}
+.hdr-lv-title{font-size:10px;color:var(--text2);white-space:nowrap;flex-shrink:0;}
+.hdr-xp-wrap{display:flex;align-items:center;gap:6px;flex:1;min-width:0;}
+.hdr-game-sub{display:none;}
+.header-title{font-family:"Cinzel",serif;font-size:19px;font-weight:700;color:#e8d5a0;letter-spacing:2px;}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:.5px;margin-top:2px;}
+.gold-pill{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:20px;padding:5px 12px;font-family:"Cinzel",serif;font-size:13px;font-weight:600;color:var(--gold);white-space:nowrap;}
+.av-wrap{text-align:center;cursor:pointer;flex-shrink:0;min-width:0;}
+.av-img{width:40px;height:40px;border-radius:8px;overflow:hidden;border:2px solid #2a3a55;}
+.av-name{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);margin-top:2px;white-space:nowrap;}
+.tl-box{background:linear-gradient(135deg,#1a1f30,#0f1420);border:1px solid #2a3a55;border-radius:12px;padding:5px 11px;text-align:center;min-width:62px;}
+.tl-num{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;line-height:1;}
+.tl-lbl{font-size:9px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.tl-bar-wrap{background:#0a0d18;border-radius:3px;height:5px;overflow:hidden;border:1px solid #2a3a55;width:100%;}
+.tl-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,#c8a830,#f4c842);transition:width .5s ease;}
+.tl-xp{font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
+.streak-inline{display:flex;align-items:center;gap:4px;}
+.streak-num{font-family:"Cinzel",serif;font-size:18px;font-weight:700;line-height:1;}
+.flame{display:inline-block;animation:flicker 1.4s ease-in-out infinite alternate;}
+@keyframes flicker{0%{transform:scaleY(1) scaleX(1) rotate(-1deg);filter:brightness(1);}50%{transform:scaleY(1.08) scaleX(.96) rotate(1.5deg);filter:brightness(1.15);}100%{transform:scaleY(1.03) scaleX(1.01) rotate(-1deg);filter:brightness(1.05);}}
+/* ── Primary Nav (5 tabs) ── */
+.nav{display:flex;flex-direction:row;background:rgba(10,13,22,.95);border-bottom:1px solid var(--border);flex-shrink:0;width:100%;}
+.nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:transparent;border:none;border-bottom:3px solid transparent;padding:10px 4px;cursor:pointer;color:var(--text2);transition:all .2s;flex:1;}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{border-bottom-color:#f4c842;color:#e8d5a0;}
+.nav-btn.more-active{border-bottom-color:#8b6fe8;color:#c8b4ff;}
+.nav-icon{font-size:20px;line-height:1;}
+.nav-label{font-family:"Cinzel",serif;font-size:9px;font-weight:600;letter-spacing:.3px;white-space:nowrap;}
+/* ── More Drawer ── */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;bottom:0;left:0;right:0;max-width:680px;margin:0 auto;background:linear-gradient(180deg,#0d1220,#07090f);border-top:1px solid var(--border2);border-radius:20px 20px 0 0;z-index:201;transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.1,.64,1);padding-bottom:calc(16px + var(--safe-bot));}
+.drawer.open{transform:translateY(0);}
+.drawer-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 16px;}
+.drawer-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:14px;}
+.drawer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 8px;}
+.drawer-btn{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 8px;cursor:pointer;color:var(--text2);transition:all .2s;}
+.drawer-btn:active{transform:scale(.95);}
+.drawer-btn.active{border-color:#f4c842;color:#e8d5a0;background:rgba(244,200,66,.06);}
+.drawer-icon{font-size:24px;line-height:1;}
+.drawer-label{font-family:"Cinzel",serif;font-size:9px;font-weight:600;letter-spacing:.3px;white-space:nowrap;}
+.content{padding:16px;padding-bottom:calc(16px + var(--safe-bot));flex:1;overflow-x:hidden;}
+.card{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+.card-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
+.domain-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+.domain-card{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:12px;padding:10px 4px;text-align:center;min-width:0;}
+.domain-label{font-size:10px;color:var(--text2);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px;}
+.domain-level{font-family:"Cinzel",serif;font-size:20px;font-weight:700;line-height:1;}
+.domain-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.xp-wrap{background:var(--bg);border:1px solid var(--border);border-radius:4px;height:7px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+.skill-row{margin-bottom:14px;}.skill-row:last-child{margin-bottom:0;}
+.skill-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.skill-name{font-size:13px;color:var(--text);}
+.skill-tag{font-size:11px;font-weight:600;letter-spacing:.3px;}
+.skill-level{font-family:"Cinzel",serif;font-weight:600;font-size:13px;}
+.skill-xp{font-size:11px;color:var(--text2);margin-left:6px;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.filter-btn{background:transparent;border:1px solid var(--border);border-radius:20px;padding:4px 13px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s;font-family:'Crimson Text',serif;}
+.filter-btn:hover{border-color:var(--border2);color:var(--text);}
+.filter-btn.active{background:var(--bg3);border-color:var(--border2);color:#e8d5a0;}
+.action-item{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:7px;display:flex;align-items:flex-start;justify-content:space-between;cursor:pointer;transition:border-color .15s,transform .15s;}
+.action-item:active{transform:scale(.98);}
+.action-item.legendary{box-shadow:0 0 16px rgba(244,200,66,.1);}
+.action-done{opacity:.35;cursor:not-allowed;}
+.action-label{font-size:14px;color:var(--text);margin-bottom:3px;}
+.action-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:7px;font-style:italic;}
+.action-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.action-xp{font-size:14px;font-family:"Cinzel",serif;font-weight:600;}
+.action-gold{font-size:12px;color:var(--gold);margin-top:2px;}
+.quest-item{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:12px;padding:14px 15px;margin-bottom:9px;}
+.quest-item.done{opacity:.45;}
+.quest-title{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:4px;}
+.quest-desc{font-size:13px;color:var(--text2);margin-bottom:10px;font-style:italic;}
+.quest-rewards{display:flex;gap:12px;font-size:12px;}
+.complete-btn{background:transparent;border:1px solid var(--success);border-radius:8px;padding:7px 13px;cursor:pointer;color:var(--success);font-size:12px;font-family:"Cinzel",serif;letter-spacing:.5px;flex-shrink:0;margin-left:10px;}
+.complete-btn:active{background:rgba(42,184,138,.15);}
+.treasury{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;}
+.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+.shop-card{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:15px 11px;text-align:center;cursor:pointer;transition:border-color .15s;}
+.shop-card:active{transform:scale(.97);}
+.shop-card.locked{opacity:.35;cursor:not-allowed;}
+.shop-icon{font-size:28px;margin-bottom:7px;}
+.shop-name{font-family:"Cinzel",serif;font-size:12px;color:#e8d5a0;margin-bottom:4px;}
+.shop-desc{font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.4;font-style:italic;}
+.shop-price{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:20px;padding:3px 11px;display:inline-block;font-family:"Cinzel",serif;font-size:12px;font-weight:600;color:var(--gold);}
+.log-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.log-item:last-child{border-bottom:none;}
+.log-label{font-size:13px;color:var(--text);}
+.log-time{font-size:11px;color:var(--text3);margin-top:2px;}
+.log-rewards{display:flex;gap:10px;font-size:12px;font-family:"Cinzel",serif;}
+.purchase-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.purchase-item:last-child{border-bottom:none;}
+.journal-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.journal-tab{flex:1;background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px;cursor:pointer;font-family:"Cinzel",serif;font-size:11px;letter-spacing:.5px;color:var(--text2);transition:all .15s;text-align:center;}
+.journal-tab.active-g{border-color:var(--journal-g);color:var(--journal-g);background:rgba(244,200,66,.05);}
+.journal-tab.active-i{border-color:var(--journal-i);color:var(--journal-i);background:rgba(196,86,160,.05);}
+.journal-box{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+.journal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.journal-title{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;}
+.journal-subtitle{font-size:12px;color:var(--text2);margin-top:2px;font-style:italic;}
+.xp-preview-val{font-family:"Cinzel",serif;font-size:17px;font-weight:700;}
+.xp-preview-label{font-size:10px;color:var(--text2);}
+.journal-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'Crimson Text',serif;font-size:15px;line-height:1.7;resize:vertical;min-height:150px;outline:none;-webkit-appearance:none;}
+.journal-textarea:focus{border-color:var(--border2);}
+.journal-textarea::placeholder{color:var(--text3);font-style:italic;}
+.journal-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.journal-count{font-size:12px;color:var(--text3);}
+.journal-count.enough{color:var(--success);}.journal-count.ten{color:var(--gold);}
+.save-btn{border:none;border-radius:10px;padding:8px 20px;cursor:pointer;font-family:"Cinzel",serif;font-size:12px;font-weight:600;letter-spacing:.5px;}
+.save-btn:disabled{opacity:.3;cursor:not-allowed;}
+.save-btn-g{background:var(--journal-g);color:#1a1200;}
+.save-btn-i{background:var(--journal-i);color:#fff;}
+.journal-hint{font-size:12px;color:var(--text3);margin-top:8px;font-style:italic;line-height:1.5;}
+.entry-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;}
+.entry-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.entry-date{font-size:11px;color:var(--text3);}
+.entry-badge{font-family:"Cinzel",serif;font-size:11px;padding:2px 8px;border-radius:20px;}
+.entry-badge-g{background:rgba(244,200,66,.12);color:var(--journal-g);border:1px solid rgba(244,200,66,.25);}
+.entry-badge-i{background:rgba(196,86,160,.12);color:var(--journal-i);border:1px solid rgba(196,86,160,.25);}
+.entry-items{list-style:none;}
+.entry-item-row{font-size:13px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:6px;}
+.entry-item-row:last-child{border-bottom:none;}
+.entry-num{font-family:"Cinzel",serif;font-size:11px;color:var(--text3);min-width:18px;}
+.fj-search{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;margin-bottom:12px;}
+.fj-search::placeholder{color:var(--text3);}
+.fj-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'Crimson Text',serif;font-size:15px;line-height:1.7;resize:vertical;min-height:130px;outline:none;-webkit-appearance:none;}
+.fj-textarea:focus{border-color:var(--border2);}
+.fj-textarea::placeholder{color:var(--text3);font-style:italic;}
+.fj-save-btn{background:var(--focus);border:none;border-radius:10px;padding:8px 20px;cursor:pointer;font-family:"Cinzel",serif;font-size:12px;font-weight:600;color:#fff;letter-spacing:.5px;}
+.fj-save-btn:disabled{opacity:.3;cursor:not-allowed;}
+.fj-entry{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;}
+.fj-entry-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.fj-entry-date{font-size:11px;color:var(--text3);}
+.fj-del-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 5px;}
+.fj-del-btn:hover{color:var(--danger);}
+.fj-body{font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word;}
+mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
+.timer-ring-wrap{display:flex;justify-content:center;margin:14px 0;position:relative;}
+.timer-ring-wrap svg{transform:rotate(-90deg);}
+.timer-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.timer-display{font-family:"Cinzel",serif;font-size:60px;font-weight:700;color:#e8d5a0;letter-spacing:2px;line-height:1;transition:color .4s;}
+.timer-display.warning{color:var(--danger);}.timer-display.finished{color:var(--gold);}
+.timer-presets{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.timer-preset{background:transparent;border:1px solid var(--border);border-radius:20px;padding:4px 13px;cursor:pointer;font-family:"Cinzel",serif;font-size:11px;color:var(--text2);transition:all .15s;}
+.timer-preset:hover{border-color:var(--border2);color:var(--text);}
+.timer-preset.active{background:var(--bg3);border-color:var(--focus);color:var(--focus);}
+.timer-adj-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;}
+.timer-adj-btn{background:var(--bg2);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;}
+.timer-adj-btn:active{transform:scale(.9);}
+.timer-mins-display{font-family:"Cinzel",serif;font-size:42px;font-weight:700;color:#e8d5a0;min-width:70px;text-align:center;}
+.timer-mins-label{font-size:11px;color:var(--text2);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.timer-controls{display:flex;gap:10px;justify-content:center;margin-top:8px;}
+.timer-btn{border:none;border-radius:14px;padding:12px 30px;font-family:"Cinzel",serif;font-size:13px;font-weight:600;letter-spacing:.5px;cursor:pointer;}
+.timer-btn:active{transform:scale(.96);}
+.timer-btn-start{background:var(--success);color:#fff;}
+.timer-btn-pause{background:var(--gold);color:#1a1200;}
+.timer-btn-stop{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:12px 20px;}
+@keyframes flashRed{0%,100%{background:var(--bg)}50%{background:rgba(232,93,58,.2)}}
+.flash-alarm{animation:flashRed .5s ease 6;}
+.av-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.av-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:20px;width:100%;max-width:360px;max-height:90vh;overflow-y:auto;}
+.av-modal-title{font-family:"Cinzel",serif;font-size:16px;color:#e8d5a0;margin-bottom:4px;}
+.av-modal-sub{font-size:12px;color:var(--text2);margin-bottom:13px;font-style:italic;}
+.av-class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px;}
+.av-class-cell{border-radius:10px;padding:8px 5px;text-align:center;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--bg);}
+.av-class-cell:active{transform:scale(.95);}
+.av-class-label{font-family:"Cinzel",serif;font-size:10px;letter-spacing:.5px;margin-top:4px;color:var(--text2);}
+.av-name-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:"Cinzel",serif;font-size:14px;outline:none;letter-spacing:1px;margin-bottom:9px;}
+.av-name-input::placeholder{color:var(--text3);font-family:'Crimson Text',serif;letter-spacing:0;font-style:italic;}
+.av-modal-save{width:100%;background:var(--focus);border:none;border-radius:10px;padding:11px;color:#fff;font-family:"Cinzel",serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;}
+.av-modal-close{width:100%;background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px;color:var(--text2);font-family:"Cinzel",serif;font-size:12px;cursor:pointer;}
+.empty{background:var(--bg2);border:1px dashed var(--border);border-radius:14px;padding:34px;text-align:center;color:var(--text3);font-size:14px;font-style:italic;}
+.save-dot{width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;margin-right:5px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#toast{position:fixed;bottom:calc(22px + var(--safe-bot));left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:10px 18px;font-family:"Cinzel",serif;font-size:12px;color:#e8d5a0;box-shadow:0 8px 32px rgba(0,0,0,.6);opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:999;letter-spacing:.5px;max-width:90vw;overflow:hidden;text-overflow:ellipsis;}
+#toast.show{opacity:1;}
+@media(max-width:500px){.domain-grid{grid-template-columns:repeat(2,1fr);}.shop-grid{grid-template-columns:1fr;}.timer-display{font-size:48px;}.tl-xp{display:none;}.hdr-game-sub{display:none;}.hdr-game-title{font-size:17px;letter-spacing:2px;}.streak-num{font-size:14px;}.gold-pill{padding:4px 7px;font-size:12px;}}
+
+  /* ── Level Up Popup ── */
+  #lvlup-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);pointer-events:none;transition:background .3s;}
+  #lvlup-overlay.show{background:rgba(0,0,0,.82);pointer-events:all;}
+  #lvlup-box{transform:scale(0) rotate(-8deg);opacity:0;transition:transform .45s cubic-bezier(.34,1.56,.64,1),opacity .3s;text-align:center;padding:40px 32px;max-width:340px;width:90%;position:relative;}
+  #lvlup-overlay.show #lvlup-box{transform:scale(1) rotate(0deg);opacity:1;}
+  #lvlup-canvas{position:fixed;inset:0;z-index:9998;pointer-events:none;}
+  .lvlup-title{font-family:"Cinzel",serif;font-size:13px;color:var(--text2);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+  .lvlup-level{font-family:"Cinzel",serif;font-size:80px;font-weight:700;line-height:1;margin-bottom:4px;}
+  .lvlup-skill{font-family:"Cinzel",serif;font-size:22px;font-weight:600;color:#e8d5a0;margin-bottom:6px;letter-spacing:1px;}
+  .lvlup-sub{font-size:15px;color:var(--text2);margin-bottom:28px;font-style:italic;}
+  .lvlup-close{background:transparent;border:1px solid var(--border2);border-radius:12px;padding:12px 32px;color:var(--text);font-family:"Cinzel",serif;font-size:13px;cursor:pointer;letter-spacing:1px;transition:all .15s;}
+  .lvlup-close:hover{background:var(--bg3);border-color:var(--text2);}
+  @keyframes lvlup-glow{0%,100%{text-shadow:0 0 20px currentColor,0 0 40px currentColor;}50%{text-shadow:0 0 40px currentColor,0 0 80px currentColor,0 0 120px currentColor;}}
+
+  /* ── Daily Spin ── */
+  .spin-wrapper{display:flex;flex-direction:column;align-items:center;padding:8px 0 20px;}
+  .spin-outer{position:relative;width:280px;height:280px;margin:0 auto 24px;}
+  .spin-canvas{display:block;}
+  .spin-pointer{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid #f4c842;filter:drop-shadow(0 2px 6px rgba(244,200,66,.6));z-index:10;}
+  .spin-btn{background:linear-gradient(135deg,#f4c842,#e8a820);border:none;border-radius:16px;padding:14px 44px;font-family:"Cinzel",serif;font-size:15px;font-weight:700;color:#1a1200;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 20px rgba(244,200,66,.4);transition:all .15s;}
+  .spin-btn:active{transform:scale(.96);}
+  .spin-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  .spin-cooldown{font-family:"Cinzel",serif;font-size:13px;color:var(--text2);text-align:center;margin-top:12px;letter-spacing:.5px;}
+  .spin-result{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border2);border-radius:14px;padding:18px 24px;text-align:center;margin-top:16px;width:100%;}
+  .spin-result-icon{font-size:36px;margin-bottom:8px;}
+  .spin-result-name{font-family:"Cinzel",serif;font-size:16px;color:#e8d5a0;margin-bottom:4px;}
+  .spin-result-desc{font-size:13px;color:var(--text2);font-style:italic;}
+  .spin-history{margin-top:16px;width:100%;}
+  .spin-history-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .spin-history-row:last-child{border-bottom:none;}
+
+  /* ── Inventory & Chests ── */
+  .inv-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .inv-card{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;}
+  .inv-card-icon{font-size:28px;margin-bottom:6px;}
+  .inv-card-val{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;line-height:1;}
+  .inv-card-label{font-size:11px;color:var(--text2);margin-top:3px;letter-spacing:.5px;}
+  .chest-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .chest-item{background:linear-gradient(135deg,var(--bg2),var(--bg));border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;}
+  .chest-item.common{border:1px solid #c87a3a55;box-shadow:0 0 12px #c87a3a18;}
+  .chest-item.rare{border:1px solid #4a8fff55;box-shadow:0 0 12px #4a8fff18;}
+  .chest-item.legendary{border:1px solid #f4c84255;box-shadow:0 0 16px #f4c84222;}
+  .chest-icon{font-size:36px;margin-right:14px;flex-shrink:0;}
+  .chest-name{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:3px;}
+  .chest-desc{font-size:12px;color:var(--text2);font-style:italic;}
+  .chest-open-btn{border:none;border-radius:10px;padding:9px 18px;font-family:"Cinzel",serif;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;letter-spacing:.5px;transition:all .15s;}
+  .chest-open-btn:active{transform:scale(.95);}
+  .chest-open-btn.common{background:linear-gradient(135deg,#c87a3a,#a05a20);color:#fff;}
+  .chest-open-btn.rare{background:linear-gradient(135deg,#4a8fff,#1a5fcc);color:#fff;}
+  .chest-open-btn.legendary{background:linear-gradient(135deg,#f4c842,#c89820);color:#1a1200;}
+  .chest-open-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+  .key-shop{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .key-shop-left{display:flex;align-items:center;gap:12px;}
+  .key-shop-icon{font-size:32px;}
+  .key-shop-name{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:2px;}
+  .key-shop-desc{font-size:12px;color:var(--text2);font-style:italic;}
+  .key-buy-btn{background:linear-gradient(135deg,#f4c842,#c89820);border:none;border-radius:10px;padding:9px 18px;font-family:"Cinzel",serif;font-size:12px;font-weight:600;color:#1a1200;cursor:pointer;letter-spacing:.5px;white-space:nowrap;}
+  .key-buy-btn:active{transform:scale(.95);}
+  .key-buy-btn:disabled{opacity:.35;cursor:not-allowed;}
+  /* Chest open popup */
+  .chest-popup-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .chest-popup{background:linear-gradient(135deg,#0f1a2a,#07090f);border-radius:20px;padding:36px 28px;text-align:center;max-width:320px;width:100%;}
+  .chest-popup-opening{font-family:"Cinzel",serif;font-size:13px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+  .chest-popup-icon{font-size:72px;margin-bottom:16px;animation:chestBounce .6s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes chestBounce{0%{transform:scale(0) rotate(-10deg);}100%{transform:scale(1) rotate(0deg);}}
+  .chest-popup-reward-icon{font-size:52px;margin-bottom:10px;animation:chestBounce .5s cubic-bezier(.34,1.56,.64,1) .2s both;}
+  .chest-popup-reward-name{font-family:"Cinzel",serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+  .chest-popup-reward-desc{font-size:13px;color:var(--text2);margin-bottom:24px;font-style:italic;}
+  .chest-popup-close{background:transparent;border:1px solid var(--border2);border-radius:12px;padding:11px 32px;color:var(--text);font-family:"Cinzel",serif;font-size:13px;cursor:pointer;letter-spacing:.5px;}
+  .inv-history-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .inv-history-row:last-child{border-bottom:none;}
+
+  /* ── XP Boost Banner ── */
+  .boost-banner{background:linear-gradient(90deg,#1a2a10,#0f1a08);border-bottom:1px solid #5ab83a44;padding:7px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .boost-banner-text{font-family:"Cinzel",serif;font-size:11px;color:#5ab83a;letter-spacing:.5px;}
+  .boost-banner-icon{font-size:16px;animation:pulse 1.5s infinite;}
+  .boost-badge{display:inline-block;background:rgba(90,184,58,.15);border:1px solid #5ab83a55;border-radius:20px;padding:2px 8px;font-family:"Cinzel",serif;font-size:10px;color:#5ab83a;margin-left:6px;}
+
+  /* ── Export / Import ── */
+  .save-mgmt{display:flex;gap:10px;margin-bottom:16px;}
+  .save-mgmt-btn{flex:1;border:none;border-radius:10px;padding:11px;font-family:"Cinzel",serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .15s;}
+  .save-mgmt-btn:active{transform:scale(.96);}
+  .save-export-btn{background:linear-gradient(135deg,#1a3a5a,#0f2540);border:1px solid #2a5a8a;color:#7ab4ea;}
+  .save-import-btn{background:linear-gradient(135deg,#1a3a1a,#0f2510);border:1px solid #2a6a2a;color:#5ab87a;}
+  .save-mgmt-note{font-size:11px;color:var(--text3);font-style:italic;text-align:center;margin-bottom:14px;line-height:1.5;}
+
+  /* ── Quest System ── */
+  .quest-section-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .quest-section-title span{flex:1;height:1px;background:var(--border);}
+  .quest-progress-wrap{background:var(--bg);border-radius:3px;height:5px;overflow:hidden;margin-top:6px;}
+  .quest-progress-bar{height:100%;border-radius:3px;transition:width .5s ease;}
+  .quest-progress-label{font-size:11px;color:var(--text2);margin-top:3px;}
+  .quest-tag{font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;font-family:"Cinzel",serif;letter-spacing:.5px;}
+  .quest-tag-daily{background:rgba(74,143,255,.15);color:#4a8fff;border:1px solid rgba(74,143,255,.3);}
+  .quest-tag-weekly{background:rgba(139,111,232,.15);color:#8b6fe8;border:1px solid rgba(139,111,232,.3);}
+  .quest-tag-weekend{background:rgba(244,200,66,.15);color:#f4c842;border:1px solid rgba(244,200,66,.3);}
+  .quest-tag-custom{background:rgba(42,184,138,.15);color:#2ab88a;border:1px solid rgba(42,184,138,.3);}
+  .quest-tag-auto{background:rgba(232,93,58,.15);color:#e85d3a;border:1px solid rgba(232,93,58,.3);}
+  .quest-item.rotating{border-style:dashed;}
+  /* Custom quest form */
+  .cq-form{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;}
+  .cq-form-title{font-family:"Cinzel",serif;font-size:13px;color:#e8d5a0;margin-bottom:14px;}
+  .cq-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;margin-bottom:8px;}
+  .cq-input:focus{border-color:var(--border2);}
+  .cq-input::placeholder{color:var(--text3);font-style:italic;}
+  .cq-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+  .cq-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;}
+  .cq-add-btn{width:100%;background:linear-gradient(135deg,#2ab88a,#1a8a6a);border:none;border-radius:10px;padding:11px;color:#fff;font-family:"Cinzel",serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;margin-top:4px;}
+  .cq-add-btn:active{transform:scale(.97);}
+  .quest-del-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;margin-left:6px;flex-shrink:0;}
+  .quest-del-btn:hover{color:var(--danger);}
+  /* Quest complete popup */
+  .qc-popup-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .qc-popup{background:linear-gradient(135deg,#0f1a2a,#07090f);border-radius:20px;padding:36px 28px;text-align:center;max-width:320px;width:100%;animation:qcBounce .5s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes qcBounce{0%{transform:scale(0) rotate(-5deg);}100%{transform:scale(1) rotate(0);}}
+  .qc-icon{font-size:60px;margin-bottom:12px;}
+  .qc-title{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#f4c842;margin-bottom:6px;}
+  .qc-name{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:16px;}
+  .qc-rewards{display:flex;justify-content:center;gap:16px;margin-bottom:20px;}
+  .qc-reward{background:rgba(255,255,255,.05);border-radius:10px;padding:10px 16px;text-align:center;}
+  .qc-reward-val{font-family:"Cinzel",serif;font-size:18px;font-weight:700;}
+  .qc-reward-lbl{font-size:11px;color:var(--text2);margin-top:2px;}
+  .qc-close{background:transparent;border:1px solid var(--border2);border-radius:12px;padding:11px 32px;color:var(--text);font-family:"Cinzel",serif;font-size:13px;cursor:pointer;letter-spacing:.5px;}
+
+  /* ── Cosmetics ── */
+  .cosm-section{margin-top:16px;}
+  .cosm-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+  .cosm-class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .cosm-cell{border-radius:10px;padding:8px 5px;text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--bg);position:relative;transition:all .15s;}
+  .cosm-cell:active{transform:scale(.95);}
+  .cosm-cell.selected{border:2px solid #f4c842;background:var(--bg3);}
+  .cosm-cell.locked{opacity:.6;cursor:pointer;}
+  .cosm-cell.locked.can-afford:hover{border-color:#2ab88a;box-shadow:0 0 10px #2ab88a44;opacity:1;}
+  .cosm-cell.locked.cant-afford{opacity:.4;cursor:not-allowed;}
+  .cosm-cell.locked.cant-afford:hover{border-color:var(--danger);box-shadow:0 0 8px #e85d3a33;}
+  .cosm-cell-label{font-family:"Cinzel",serif;font-size:9px;letter-spacing:.3px;margin-top:4px;color:var(--text2);}
+  .cosm-cell-price{font-size:9px;color:var(--gold);margin-top:2px;}
+  .cosm-lock-badge{position:absolute;top:4px;right:4px;font-size:10px;}
+  .cosm-acc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .cosm-acc-cell{border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--bg);transition:all .2s;}
+  .cosm-acc-cell:active{transform:scale(.95);}
+  .cosm-acc-cell.equipped{border:2px solid #2ab88a;background:rgba(42,184,138,.08);}
+  .cosm-acc-cell.locked{opacity:.6;cursor:pointer;}
+  .cosm-acc-cell.locked.can-afford:hover{border-color:#2ab88a;box-shadow:0 0 10px #2ab88a44;opacity:1;}
+  .cosm-acc-cell.locked-hint{opacity:.5;cursor:pointer;}
+  .cosm-acc-cell.locked-hint:hover{opacity:.75;border-color:var(--border2);}
+  .cosm-acc-icon{font-size:22px;}
+  .cosm-acc-label{font-family:"Cinzel",serif;font-size:8px;color:var(--text2);margin-top:4px;white-space:nowrap;}
+  /* Accessory overlay on avatar */
+  .av-accessory{position:absolute;top:-6px;right:-6px;font-size:14px;line-height:1;}
+
+  /* ── Gems Currency ── */
+  .gems-pill{background:linear-gradient(135deg,#1a0a2a,#0f0518);border:1px solid #6a2a9a55;border-radius:20px;padding:4px 10px;font-family:"Cinzel",serif;font-size:12px;font-weight:600;color:#c87ae8;white-space:nowrap;}
+  /* ── Rotating Shop ── */
+  .rot-shop-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .rot-shop-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;}
+  .rot-slots{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .rot-slot{background:linear-gradient(135deg,#0f1a2a,#07090f);border-radius:14px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;}
+  .rot-slot.tier1{border:1px solid #f4c84244;}
+  .rot-slot.tier2{border:1px solid #8b6fe844;box-shadow:0 0 12px #8b6fe811;}
+  .rot-slot.tier3{border:1px solid #c87ae844;box-shadow:0 0 16px #c87ae822;}
+  .rot-slot-badge{position:absolute;top:8px;right:8px;font-size:8px;font-family:"Cinzel",serif;padding:2px 6px;border-radius:10px;letter-spacing:.5px;}
+  .rot-slot.tier1 .rot-slot-badge{background:rgba(244,200,66,.15);color:#f4c842;}
+  .rot-slot.tier2 .rot-slot-badge{background:rgba(139,111,232,.15);color:#8b6fe8;}
+  .rot-slot.tier3 .rot-slot-badge{background:rgba(200,122,232,.15);color:#c87ae8;}
+  .rot-icon{font-size:30px;margin-bottom:8px;}
+  .rot-name{font-family:"Cinzel",serif;font-size:12px;color:#e8d5a0;margin-bottom:4px;}
+  .rot-desc{font-size:11px;color:var(--text2);margin-bottom:10px;font-style:italic;line-height:1.4;}
+  .rot-cost{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+  .rot-cost-gold{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:12px;padding:2px 8px;font-family:"Cinzel",serif;font-size:11px;color:var(--gold);}
+  .rot-cost-gems{background:rgba(200,122,232,.1);border:1px solid #c87ae844;border-radius:12px;padding:2px 8px;font-family:"Cinzel",serif;font-size:11px;color:#c87ae8;}
+  .rot-buy-btn{border:none;border-radius:8px;padding:7px 14px;font-family:"Cinzel",serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.5px;width:100%;transition:all .15s;}
+  .rot-buy-btn:active{transform:scale(.96);}
+  .rot-buy-btn.tier1{background:linear-gradient(135deg,#c8a830,#f4c842);color:#1a1200;}
+  .rot-buy-btn.tier2{background:linear-gradient(135deg,#5a3a8a,#8b6fe8);color:#fff;}
+  .rot-buy-btn.tier3{background:linear-gradient(135deg,#8a2aaa,#c87ae8);color:#fff;}
+  .rot-buy-btn:disabled{opacity:.35;cursor:not-allowed;}
+  .rot-timer{font-size:10px;color:var(--text3);margin-top:6px;font-family:"Cinzel",serif;letter-spacing:.3px;}
+  .rot-timer.urgent{color:var(--danger);}
+
+  /* ── Pets ── */
+  .pet-active-slots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .pet-slot{background:linear-gradient(135deg,#0f1a2a,#07090f);border-radius:16px;padding:16px 12px;text-align:center;position:relative;}
+  .pet-slot.empty{border:2px dashed var(--border);cursor:pointer;}
+  .pet-slot.empty:hover{border-color:var(--border2);}
+  .pet-slot.filled{border:1px solid var(--border2);box-shadow:0 0 12px rgba(122,180,234,.1);}
+  .pet-slot.evolved{border:1px solid #f4c84255;box-shadow:0 0 16px rgba(244,200,66,.15);}
+  .pet-slot.locked{opacity:.7;}
+  .pet-slot-icon{font-size:42px;margin-bottom:8px;line-height:1;}
+  .pet-slot-name{font-family:"Cinzel",serif;font-size:13px;color:#e8d5a0;margin-bottom:4px;}
+  .pet-slot-bonus{font-size:11px;color:var(--success);font-style:italic;margin-bottom:10px;line-height:1.4;}
+  .pet-slot-swap{background:transparent;border:1px solid var(--border2);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:"Cinzel",serif;font-size:10px;color:var(--text2);transition:all .15s;}
+  .pet-slot-swap:active{transform:scale(.95);}
+  .pet-slot-swap:disabled{opacity:.35;cursor:not-allowed;}
+  .pet-slot-cooldown{font-size:10px;color:var(--danger);margin-top:6px;font-family:"Cinzel",serif;}
+  .pet-slot-empty-text{font-size:12px;color:var(--text3);font-style:italic;margin-top:8px;}
+  .pet-stable-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;margin-top:4px;}
+  .pet-stable-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .pet-card{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s;position:relative;}
+  .pet-card:active{transform:scale(.95);}
+  .pet-card.active-pet{border-color:#2ab88a;box-shadow:0 0 10px #2ab88a33;}
+  .pet-card.evolved-pet{border-color:#f4c84266;box-shadow:0 0 12px #f4c84222;}
+  .pet-card-icon{font-size:28px;margin-bottom:6px;}
+  .pet-card-name{font-family:"Cinzel",serif;font-size:10px;color:#e8d5a0;margin-bottom:3px;}
+  .pet-card-bonus{font-size:9px;color:var(--text2);font-style:italic;line-height:1.3;}
+  .pet-active-badge{position:absolute;top:4px;right:4px;font-size:8px;background:#2ab88a22;border:1px solid #2ab88a44;color:#2ab88a;border-radius:6px;padding:1px 4px;font-family:"Cinzel",serif;}
+  .pet-evolve-section{background:linear-gradient(135deg,#1a1208,#0f0a04);border:1px solid #f4c84233;border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;}
+  .pet-evolve-title{font-family:"Cinzel",serif;font-size:13px;color:#f4c842;margin-bottom:6px;}
+  .pet-evolve-desc{font-size:12px;color:var(--text2);margin-bottom:12px;font-style:italic;}
+  .pet-evolve-btn{background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:10px;padding:10px 24px;font-family:"Cinzel",serif;font-size:12px;font-weight:600;color:#1a1200;cursor:pointer;}
+  .pet-evolve-btn:active{transform:scale(.96);}
+  /* Pet picker modal */
+  .pet-picker-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
+  .pet-picker{background:linear-gradient(180deg,#0d1220,#07090f);border-top:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px 16px;width:100%;max-width:680px;max-height:80vh;overflow-y:auto;}
+  .pet-picker-title{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:4px;text-align:center;}
+  .pet-picker-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px;font-style:italic;}
+  .pet-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+  .pet-picker-close{width:100%;background:transparent;border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text2);font-family:"Cinzel",serif;font-size:12px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+<div id="avModal"></div>
+<script>
+var SKILLS=[{id:"strength",name:"Strength",domain:"Health",color:"var(--strength)"},{id:"endurance",name:"Endurance",domain:"Health",color:"var(--endurance)"},{id:"focus",name:"Focus",domain:"Productivity",color:"var(--focus)"},{id:"discipline",name:"Discipline",domain:"Productivity",color:"var(--discipline)"},{id:"wisdom",name:"Wisdom",domain:"Learning",color:"var(--wisdom)"},{id:"creativity",name:"Creativity",domain:"Learning",color:"var(--creativity)"},{id:"mindset",name:"Mindset",domain:"Mindset",color:"var(--mindset-sk)"},
+  {id:"serenity",name:"Serenity",domain:"Spiritual",color:"var(--serenity)"}
+];
+var DOMAIN_COLORS={Health:"var(--health)",Productivity:"var(--productivity)",Learning:"var(--learning)",Mindset:"var(--mindset)",Spiritual:"var(--serenity)"};
+var RARITY_COLORS={common:"var(--common)",uncommon:"var(--uncommon)",legendary:"var(--legendary)"};
+var QUICK_ACTIONS=[
+  {id:"workout",label:"Workout 30min+",desc:"Any resistance or gym session, 30min minimum. Full effort.",xp:50,gold:15,skill:"strength",domain:"Health",rarity:"common",repeatable:false},
+  {id:"run",label:"Run / Cardio",desc:"Continuous cardio — run, cycle, swim. Counts once per session.",xp:40,gold:12,skill:"endurance",domain:"Health",rarity:"common",repeatable:false},
+  {id:"sleep8",label:"8hrs Sleep",desc:"Full 8hrs, no alarm interruption. Recovery is training.",xp:30,gold:10,skill:"endurance",domain:"Health",rarity:"common",repeatable:false},
+  {id:"water2l",label:"Drink 2L Water",desc:"Hit your 2L for the day. Log each time you reach the milestone.",xp:10,gold:3,skill:"endurance",domain:"Health",rarity:"common",repeatable:true},
+  {id:"stretch",label:"Stretch / Mobility 10min",desc:"10 minutes of intentional stretching. Morning and evening both count.",xp:15,gold:5,skill:"endurance",domain:"Health",rarity:"common",repeatable:true},
+  {id:"steps",label:"10,000 Steps",desc:"Hit 10,000 steps. Log each time you cross the threshold.",xp:20,gold:6,skill:"endurance",domain:"Health",rarity:"common",repeatable:true},
+  {id:"cold",label:"Cold Shower",desc:"Full cold shower or cold finish. Mental toughness. Log every time.",xp:20,gold:6,skill:"strength",domain:"Health",rarity:"common",repeatable:true},
+  {id:"deep_work",label:"Deep Work 90min",desc:"One task, zero notifications, zero phone, 90 minutes straight.",xp:60,gold:20,skill:"focus",domain:"Productivity",rarity:"uncommon",repeatable:false},
+  {id:"tasks",label:"Clear Task List",desc:"Had a written task list and fully cleared it — all done.",xp:35,gold:10,skill:"discipline",domain:"Productivity",rarity:"common",repeatable:false},
+  {id:"pomodoro",label:"Pomodoro Session 25min",desc:"25 minutes focused work, one task, timer running. Log each one.",xp:20,gold:6,skill:"focus",domain:"Productivity",rarity:"common",repeatable:true},
+  {id:"nophone",label:"No Phone Morning 2hrs",desc:"First 2 hours of your day with zero phone use.",xp:25,gold:8,skill:"discipline",domain:"Productivity",rarity:"common",repeatable:false},
+  {id:"inbox",label:"Inbox Zero",desc:"Email and messages fully cleared. Can log AM and PM separately.",xp:15,gold:5,skill:"discipline",domain:"Productivity",rarity:"common",repeatable:true},
+  {id:"boss",label:"Boss — Big Goal Hit",desc:"A pre-declared milestone. Must be declared before, not claimed after.",xp:200,gold:75,skill:"discipline",domain:"Productivity",rarity:"legendary",repeatable:false},
+  {id:"read30",label:"Read 30min",desc:"Books, long-form articles, papers. Not social media. 30min continuous.",xp:25,gold:8,skill:"wisdom",domain:"Learning",rarity:"common",repeatable:false},
+  {id:"course",label:"Course / Lesson",desc:"Structured learning with a curriculum. One completed lesson minimum.",xp:40,gold:12,skill:"wisdom",domain:"Learning",rarity:"common",repeatable:false},
+  {id:"practice",label:"Skill Practice 1hr",desc:"Active deliberate practice of a craft. Not watching about it.",xp:50,gold:15,skill:"creativity",domain:"Learning",rarity:"uncommon",repeatable:false},
+  {id:"flashcards",label:"Vocabulary / Flashcards",desc:"Anki, Duolingo, or any spaced repetition system. One session.",xp:15,gold:5,skill:"wisdom",domain:"Learning",rarity:"common",repeatable:true},
+  {id:"podcast",label:"Educational Podcast",desc:"One full episode that teaches you something. Active listening only.",xp:15,gold:5,skill:"wisdom",domain:"Learning",rarity:"common",repeatable:true},
+  {id:"journal5",label:"Journal / Reflect 5min",desc:"Free writing, brain dump, or reflection. 5 minutes minimum.",xp:15,gold:5,skill:"creativity",domain:"Learning",rarity:"common",repeatable:true},
+  {id:"meditate",label:"Meditation 10min",desc:"Any format. 10 minutes minimum. Log every session.",xp:20,gold:6,skill:"mindset",domain:"Mindset",rarity:"common",repeatable:true},
+  {id:"affirmread",label:"Affirmation Read-Through",desc:"Read your I AM list aloud. Counts every time you do it.",xp:10,gold:3,skill:"mindset",domain:"Mindset",rarity:"common",repeatable:true},
+  {id:"visualize",label:"Visualization 5min",desc:"Deliberate mental rehearsal of your goals. Eyes closed, focused.",xp:15,gold:5,skill:"mindset",domain:"Mindset",rarity:"common",repeatable:true},
+  // ── Spiritual & Inner Peace ──
+  {id:"breathwork",    label:"Breathwork 5min",        desc:"Conscious breathing — box breathing, Wim Hof, or any intentional practice. 5 minutes minimum.",                 xp:15,gold:5, skill:"serenity",domain:"Spiritual",rarity:"common",  repeatable:true},
+  {id:"stillness",     label:"Morning Stillness 10min", desc:"First 10 minutes of your day in complete silence. No phone, no music, no input. Just be.",                        xp:20,gold:6, skill:"serenity",domain:"Spiritual",rarity:"common",  repeatable:false},
+  {id:"spirit_read",   label:"Spiritual Reading 20min", desc:"Philosophy, stoicism, spirituality, or any book that expands your inner world. Not self-help clickbait.",          xp:25,gold:8, skill:"serenity",domain:"Spiritual",rarity:"common",  repeatable:false},
+  {id:"eve_reflect",   label:"Evening Reflection 5min", desc:"End of day quiet reflection. What went well? What are you grateful for? No screens, just silence and thought.",    xp:15,gold:5, skill:"serenity",domain:"Spiritual",rarity:"common",  repeatable:false},
+  {id:"nature_walk",   label:"Mindful Nature Walk",     desc:"Walk outside with no headphones, no phone. Just you and nature, fully present. Minimum 15 minutes.",             xp:25,gold:8, skill:"serenity",domain:"Spiritual",rarity:"common",  repeatable:false},
+  {id:"body_scan",     label:"Body Scan 5min",          desc:"Lie down, close your eyes, slowly scan from head to toe. Notice sensation without judgment. Full presence.",        xp:15,gold:5, skill:"serenity",domain:"Spiritual",rarity:"common",  repeatable:true},
+  {id:"gratitude_letter",label:"Gratitude Letter",      desc:"Write a genuine letter of gratitude to someone in your life. Takes courage. Send it or keep it — both count.",    xp:80,gold:20,skill:"serenity",domain:"Spiritual",rarity:"uncommon",repeatable:false},
+  {id:"digital_detox", label:"Digital Detox 2hrs",      desc:"Two full hours with no screens of any kind. No phone, no computer, no TV. Complete disconnection.",               xp:30,gold:10,skill:"serenity",domain:"Spiritual",rarity:"uncommon",repeatable:false},
+  {id:"cold_plunge",   label:"Cold Plunge / Ice Bath",  desc:"Full cold immersion — not just a shower. Ice bath, cold lake, or extended cold water. Minimum 3 minutes.",         xp:40,gold:12,skill:"serenity",domain:"Spiritual",rarity:"uncommon",repeatable:false},
+];
+var SHOP=[
+  {id:"class_necro",  name:"Necromancer",    icon:"🧟", cost:300, desc:"Unlock the Necromancer class.", type:"class", classId:6},
+  {id:"class_samurai",name:"Samurai",         icon:"⚔️", cost:300, desc:"Unlock the Samurai class.",    type:"class", classId:7},
+  {id:"class_druid",  name:"Druid",           icon:"🌿", cost:300, desc:"Unlock the Druid class.",      type:"class", classId:8},
+  {id:"acc_crown",    name:"Crown Accessory", icon:"👑", cost:400, desc:"Equip a crown on your avatar.", type:"accessory", accId:"crown"},
+  {id:"acc_crystal",  name:"Crystal Aura",    icon:"💎", cost:300, desc:"A shimmering crystal aura.",   type:"accessory", accId:"crystal"},
+  {id:"boost3",   name:"Quick Boost",      icon:"⚡", cost:150, desc:"2x XP on your next 3 actions. Activate immediately.", type:"boost3"},
+  {id:"boost6h",  name:"Power Hour",        icon:"🔥", cost:250, desc:"2x XP for the next 6 hours.", type:"boost6h"},
+  {id:"shield",   name:"Streak Shield",     icon:"🛡️", cost:200, desc:"Protects your streak if you miss one day.", type:"shield"},
+  {id:"key",      name:"Chest Key",         icon:"🗝️", cost:100, desc:"Opens any chest in your Inventory.", type:"key"},
+  {id:"pet_dog",  name:"Dog",               icon:"🐕",  cost:200, gems:2, desc:"Your loyal companion. +3 Gold per action.", type:"pet", petId:"dog"},
+  {id:"pet_wolf", name:"Wolf",              icon:"🐺",  cost:180, gems:2, desc:"+8% XP from Health actions.", type:"pet", petId:"wolf"},
+  {id:"pet_owl",  name:"Owl",               icon:"🦉",  cost:180, gems:2, desc:"+8% XP from Learning actions.", type:"pet", petId:"owl"},
+  {id:"pet_dragon",name:"Dragon",           icon:"🐉",  cost:180, gems:2, desc:"+8% XP from Productivity actions.", type:"pet", petId:"dragon"},
+  {id:"pet_butterfly",name:"Butterfly",     icon:"🦋",  cost:180, gems:2, desc:"+8% XP from Spiritual actions.", type:"pet", petId:"butterfly"},
+  {id:"pet_cat",  name:"Cat",               icon:"🐱",  cost:200, gems:3, desc:"Daily Spin gets +1 extra reward slot.", type:"pet", petId:"cat"},
+  {id:"pet_orb",  name:"Spirit Orb",        icon:"🔮",  cost:220, gems:3, desc:"Every 5th action gives a free Common chest.", type:"pet", petId:"orb"},
+];
+var TITLES=[[1,"Initiate"],[3,"Apprentice"],[5,"Journeyman"],[8,"Veteran"],[12,"Champion"],[20,"Legendary"]];
+var AVATAR_CLASSES=[{id:0,name:"Knight"},{id:1,name:"Mage"},{id:2,name:"Ranger"},{id:3,name:"Rogue"},{id:4,name:"Paladin"},{id:5,name:"Shaman"},{id:6,name:"Necromancer",cost:300},{id:7,name:"Samurai",cost:300},{id:8,name:"Druid",cost:300}];
+var SPRITES=[
+// 0: Knight
+["................","......hhhh......","....hssssssh....","....hseessh.....","....hssssssh....","....hsssssh.....","...taaaaaaaaat..","..taaaaaaaaaaaat","..taadaaaadaat..","..taaaaaaaaaaat.","...taataaataaat.","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
+// 1: Mage
+[".....hhhhhh.....","....htthhhhh....","....hssssssh....","....hseessh.....","....hssssssh....","....hsssssh.....","..taaaaaaaaat...","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","..taataataat.t..","..aaa.aa.aaa.t..","..aaa.aa.aaa.t..","..tat.aa.tat....","...aa.aa.aa.....","...tt.tt.tt....."],
+// 2: Ranger
+["....aaaaaaaa....","...aaaaaaaaaa...","...aasssssaaa...","...aaseesaaaa...","...aasssssaaa...","....ahssshah....","...taaaaaaaaat..","..taaaaaaaaat...","..taadaaadaat...","..taaaaaaaat....","...taataat......","...aa.aaa.aa....","...aa.aaa.aa....","...tt.aaa.tt....","......aaa.......","......ttt......."],
+// 3: Rogue
+[".....aaaaa......","....ahhhhhha....","...ahssssssha...","...ahseessha....","...ahssssssha...","....ahssshah....","..aaaaaaaaaaaaa.","..aaaaaaaaaaaat.","..atadaaadaata..","..aaaaaaaaaaaat.","...atataaatata..","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
+// 4: Paladin
+["....tthhhhtt....","....thhhhhht....","....hsssssssh...","....hseesssh....","....hsssssssh...","....tssssst.....","..ttaaaaaaaatt..","..ttaaaaaaaaatt.","..tadaaaaaadaat.","..ttaaaaaaaaatt.","..ttattaattattt.","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
+// 5: Shaman
+["...t.hhhhh.t....","....hhhhhhhh....","....hsssssh.....","....hseesh......","....hsssssh.....","....hsssssh.....","..t.aaaaaaaaat..","..taaaaaaaaaat..","..tataadaadatat.","..taaaaaaaaaat..","..t.tat.tat.t...","....aaa.aaa.....","....aaa.aaa.....","....tat.tat.....","....aa..aa......","....tt..tt......"],
+// 6: Necromancer (robed, hooded)
+[".....hhhhhh.....","....hhddddh.....","....hdssssdh....","....hdseesdh....","....hdssssdh....","....hddddddh....","...taaaaaaaaat..","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","..taataataat....","...aaa.aa.aaa...","...aaa.aa.aaa...","....aa.aa.aa....","....tt.aa.tt....","......tt........"],
+// 7: Samurai (armored, topknot)
+["....aahhhhaa....","...aahhhhhha....","...ahssssssha...","...ahseessha....","...ahssssssha...","...aahhhhhha....","..taaaaaaaaat...","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","...taataataat...","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
+// 8: Druid (hooded, nature)
+["....aaaaaaaa....","...aahhhhhaa....","...ahsssssah....","...ahseesah.....","...ahsssssah....","...aahhhhhaa....","..taaaaaaaaat...","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","...taataataat...","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","....aa.aa.aa....","....tt.tt.tt...."]
+];
+var CLASS_PALETTES=[[{sk:"#f5c89a",ha:"#5a3a1a",ar:"#7a8a9a",tr:"#aabaca",ey:"#3a3a5a",sh:"#4a5a6a"},{sk:"#f5c89a",ha:"#3a2010",ar:"#8a5a30",tr:"#c4944a",ey:"#3a5a3a",sh:"#5a3a1a"},{sk:"#f5c89a",ha:"#1a1a3a",ar:"#3a5a9a",tr:"#7ab4ea",ey:"#1a3a7a",sh:"#1a3a6a"},{sk:"#f5c89a",ha:"#0a1a0a",ar:"#2a6a3a",tr:"#5ab87a",ey:"#1a5a2a",sh:"#1a4a2a"},{sk:"#f5c89a",ha:"#1a0a0a",ar:"#8a1a1a",tr:"#f4c842",ey:"#8a1a1a",sh:"#5a0a0a"},{sk:"#f9dab0",ha:"#0a0a1a",ar:"#4a1a8a",tr:"#f4c842",ey:"#c456a0",sh:"#2a0a5a"}],[{sk:"#f5c89a",ha:"#1a0a2a",ar:"#5a3a7a",tr:"#9a6aba",ey:"#5a3a9a",sh:"#3a1a5a"},{sk:"#f5c89a",ha:"#0a0a1a",ar:"#3a1a6a",tr:"#7a5ab8",ey:"#4a2a8a",sh:"#2a0a4a"},{sk:"#f2c080",ha:"#0a0a0a",ar:"#6a2a9a",tr:"#c07ae8",ey:"#6a2a9a",sh:"#4a0a7a"},{sk:"#f2c080",ha:"#f4c842",ar:"#2a0a5a",tr:"#c456a0",ey:"#c456a0",sh:"#1a0a3a"},{sk:"#f9dab0",ha:"#f4c842",ar:"#1a0a3a",tr:"#f4c842",ey:"#f4c842",sh:"#0a0a1a"},{sk:"#fff0d0",ha:"#ffffff",ar:"#0a0a2a",tr:"#c8b4ff",ey:"#ffffff",sh:"#0a0020"}],[{sk:"#d4a574",ha:"#3a2a10",ar:"#4a6a3a",tr:"#7a9a5a",ey:"#3a5a2a",sh:"#2a4a1a"},{sk:"#d4a574",ha:"#2a1a08",ar:"#3a5a2a",tr:"#6a8a4a",ey:"#2a4a1a",sh:"#1a3a0a"},{sk:"#c8965a",ha:"#1a0a0a",ar:"#2a4a1a",tr:"#5ab84a",ey:"#1a4a0a",sh:"#0a2a0a"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#1a3a0a",tr:"#4ae84a",ey:"#0a3a0a",sh:"#082008"},{sk:"#f5c89a",ha:"#0a0a0a",ar:"#0a2a0a",tr:"#f4c842",ey:"#2ab88a",sh:"#041004"},{sk:"#f9dab0",ha:"#2ab88a",ar:"#041804",tr:"#f4c842",ey:"#4ae84a",sh:"#020802"}],[{sk:"#c8965a",ha:"#0a0a0a",ar:"#2a2a2a",tr:"#5a5a5a",ey:"#8a2a2a",sh:"#1a1a1a"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#1a1a2a",tr:"#4a4a6a",ey:"#6a1a1a",sh:"#0a0a1a"},{sk:"#b8845a",ha:"#0a0a0a",ar:"#0a0a1a",tr:"#3a3a8a",ey:"#8a1a8a",sh:"#050508"},{sk:"#b8845a",ha:"#0a0a0a",ar:"#1a0a2a",tr:"#6a1a8a",ey:"#c456a0",sh:"#0a0010"},{sk:"#f5c89a",ha:"#0a0a0a",ar:"#0a0a0a",tr:"#f4c842",ey:"#e85d3a",sh:"#050505"},{sk:"#f9dab0",ha:"#1a1a1a",ar:"#050505",tr:"#f4c842",ey:"#ff2a2a",sh:"#020202"}],[{sk:"#f5c89a",ha:"#8a6a3a",ar:"#9a9a9a",tr:"#c8c8c8",ey:"#3a5a9a",sh:"#6a6a6a"},{sk:"#f5c89a",ha:"#7a5a2a",ar:"#c8c8c8",tr:"#f0f0f0",ey:"#2a4a8a",sh:"#8a8a8a"},{sk:"#f5c89a",ha:"#5a3a1a",ar:"#d8c870",tr:"#f4e8a0",ey:"#1a3a6a",sh:"#a89838"},{sk:"#f9dab0",ha:"#c4944a",ar:"#f4c842",tr:"#ffffff",ey:"#1a2a5a",sh:"#c4a430"},{sk:"#f9dab0",ha:"#f4c842",ar:"#ffffff",tr:"#f4c842",ey:"#4a8fff",sh:"#e0e0e0"},{sk:"#fff8e8",ha:"#ffffff",ar:"#ffffff",tr:"#f4c842",ey:"#7ab4ea",sh:"#f0f0f0"}],[{sk:"#b8845a",ha:"#3a1a0a",ar:"#6a4a2a",tr:"#c87a3a",ey:"#4a3a1a",sh:"#3a2a10"},{sk:"#b8845a",ha:"#2a0a0a",ar:"#8a3a0a",tr:"#e87a1a",ey:"#6a2a0a",sh:"#4a1a00"},{sk:"#c8965a",ha:"#0a1a0a",ar:"#1a5a1a",tr:"#4ae81a",ey:"#0a5a0a",sh:"#083008"},{sk:"#c8965a",ha:"#0a0a1a",ar:"#1a1a6a",tr:"#4a4aff",ey:"#0a0a8a",sh:"#080840"},{sk:"#f5c89a",ha:"#0a0a0a",ar:"#0a0a2a",tr:"#4a8fff",ey:"#4a8fff",sh:"#050510"},{sk:"#f9dab0",ha:"#4a8fff",ar:"#050510",tr:"#f4c842",ey:"#ffffff",sh:"#020208"}],
+// Necromancer — 6 tiers
+[{sk:"#c8b4a0",ha:"#1a0a2a",ar:"#2a1a3a",tr:"#6a3a8a",ey:"#8a2aaa",sh:"#1a0a1a"},{sk:"#c8b4a0",ha:"#0a0a1a",ar:"#3a1a5a",tr:"#8a4ab8",ey:"#aa2ae8",sh:"#0a0014"},{sk:"#d4c0ac",ha:"#0a0a0a",ar:"#1a0a3a",tr:"#aa6ae8",ey:"#c456a0",sh:"#0a0008"},{sk:"#d4c0ac",ha:"#2a0a4a",ar:"#0a0a1a",tr:"#c87ae8",ey:"#e84ae8",sh:"#050005"},{sk:"#e8d4c0",ha:"#4a0a6a",ar:"#050508",tr:"#f4c842",ey:"#f42aff",sh:"#020002"},{sk:"#fff8f0",ha:"#6a0a8a",ar:"#020202",tr:"#f4c842",ey:"#ffffff",sh:"#010001"}],
+// Samurai — 6 tiers
+[{sk:"#d4a574",ha:"#1a0a0a",ar:"#3a0a0a",tr:"#8a2a0a",ey:"#6a1a0a",sh:"#1a0808"},{sk:"#d4a574",ha:"#0a0a0a",ar:"#5a0a0a",tr:"#aa3a0a",ey:"#8a1a0a",sh:"#2a0404"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#7a0a0a",tr:"#c84a0a",ey:"#aa1a0a",sh:"#3a0202"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#9a0a0a",tr:"#f4c842",ey:"#c81a0a",sh:"#4a0000"},{sk:"#f5c89a",ha:"#1a0a0a",ar:"#aa0a0a",tr:"#f4c842",ey:"#e81a0a",sh:"#050000"},{sk:"#fff0d8",ha:"#f4c842",ar:"#0a0000",tr:"#f4c842",ey:"#ff2a0a",sh:"#020000"}],
+// Druid — 6 tiers
+[{sk:"#b8845a",ha:"#1a1a08",ar:"#2a4a0a",tr:"#6a8a2a",ey:"#2a4a0a",sh:"#0a1a04"},{sk:"#b8845a",ha:"#0a0a04",ar:"#1a3a08",tr:"#4a6a1a",ey:"#1a3a08",sh:"#081408"},{sk:"#c8965a",ha:"#0a1a04",ar:"#0a2a04",tr:"#3a5a0a",ey:"#0a2a08",sh:"#041008"},{sk:"#c8965a",ha:"#1a3a08",ar:"#0a1a04",tr:"#5a8a1a",ey:"#0a3a0a",sh:"#020804"},{sk:"#d4a870",ha:"#2ab88a",ar:"#041004",tr:"#f4c842",ey:"#2a8a2a",sh:"#020402"},{sk:"#f0d4a0",ha:"#4ae84a",ar:"#020802",tr:"#f4c842",ey:"#4aff4a",sh:"#010201"}]
+];
+
+function drawSVG(classId,level,px){
+  var tier=level>=20?5:level>=12?4:level>=8?3:level>=5?2:level>=3?1:0;
+  var p=CLASS_PALETTES[classId][tier];
+  var map={s:p.sk,h:p.ha,a:p.ar,t:p.tr,e:p.ey,d:p.sh};
+  var sprite=SPRITES[classId];var sc=px/16;
+  var out='<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" shape-rendering="crispEdges"><rect width="'+px+'" height="'+px+'" fill="#0d1220"/>';
+  for(var y=0;y<16;y++){var row=sprite[y];for(var x=0;x<16;x++){var ch=row[x];var col=map[ch];if(!col)continue;var rx=Math.round(x*sc),ry=Math.round(y*sc),rw=Math.ceil((x+1)*sc)-rx,rh=Math.ceil((y+1)*sc)-ry;out+='<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" fill="'+col+'"/>';}}
+  return out+'</svg>';
+}
+function ringColor(level){if(level>=20)return"#f4c842";if(level>=12)return"#c456a0";if(level>=8)return"#2ab88a";if(level>=5)return"#4a8fff";if(level>=3)return"#e8923a";return"#6a8aaa";}
+
+var STORAGE_KEY="liferp_save_v4";
+var OLD_KEYS=["liferp_save_v3","liferp_save_v2","liferp_save_v1"];
+function loadSaved(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var p=JSON.parse(r);if(p&&typeof p==="object")return p;}}catch(e){}for(var i=0;i<OLD_KEYS.length;i++){try{var r2=localStorage.getItem(OLD_KEYS[i]);if(!r2)continue;var p2=JSON.parse(r2);if(!p2||typeof p2!=="object")continue;localStorage.setItem(STORAGE_KEY,JSON.stringify(p2));return p2;}catch(e){}}return null;}
+function savePersist(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({
+      gold:G.gold,
+      totalXP:G.totalXP,
+      skills:G.skills,
+      quests:G.quests,
+      log:G.log.slice(0,50),
+      purchases:G.purchases.slice(0,30),
+      gratitudeEntries:G.gratitudeEntries.slice(0,60),
+      iamEntries:G.iamEntries.slice(0,60),
+      dailyDone:G.dailyDone,
+      avatarName:G.avatarName,
+      avatarClass:G.avatarClass,
+      freeJournalEntries:G.freeJournalEntries.slice(0,200),
+      streakDays:G.streakDays,
+      lastStreakDate:G.lastStreakDate,
+      keys:G.keys,
+      chests:G.chests,
+      rareChests:G.rareChests,
+      legendaryChests:G.legendaryChests,
+      inventory:G.inventory,
+      chestHistory:G.chestHistory.slice(0,30),
+      streakShield:G.streakShield,
+      boostActionsLeft:G.boostActionsLeft,
+      boostHourExpiry:G.boostHourExpiry,
+      quickBoostTokens:G.quickBoostTokens,
+      lastSpinDate:G.lastSpinDate,
+      spinHistory:G.spinHistory.slice(0,30),
+      customQuests:G.customQuests,
+      rotatingQuests:G.rotatingQuests,
+      lastRotatingRefresh:G.lastRotatingRefresh,
+      questProgress:G.questProgress,
+    }));
+  }catch(e){}
+}
+
+var sv=loadSaved();
+function backfillXP(sd){if(!sd)return 0;if(sd.totalXP&&sd.totalXP>0)return sd.totalXP;if(sd.totalXPEarned&&sd.totalXPEarned>0)return sd.totalXPEarned;var t=0,sk=sd.skills||{};Object.keys(sk).forEach(function(id){var s=sk[id],lv=s.level||1,cx=s.xp||0;for(var l=1;l<lv;l++)t+=Math.floor(100*Math.pow(1.4,l-1));t+=cx;});return t;}
+function mkSkills(){var o={};SKILLS.forEach(function(s){o[s.id]={xp:0,level:1};});return o;}
+
+var G={
+  tab:"dashboard",filter:"All",journalTab:"gratitude",
+  gold:sv&&sv.gold||0,
+  totalXP:backfillXP(sv),
+  skills:sv&&sv.skills||mkSkills(),
+  quests:sv&&sv.quests||[
+    {id:1, title:"First Blood",      desc:"Complete your first workout",          done:false,xp:100,gold:30, skill:"strength",  type:"count",  actions:["workout"],                          target:1,  progress:0},
+    {id:2, title:"Scholar's Path",   desc:"Read for 7 consecutive days",          done:false,xp:150,gold:40, skill:"wisdom",    type:"streak", actions:["read30"],                            target:7,  progress:0},
+    {id:3, title:"The Grind",        desc:"Log 5 deep work sessions",              done:false,xp:200,gold:60, skill:"focus",     type:"count",  actions:["deep_work"],                         target:5,  progress:0},
+    {id:4, title:"Grateful Soul",    desc:"Complete 7 gratitude lists",            done:false,xp:120,gold:35, skill:"mindset",   type:"count",  actions:["grateful5","grateful10"],            target:7,  progress:0},
+    {id:5, title:"Identity Forged",  desc:"Write your I AM list 5 days in a row",  done:false,xp:175,gold:50, skill:"mindset",   type:"streak", actions:["iam5","iam10"],                      target:5,  progress:0},
+    {id:6, title:"Ice Warrior",      desc:"Complete 7 cold showers",               done:false,xp:130,gold:35, skill:"strength",  type:"count",  actions:["cold"],                              target:7,  progress:0},
+    {id:7, title:"Still Mind",       desc:"Meditate 10 sessions",                  done:false,xp:150,gold:40, skill:"mindset",   type:"count",  actions:["meditate"],                          target:10, progress:0},
+    {id:8, title:"The Flowmaster",   desc:"Log 10 Pomodoro sessions",              done:false,xp:160,gold:45, skill:"focus",     type:"count",  actions:["pomodoro"],                          target:10, progress:0},
+    {id:9, title:"Hydration Hero",   desc:"Hit 2L water 14 days in a row",         done:false,xp:100,gold:30, skill:"endurance", type:"streak", actions:["water2l"],                           target:14, progress:0},
+    {id:10,title:"10K Club",         desc:"Log 10,000 steps 7 times",              done:false,xp:120,gold:35, skill:"endurance", type:"count",  actions:["steps"],                             target:7,  progress:0},
+    {id:11,title:"Treasure Hunter",  desc:"Open your first chest",                 done:false,xp:200,gold:50, skill:"discipline",type:"manual", actions:null,                                  target:1,  progress:0,chest:"rare"},
+    {id:12,title:"Chest Master",     desc:"Complete 5 deep work sessions",         done:false,xp:300,gold:75, skill:"focus",     type:"count",  actions:["deep_work"],                         target:5,  progress:0,chest:"legendary"},
+    {id:13,title:"Inner Pilgrim",    desc:"Complete 10 spiritual practices",       done:false,xp:250,gold:60, skill:"serenity",  type:"count",  actions:["breathwork","stillness","spirit_read","eve_reflect","nature_walk","body_scan","gratitude_letter","digital_detox","cold_plunge"], target:10, progress:0},
+    {id:14,title:"Silent Morning",   desc:"Complete Morning Stillness 5 times",    done:false,xp:150,gold:40, skill:"serenity",  type:"count",  actions:["stillness"],                         target:5,  progress:0},
+    {id:15,title:"Into the Wild",    desc:"Take 3 mindful nature walks",           done:false,xp:120,gold:35, skill:"serenity",  type:"count",  actions:["nature_walk"],                       target:3,  progress:0},
+  ],
+  log:sv&&sv.log||[],
+  purchases:sv&&sv.purchases||[],
+  gratitudeEntries:sv&&sv.gratitudeEntries||[],
+  iamEntries:sv&&sv.iamEntries||[],
+  dailyDone:sv&&sv.dailyDone||{},
+  avatarName:sv&&sv.avatarName||"",
+  avatarClass:sv&&sv.avatarClass!=null?sv.avatarClass:0,
+  freeJournalEntries:sv&&sv.freeJournalEntries||[],
+  streakDays:sv&&sv.streakDays||0,
+  lastStreakDate:sv&&sv.lastStreakDate||null,
+  fjSearch:"",
+  _drawerOpen:false,
+  ownedPets: sv&&sv.ownedPets||[],
+  activePets: sv&&sv.activePets||[null,null],
+  slotCooldowns: sv&&sv.slotCooldowns||[null,null],
+  actionCount: sv&&sv.actionCount||0,
+  _pickingSlot: null,
+  gems: sv&&sv.gems||0,
+  rotatingSlots: sv&&sv.rotatingSlots||[],
+  unlockedClasses: sv&&sv.unlockedClasses||[0,1,2,3,4,5],
+  equippedAccessory: sv&&sv.equippedAccessory||null,
+  unlockedAccessories: sv&&sv.unlockedAccessories||[],
+  timer:{mins:25,seconds:0,totalSeconds:0,running:false,finished:false,endTime:null},
+  _lastTotalLv:0,
+  lastSpinDate: sv&&sv.lastSpinDate||null,
+  spinHistory: sv&&sv.spinHistory||[],
+  spinResult: null,
+  spinActive: false,
+  keys: sv&&sv.keys||0,
+  chests: sv&&sv.chests||0,
+  rareChests: sv&&sv.rareChests||0,
+  legendaryChests: sv&&sv.legendaryChests||0,
+  inventory: sv&&sv.inventory||[],
+  chestHistory: sv&&sv.chestHistory||[],
+  streakShield: sv&&sv.streakShield||0,
+  boostActionsLeft: sv&&sv.boostActionsLeft||0,
+  customQuests: sv&&sv.customQuests||[],
+  rotatingQuests: sv&&sv.rotatingQuests||[],
+  lastRotatingRefresh: sv&&sv.lastRotatingRefresh||null,
+  questProgress: sv&&sv.questProgress||{},
+  boostHourExpiry: sv&&sv.boostHourExpiry||null,
+  quickBoostTokens: sv&&sv.quickBoostTokens||0,
+};
+
+function xpForSkillLv(l){return Math.floor(100*Math.pow(1.4,l-1));}
+function xpToReachTotalLv(n){if(n<=1)return 0;return 100*(n-1)*n/2;}
+function totalLv(){var tx=G.totalXP||0,lv=1;while(xpToReachTotalLv(lv+1)<=tx)lv++;return lv;}
+function totalLvProgress(){var tx=G.totalXP||0,lv=totalLv();return{earned:tx-xpToReachTotalLv(lv),needed:xpToReachTotalLv(lv+1)-xpToReachTotalLv(lv)};}
+function domainLv(d){var t=0;SKILLS.forEach(function(s){if(s.domain===d)t+=G.skills[s.id].level;});return t;}
+function playerTitle(){var tl=totalLv(),t=TITLES[0];for(var i=0;i<TITLES.length;i++){if(tl>=TITLES[i][0])t=TITLES[i];}return t[1];}
+function getDayKey(){
+  var n=new Date();
+  // If before 4AM local time, treat as previous day
+  if(n.getHours()<4){n.setDate(n.getDate()-1);}
+  // Build YYYY-MM-DD from LOCAL date parts (not UTC)
+  var y=n.getFullYear();
+  var m=String(n.getMonth()+1).padStart(2,"0");
+  var d=String(n.getDate()).padStart(2,"0");
+  return y+"-"+m+"-"+d;
+}
+function doneToday(id){return(G.dailyDone||{})[id]===getDayKey();}
+function markDone(id){if(!G.dailyDone)G.dailyDone={};G.dailyDone[id]=getDayKey();}
+function flameColor(n){if(n>=30)return"#f4c842";if(n>=15)return"#c456a0";if(n>=8)return"#cc2244";if(n>=4)return"#e8923a";return"#4a8fff";}
+function skById(id){for(var i=0;i<SKILLS.length;i++){if(SKILLS[i].id===id)return SKILLS[i];}return null;}
+function acById(id){for(var i=0;i<QUICK_ACTIONS.length;i++){if(QUICK_ACTIONS[i].id===id)return QUICK_ACTIONS[i];}return null;}
+function shopById(id){for(var i=0;i<SHOP.length;i++){if(SHOP[i].id===id)return SHOP[i];}return null;}
+function questById(id){for(var i=0;i<G.quests.length;i++){if(G.quests[i].id===id)return G.quests[i];}return null;}
+
+var toastTm=null;
+function showToast(msg){var el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");if(toastTm)clearTimeout(toastTm);toastTm=setTimeout(function(){el.classList.remove("show");},3000);}
+
+function isBoostActive(){
+  if((G.boostActionsLeft||0)>0)return"actions";
+  if(G.boostHourExpiry&&Date.now()<G.boostHourExpiry)return"hours";
+  return false;
+}
+function getBoostLabel(){
+  var type=isBoostActive();
+  if(type==="actions")return"2x XP · "+G.boostActionsLeft+" action"+(G.boostActionsLeft!==1?"s":"")+" left";
+  if(type==="hours"){var mins=Math.round((G.boostHourExpiry-Date.now())/60000);var h=Math.floor(mins/60),m=mins%60;return"2x XP · "+(h>0?h+"h ":"")+m+"m left";}
+  return"";
+}
+
+function earnXP(skillId,amount,label,eg){
+  // Apply boost multiplier
+  var boost=isBoostActive();
+  if(boost){
+    amount=amount*2;
+    if(boost==="actions"){G.boostActionsLeft--;if(G.boostActionsLeft<=0){G.boostActionsLeft=0;showToast("XP Boost expired!");}}
+  }
+  var sk=G.skills[skillId];
+  var nx=sk.xp+amount,nl=sk.level,lv=false;
+  while(nx>=xpForSkillLv(nl)){nx-=xpForSkillLv(nl);nl++;lv=true;}
+  G.skills[skillId]={xp:nx,level:nl};
+  G.gold+=eg;G.totalXP=(G.totalXP||0)+amount;
+  G.log.unshift({label:label,xp:amount,gold:eg,time:new Date().toLocaleTimeString(),date:new Date().toLocaleDateString(),skillId:skillId});
+  if(G.log.length>50)G.log.pop();
+  var s=skById(skillId);
+  if(G._suppressLvlUp){
+    // Quest popup will handle level ups after Claim is clicked
+    if(lv){G._pendingLvUps=(G._pendingLvUps||[]).concat([{skill:s,level:nl}]);}
+  } else {
+    if(lv){showLvlUp(s,nl);}
+    else{showToast("+"+amount+" XP  +"+eg+" Gold");}
+    var newTotalLv=totalLv();
+    if(newTotalLv>G._lastTotalLv){G._lastTotalLv=newTotalLv;showTotalLvUp(newTotalLv);}
+  }
+  updateStreak();savePersist();render();
+}
+
+function checkStreakShield(){
+  // Called on load - if streak was broken but shield available, save it
+  var dk=getDayKey();
+  if(G.lastStreakDate===dk)return; // already updated today
+  var prev=new Date();prev.setDate(prev.getDate()-1);prev.setHours(prev.getHours()-4);
+  var pk=prev.toISOString().slice(0,10);
+  var dayBefore=new Date();dayBefore.setDate(dayBefore.getDate()-2);dayBefore.setHours(dayBefore.getHours()-4);
+  var dbk=dayBefore.toISOString().slice(0,10);
+  // Missed yesterday but have a shield
+  if(G.lastStreakDate===dbk&&(G.streakShield||0)>0){
+    G.streakShield--;
+    G.lastStreakDate=pk; // pretend logged yesterday
+    showToast("Streak Shield used! Your "+G.streakDays+"-day streak is safe.");
+    savePersist();
+  }
+}
+
+function updateStreak(){
+  var today=new Date().toLocaleDateString();
+  var cnt=G.log.filter(function(e){return e.date===today;}).length;
+  if(cnt<3)return;
+  var dk=getDayKey();
+  if(G.lastStreakDate===dk)return;
+  var prev=new Date();prev.setDate(prev.getDate()-1);prev.setHours(prev.getHours()-4);
+  var pk=prev.toISOString().slice(0,10);
+  if(G.lastStreakDate===pk||G.lastStreakDate===null)G.streakDays=(G.streakDays||0)+1;
+  else if(G.lastStreakDate!==dk)G.streakDays=1;
+  G.lastStreakDate=dk;
+  // Streak milestone gems
+  var s=G.streakDays;
+  if(s===7){earnGems(3,"7-day streak milestone!");}
+  else if(s===14){earnGems(5,"14-day streak milestone!");}
+  else if(s===30){earnGems(10,"30-day streak milestone!");}
+}
+
+function rDashboard(){
+  var sr=SKILLS.map(function(sk){var s=G.skills[sk.id]||(G.skills[sk.id]={xp:0,level:1}),need=xpForSkillLv(s.level),pct=Math.min(100,Math.round(s.xp/need*100));return'<div class="skill-row"><div class="skill-meta"><div><span class="skill-name">'+sk.name+'</span><span style="color:var(--text3);margin:0 6px;">|</span><span class="skill-tag" style="color:'+DOMAIN_COLORS[sk.domain]+';">'+sk.domain+'</span></div><div><span class="skill-level" style="color:'+sk.color+'">Lv.'+s.level+'</span><span class="skill-xp">'+s.xp+' / '+need+' XP</span></div></div><div class="xp-wrap"><div class="xp-fill" style="width:'+pct+'%;background:'+sk.color+';box-shadow:0 0 8px '+sk.color+'55;"></div></div></div>';}).join("");
+  var logH=G.log.length>0?'<div class="card" style="padding:4px 16px;"><div class="card-title" style="padding-top:14px;">Recent Deeds</div>'+G.log.slice(0,6).map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>':'<div class="empty">Your legend has not yet begun. Head to Actions.</div>';
+  return'<div class="card"><div class="card-title">Skill Trees</div>'+sr+'</div>'+logH;
+}
+
+function rActions(){
+  var domains=["All","Health","Productivity","Learning","Mindset","Spiritual"];
+  var fBtns=domains.map(function(f){return'<button class="filter-btn'+(G.filter===f?" active":"")+'" onclick="setFilter(\''+f+'\')">'+f+'</button>';}).join("");
+  var filtered=QUICK_ACTIONS.filter(function(a){return G.filter==="All"||a.domain===G.filter;});
+  var items=filtered.map(function(a){
+    var sk=skById(a.skill);var dt=!a.repeatable&&doneToday(a.id);
+    var rtag=a.repeatable?'<span style="font-size:10px;color:var(--success);">repeatable</span>':dt?'<span style="font-size:10px;color:var(--text3);">done today</span>':"";
+    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\')"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags"><span style="font-size:11px;color:'+(sk?sk.color:"#fff")+';">'+(sk?sk.name:"")+'</span><span style="font-size:10px;color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.8px;">'+a.rarity+'</span>'+rtag+'</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
+  }).join("");
+  return'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">Tap a deed to log it. Repeatable actions can be logged multiple times a day.</p><div class="filter-row">'+fBtns+'</div>'+items;
+}
+
+function renderQuestItem(q, isRotating, isCustom){
+  var sk=skById(q.skill||"discipline");
+  var color=sk?sk.color:"#f4c842";
+  var pct=q.target>1?Math.min(100,Math.round(((q.progress||0)/q.target)*100)):0;
+  var hasProgress=q.target>1&&q.type&&q.type!=="manual";
+
+  var tag="";
+  if(isRotating){
+    if(q.rtype==="daily")tag='<span class="quest-tag quest-tag-daily">Daily</span>';
+    else if(q.rtype==="weekly")tag='<span class="quest-tag quest-tag-weekly">Weekly</span>';
+    else if(q.rtype==="weekend")tag='<span class="quest-tag quest-tag-weekend">Weekend</span>';
+  } else if(isCustom){
+    tag='<span class="quest-tag quest-tag-custom">Custom</span>';
+  } else {
+    if(q.type&&q.type!=="manual")tag='<span class="quest-tag quest-tag-auto">Auto-tracked</span>';
+  }
+
+  var progressHTML="";
+  if(hasProgress&&!q.done){
+    progressHTML=
+      '<div class="quest-progress-wrap"><div class="quest-progress-bar" style="width:'+pct+'%;background:'+color+';"></div></div>'+
+      '<div class="quest-progress-label">'+(q.progress||0)+' / '+q.target+'</div>';
+  }
+
+  var btnHTML="";
+  if(!q.done){
+    if(isCustom&&(q.type==="manual"||!q.type)){
+      // Custom manual quest
+      btnHTML='<button class="complete-btn" onclick="manualCompleteQuest(this.dataset.id)" data-id='+JSON.stringify(q.id)+'>Complete</button>';
+    } else if(!isRotating&&!isCustom&&(q.type==="manual"||!q.type)){
+      // Standard manual quest (Treasure Hunter etc)
+      btnHTML='<button class="complete-btn" onclick="completeQuest('+q.id+')">Complete</button>';
+    }
+    // Auto-tracked quests (type=count/streak/domain) get no button — auto-complete on progress
+  }
+
+  var delBtn=isCustom&&!q.done?'<button class="quest-del-btn" onclick="deleteCustomQuest(this.dataset.id)" data-id="'+q.id+'"" title="Delete">✕</button>':"";
+
+  var chestBadge=q.chest&&!q.done?'<span style="font-size:11px;color:var(--gold);margin-left:6px;">+'+(q.chest==="legendary"?"🌟":q.chest==="rare"?"🎁":"📦")+'</span>':"";
+
+  return '<div class="quest-item'+(q.done?" done":"")+(isRotating?" rotating":"")+'">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
+      '<div style="flex:1;">'+
+        '<div class="quest-title" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+(q.done?"✓ ":"")+q.title+tag+chestBadge+'</div>'+
+        '<div class="quest-desc">'+(q.desc||"")+'</div>'+
+        '<div class="quest-rewards">'+
+          '<span style="color:'+color+';">+'+q.xp+' XP</span>'+
+          '<span style="color:var(--gold);">+'+(q.gold||0)+'g</span>'+
+          '<span style="color:var(--text2);">'+(sk?sk.name:"")+'</span>'+
+        '</div>'+
+        progressHTML+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">'+
+        btnHTML+delBtn+
+        (isRotating&&!q.done?(function(){var dl=getQuestDeadline(q);return dl?'<div style="font-size:10px;color:'+dl.color+';letter-spacing:.3px;margin-top:2px;font-family:"Cinzel",serif;">'+(dl.urgent?'⚠ ':'')+dl.label+'</div>':'';}()):"")+ 
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function rQuests(){
+  var rotating=G.rotatingQuests||[];
+  var custom=G.customQuests||[];
+  var standard=G.quests||[];
+
+  // ── Custom quest form ──
+  var actionOptions=QUICK_ACTIONS.map(function(a){return'<option value="'+a.id+'">'+a.label+'</option>';}).join("");
+  var skillOptions=SKILLS.map(function(s){return'<option value="'+s.id+'">'+s.name+'</option>';}).join("");
+
+  var formHTML=
+    '<div class="cq-form">'+
+      '<div class="cq-form-title">✏️ Create Custom Quest</div>'+
+      '<input class="cq-input" id="cqTitle" placeholder="Quest title..." />'+
+      '<input class="cq-input" id="cqDesc" placeholder="Description (optional)..." />'+
+      '<div class="cq-row">'+
+        '<input class="cq-input" id="cqXP" type="number" placeholder="XP reward (max 500)" min="10" max="500" value="100" style="margin-bottom:0;" />'+
+        '<input class="cq-input" id="cqGold" type="number" placeholder="Gold reward" min="0" max="200" value="30" style="margin-bottom:0;" />'+
+      '</div>'+
+      '<div class="cq-row" style="margin-top:8px;">'+
+        '<select class="cq-select" id="cqSkill"><option value="">Skill trained...</option>'+skillOptions+'</select>'+
+        '<select class="cq-select" id="cqTrack"><option value="">Manual completion</option>'+actionOptions+'</select>'+
+      '</div>'+
+      '<div style="margin-top:8px;display:flex;gap:8px;align-items:center;">'+
+        '<span style="font-size:12px;color:var(--text2);">Target count:</span>'+
+        '<input class="cq-input" id="cqTarget" type="number" min="1" max="100" value="1" style="width:80px;margin-bottom:0;" />'+
+      '</div>'+
+      '<button class="cq-add-btn" onclick="addCustomQuest()">+ Add Quest</button>'+
+    '</div>';
+
+  // ── Rotating quests section ──
+  var rotatingHTML="";
+  var activeRotating=rotating.filter(function(q){return!q.done;});
+  var doneRotating=rotating.filter(function(q){return q.done;});
+  if(activeRotating.length>0||doneRotating.length>0){
+    rotatingHTML='<div class="quest-section-title">⏰ Rotating Quests<span></span></div>'+
+      activeRotating.map(function(q){return renderQuestItem(q,true,false);}).join("")+
+      doneRotating.map(function(q){return renderQuestItem(q,true,false);}).join("");
+  }
+
+  // ── Custom quests section ──
+  var customHTML="";
+  if(custom.length>0){
+    customHTML='<div class="quest-section-title" style="margin-top:8px;">✏️ My Quests<span></span></div>'+
+      custom.map(function(q){return renderQuestItem(q,false,true);}).join("");
+  }
+
+  // ── Standard quests section ──
+  var stdActive=standard.filter(function(q){return!q.done;});
+  var stdDone=standard.filter(function(q){return q.done;});
+  var standardHTML='<div class="quest-section-title" style="margin-top:8px;">📜 Main Quests<span></span></div>'+
+    stdActive.map(function(q){return renderQuestItem(q,false,false);}).join("")+
+    stdDone.map(function(q){return renderQuestItem(q,false,false);}).join("");
+
+  return formHTML+rotatingHTML+customHTML+standardHTML;
+}
+
+function rJournal(){
+  var isG=G.journalTab==="gratitude";
+  var entries=isG?G.gratitudeEntries:G.iamEntries;
+  var ph=isG?"Write one item per line:\nI am grateful for the morning sunlight\nI am grateful for my health\n...":"Write one statement per line:\nI AM loved\nI AM strong\nI AM enough\n...";
+  var hint=isG?"Be specific. 5 items = 25 XP  ·  10 items = 40 XP":"Present tense only. Feel each one. 5 = 30 XP  ·  10 = 50 XP";
+  var tabs='<div class="journal-tabs"><button class="journal-tab'+(isG?" active-g":"")+'" onclick="setJournalTab(&quot;gratitude&quot;)">🌿 Gratitude</button><button class="journal-tab'+(!isG?" active-i":"")+'" onclick="setJournalTab(&quot;iam&quot;)">✦ I AM</button></div>';
+  var ds=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+  var ec=entries.slice(0,20).map(function(entry){
+    var its=entry.items.map(function(item,j){return'<li class="entry-item-row"><span class="entry-num">'+(j+1)+'.</span><span>'+item+'</span></li>';}).join("");
+    return'<div class="entry-card"><div class="entry-card-header"><div class="entry-date">'+entry.date+' · '+entry.time+'</div><div class="entry-badge '+(isG?"entry-badge-g":"entry-badge-i")+'">'+entry.items.length+' items · +'+entry.xp+' XP</div></div><ul class="entry-items">'+its+'</ul></div>';
+  }).join("");
+  return tabs+
+    '<div class="journal-box">'+
+      '<div class="journal-header">'+
+        '<div><div class="journal-title">'+(isG?"Gratitude List":"I AM List")+'</div><div class="journal-subtitle">'+ds+'</div></div>'+
+        '<div style="text-align:right;" id="xpPreview"><div class="xp-preview-val" style="color:var(--text3)">—</div><div class="xp-preview-label">XP on save</div></div>'+
+      '</div>'+
+      '<textarea class="journal-textarea" id="journalInput" placeholder="'+ph+'" oninput="onJI()" rows="7"></textarea>'+
+      '<div class="journal-footer">'+
+        '<div class="journal-count" id="journalCount">0 items</div>'+
+        '<button class="save-btn '+(isG?"save-btn-g":"save-btn-i")+'" id="saveJBtn" onclick="saveJEntry()" disabled>Save &amp; Earn XP</button>'+
+      '</div>'+
+      '<div class="journal-hint">'+hint+'</div>'+
+    '</div>'+
+    (entries.length>0?'<div class="card-title" style="margin-bottom:10px;">Past Entries — '+entries.length+' saved</div>'+ec:'<div class="empty">No entries yet.</div>');
+}
+
+function rFreeJournal(){
+  var q=(G.fjSearch||"").toLowerCase();
+  var entries=G.freeJournalEntries||[];
+  var filtered=q?entries.filter(function(e){return e.body.toLowerCase().indexOf(q)!==-1;}):entries;
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function hl(text){if(!q)return esc(text);return esc(text).replace(new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),'<mark class="hl">$1</mark>');}
+  var ecards=filtered.map(function(entry){
+    var oi=entries.indexOf(entry);
+    return'<div class="fj-entry"><div class="fj-entry-header"><div class="fj-entry-date">'+entry.date+' · '+entry.time+' · '+entry.chars+' chars</div><button class="fj-del-btn" onclick="delFJ('+oi+')">✕</button></div><div class="fj-body">'+hl(entry.body)+'</div></div>';
+  }).join("");
+  var ds=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+  var srch=entries.length>0?'<input class="fj-search" type="text" placeholder="Search entries..." value="'+esc(G.fjSearch||"")+'" oninput="setFJSearch(this.value)" />':"";
+  return'<div class="journal-box" style="margin-bottom:12px;">'+
+    '<div class="journal-header" style="margin-bottom:10px;">'+
+      '<div><div class="journal-title">Free Journal</div><div class="journal-subtitle">'+ds+'</div></div>'+
+      '<div style="text-align:right;"><div style="font-family:"Cinzel",serif;font-size:18px;font-weight:700;color:var(--text2);">'+entries.length+'</div><div style="font-size:11px;color:var(--text3);">entries</div></div>'+
+    '</div>'+
+    '<textarea class="fj-textarea" id="fjInput" placeholder="Write anything — thoughts, reflections, plans, wins, struggles." oninput="onFJI()" rows="6"></textarea>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">'+
+      '<span style="font-size:11px;color:var(--text3);" id="fjCC">0 chars</span>'+
+      '<button class="fj-save-btn" id="fjSB" onclick="saveFJ()" disabled>Save Entry</button>'+
+    '</div>'+
+  '</div>'+
+  srch+
+  (filtered.length===0&&q?'<div class="empty" style="padding:20px;">No results for "'+esc(q)+'"</div>':"")+(entries.length===0?'<div class="empty">No entries yet.</div>':"")+
+  ecards;
+}
+
+function rShop(){
+  var cards=SHOP.map(function(item){
+    var canGold=G.gold>=item.cost;
+    var canGems=!item.gems||G.gems>=item.gems;
+    var can=canGold&&canGems;
+    var oc=can?" onclick=\"buyItem('"+item.id+"')\"":"";
+    var priceHTML='<div class="shop-price">'+item.cost+'g'+(item.gems?' + '+item.gems+'💎':'')+'</div>';
+    return'<div class="shop-card'+(can?"":" locked")+'"'+oc+'><div class="shop-icon">'+item.icon+'</div><div class="shop-name">'+item.name+'</div><div class="shop-desc">'+item.desc+'</div>'+priceHTML+'</div>';
+  }).join("");
+  var hist=G.purchases.length>0?'<div class="card" style="margin-top:12px;"><div class="card-title">Purchase History</div>'+G.purchases.map(function(p){return'<div class="purchase-item"><span>'+p.icon+' '+p.name+'</span><span style="color:var(--gold);font-size:12px;">−'+p.cost+'g · '+p.time+'</span></div>';}).join("")+'</div>':"";
+  var rotHTML=rRotShop();
+  return'<div class="treasury"><span style="font-size:13px;color:var(--gold);opacity:.7;">Treasury</span><div style="display:flex;gap:8px;"><span class="gems-pill">'+G.gems+'💎</span><span class="gold-pill">'+G.gold+'g</span></div></div>'+
+    '<div class="rot-shop-header"><div class="rot-shop-title">⏰ Limited Offers</div></div>'+
+    '<div class="rot-slots">'+rotHTML+'</div>'+
+    '<div class="rot-shop-header" style="margin-top:4px;"><div class="rot-shop-title">🛒 Standard Shop</div></div>'+
+    '<div class="shop-grid">'+cards+'</div>'+hist;
+}
+
+function rLog(){
+  var exportImport=
+    '<div class="save-mgmt">'+
+      '<button class="save-mgmt-btn save-export-btn" onclick="exportSave()">📤 Export Save</button>'+
+      '<button class="save-mgmt-btn save-import-btn" onclick="importSave()">📥 Import Save</button>'+
+    '</div>'+
+    '<div class="save-mgmt-note">Export your save before updating the app. Import it after to restore all progress.</div>';
+  var rows=G.log.length===0?'<div class="empty">No deeds yet.</div>':'<div class="card" style="padding:4px 16px;">'+G.log.map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>';
+  return exportImport+'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">'+G.log.length+' deed'+(G.log.length!==1?"s":"")+" recorded.</p>"+rows+'<div style="margin-top:14px;text-align:center;"><button onclick="confirmReset()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:8px 18px;color:var(--text3);font-size:12px;cursor:pointer;font-family:\'Crimson Text\',serif;">Reset All Progress</button></div>';
+}
+
+function rTimer(){
+  var t=G.timer;var R=100,C=2*Math.PI*R;
+  var pct=t.totalSeconds>0?(t.mins*60+t.seconds)/t.totalSeconds:1;
+  var off=C*(1-pct);
+  var mm=String(t.mins).padStart(2,"0"),ss=String(t.seconds).padStart(2,"0");
+  var isW=!t.finished&&t.mins===0&&t.seconds<=30&&t.running;
+  var stroke=t.finished?"#f4c842":isW?"#e85d3a":"#4a8fff";
+  var presets=[5,10,25,45,60,90];
+  var presH=presets.map(function(p){return'<button class="timer-preset'+(t.mins===p&&t.seconds===0&&!t.running?" active":"")+'" onclick="tSetMins('+p+')">'+p+'m</button>';}).join("");
+  var setupH=!t.running&&!t.finished?'<div class="timer-presets">'+presH+'</div><div class="timer-adj-row"><button class="timer-adj-btn" onclick="tAdj(-5)">-5</button><button class="timer-adj-btn" onclick="tAdj(-1)">-</button><div><div class="timer-mins-display">'+String(t.mins).padStart(2,"0")+'</div><div class="timer-mins-label">minutes</div></div><button class="timer-adj-btn" onclick="tAdj(1)">+</button><button class="timer-adj-btn" onclick="tAdj(5)">+5</button></div>':"";
+  var statusH=t.finished?"Done! Great work.":isW?"Almost there...":t.running?"Stay focused.":"";
+  var ctrlH=t.finished?'<button class="timer-btn timer-btn-start" onclick="tReset()">New Timer</button>':t.running?'<button class="timer-btn timer-btn-pause" onclick="tPause()">Pause</button><button class="timer-btn timer-btn-stop" onclick="tReset()">Stop</button>':t.totalSeconds>0?'<button class="timer-btn timer-btn-start" onclick="tResume()">Resume</button><button class="timer-btn timer-btn-stop" onclick="tReset()">Reset</button>':'<button class="timer-btn timer-btn-start" onclick="tStart()"'+(t.mins===0?' disabled style="opacity:.4"':'')+'>Start</button>';
+  return'<div class="card" style="text-align:center;padding:18px 14px;"><div class="card-title" style="text-align:center;">Timer</div>'+setupH+'<div class="timer-ring-wrap"><svg width="230" height="230" viewBox="0 0 230 230"><circle fill="none" stroke="#1e2a3a" stroke-width="8" cx="115" cy="115" r="'+R+'"/><circle fill="none" stroke="'+stroke+'" stroke-width="8" stroke-linecap="round" cx="115" cy="115" r="'+R+'" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/></svg><div class="timer-center"><div class="timer-display'+(t.finished?" finished":isW?" warning":"")+'">'+( t.finished?"Done!":mm+":"+ss)+'</div>'+(statusH?'<div style="font-size:12px;color:var(--text2);margin-top:3px;">'+statusH+'</div>':'')+'</div></div><div class="timer-controls">'+ctrlH+'</div></div>';
+}
+
+var NAV_TABS=[
+  {id:"dashboard", icon:"🏠", label:"Home"},
+  {id:"actions",   icon:"⚔",  label:"Actions"},
+  {id:"quests",    icon:"📜", label:"Quests"},
+  {id:"journal",   icon:"🙏", label:"Journal"},
+  {id:"fjournal",  icon:"📓", label:"My Notes"},
+  {id:"timer",     icon:"⏱", label:"Timer"},
+  {id:"spin",      icon:"🎰", label:"Spin"},
+  {id:"inventory", icon:"🎒", label:"Inventory"},
+  {id:"shop",      icon:"🛒", label:"Shop"},
+  {id:"log",       icon:"📋", label:"Log"},
+];
+
+function render(){
+  var tl=totalLv();var prog=totalLvProgress();
+  var pct=Math.min(100,Math.round(prog.earned/prog.needed*100));
+  var rc=ringColor(tl);
+  var tabs=[{id:"dashboard",icon:"🏠",label:"Home"},{id:"actions",icon:"⚔️",label:"Actions"},{id:"quests",icon:"📜",label:"Quests"},{id:"journal",icon:"🙏",label:"Journal"},{id:"fjournal",icon:"📓",label:"My Notes"},{id:"timer",icon:"⏱",label:"Timer"},{id:"spin",icon:"🎰",label:"Spin"},{id:"inventory",icon:"🎒",label:"Inventory"},{id:"shop",icon:"🛒",label:"Shop"},{id:"log",icon:"📋",label:"Log"}];
+  var content="";
+  if(G.tab==="dashboard")content=rDashboard();
+  else if(G.tab==="actions")content=rActions();
+  else if(G.tab==="quests")content=rQuests();
+  else if(G.tab==="journal")content=rJournal();
+  else if(G.tab==="fjournal")content=rFreeJournal();
+  else if(G.tab==="timer")content=rTimer();
+  else if(G.tab==="spin")content=rSpin();
+  else if(G.tab==="inventory")content=rInventory();
+  else if(G.tab==="shop")content=rShop();
+  else if(G.tab==="log")content=rLog();
+  var streakH="";
+  if(G.streakDays>0){var fc=flameColor(G.streakDays);streakH='<div class="streak-inline"><span class="flame" style="font-size:20px;color:'+fc+';filter:drop-shadow(0 0 6px '+fc+'99);">🔥</span><span class="streak-num" style="color:'+fc+';">'+G.streakDays+'</span></div>';}
+  var PRIMARY_IDS=["dashboard","actions","quests","inventory"];
+  var drawerOpen=G._drawerOpen||false;
+  var anyDrawerActive=["journal","fjournal","spin","inventory","shop","log"].indexOf(G.tab)!==-1;
+  var navBtns=NAV_TABS.filter(function(t){return PRIMARY_IDS.indexOf(t.id)!==-1;}).map(function(t){
+    return '<button class="nav-btn'+(G.tab===t.id?' active':'')+'" onclick="setTab(this.dataset.id)" data-id="'+t.id+'">'+
+      '<span class="nav-icon">'+t.icon+'</span>'+
+      '<span class="nav-label">'+t.label+'</span>'+
+    '</button>';
+  }).join("");
+  navBtns+='<button class="nav-btn'+(anyDrawerActive?' more-active':'')+'" onclick="toggleDrawer()">'+
+    '<span class="nav-icon">☰</span>'+
+    '<span class="nav-label">More</span>'+
+  '</button>';
+  // Drawer content
+  var drawerBtns=NAV_TABS.filter(function(t){return PRIMARY_IDS.indexOf(t.id)===-1;}).map(function(t){
+    return '<button class="drawer-btn'+(G.tab===t.id?' active':'')+'" onclick="drawerNav(this.dataset.id)" data-id="'+t.id+'">'+
+      '<span class="drawer-icon">'+t.icon+'</span>'+
+      '<span class="drawer-label">'+t.label+'</span>'+
+    '</button>';
+  }).join("");
+  document.getElementById("app").innerHTML=
+    '<div class="header">'+
+      '<div class="hdr-row1">'+
+        '<div class="hdr-left">'+
+          '<div class="av-wrap" onclick="openAvModal()">'+
+            '<div style="position:relative;display:inline-block;">'+'<div class="av-img" id="avImg" style="border-color:'+rc+';box-shadow:0 0 8px '+rc+'44;"></div>'+(G.equippedAccessory?(function(){var a=ACCESSORIES.filter(function(x){return x.id===G.equippedAccessory;})[0];return a?'<div class="av-accessory">'+a.icon+'</div>':'';}()):'')+'</div>'+
+            '<div class="av-name" id="avName">'+(G.avatarName||'Hero')+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="hdr-mid">'+
+          '<div class="hdr-game-title">LIFE RPG</div>'+
+        '</div>'+
+        '<div class="hdr-right">'+streakH+'<div class="gems-pill">'+G.gems+'💎</div>'+'<div class="gold-pill">'+G.gold+'g</div></div>'+
+      '</div>'+
+      '<div class="hdr-row2">'+
+        '<span class="hdr-lv-num">Lv.'+tl+'</span>'+
+        '<span class="hdr-lv-title">'+playerTitle()+'</span>'+
+        '<div class="hdr-xp-wrap"><div class="tl-bar-wrap" style="flex:1;"><div class="tl-bar" style="width:'+pct+'%;"></div></div>'+
+        '<span class="tl-xp">'+prog.earned+'/'+prog.needed+' XP</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="nav">'+navBtns+'</div>'+
+    '<div class="drawer-overlay'+(drawerOpen?' open':'')+'" onclick="closeDrawer()"></div>'+
+    '<div class="drawer'+(drawerOpen?' open':'')+'" id="mainDrawer">'+
+      '<div class="drawer-handle"></div>'+
+      '<div class="drawer-title">Navigate</div>'+
+      '<div class="drawer-grid">'+drawerBtns+'</div>'+
+    '</div>'+
+    (isBoostActive()?'<div class="boost-banner"><span class="boost-banner-icon">⚡</span><span class="boost-banner-text">XP BOOST ACTIVE &nbsp;<span class="boost-badge">'+getBoostLabel()+'</span></span><span class="boost-banner-icon">⚡</span></div>':'')+
+    '<div class="content">'+content+'</div>';
+  requestAnimationFrame(function(){
+    var slot=document.getElementById("avImg");
+    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,40);
+  });
+}
+
+// Avatar modal
+function openAvModal(){
+  var tl=totalLv();var rc=ringColor(tl);
+  var tier=tl>=20?5:tl>=12?4:tl>=8?3:tl>=5?2:tl>=3?1:0;
+  var tnames=["Initiate","Apprentice","Journeyman","Veteran","Champion","Legendary"];
+  var nlvs=[3,5,8,12,20,999];
+  var cells=AVATAR_CLASSES.map(function(cls){
+    var isSel=cls.id===G.avatarClass;
+    var isUnlocked=isClassUnlocked(cls.id);
+    var bdr=isSel?"border:2px solid "+rc+";box-shadow:0 0 10px "+rc+"44;background:var(--bg3);":"";
+    var lockBadge=!isUnlocked?'<div class="cosm-lock-badge">🔒</div>':"";
+    var priceTag=!isUnlocked&&cls.cost?'<div class="cosm-cell-price">'+cls.cost+'g</div>':"";
+    var canAfford=!!(cls.cost&&G.gold>=cls.cost);
+    var notEnoughMsg="showToast('Not enough gold! Need "+cls.cost+"g. Do more quests.')";
+    var clickFn=isUnlocked?"selAvClass("+cls.id+")":(canAfford?"buyClass("+cls.id+")":notEnoughMsg);
+    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:44px;height:44px;border-radius:6px;overflow:hidden;margin:0 auto;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
+  }).join("");
+  // Accessories section
+  var accCells=ACCESSORIES.map(function(acc){
+    var isUnlocked=isAccessoryUnlocked(acc);
+    var isEquipped=G.equippedAccessory===acc.id;
+    var canAffordAcc=!!(acc.cost&&G.gold>=acc.cost);
+    var lockedMsg="showAccMsg('"+acc.id+"')";
+    var accClickFn=isUnlocked?"equipAccessory('"+acc.id+"')":(acc.cost?(canAffordAcc?"buyAccessory('"+acc.id+"')":lockedMsg):lockedMsg);
+    var priceColor=canAffordAcc?'#2ab88a':'var(--gold)';
+    var priceOrUnlock=!isUnlocked?(acc.cost?'<div class="cosm-cell-price" style="color:'+priceColor+';">'+acc.cost+'g</div>':''):isEquipped?'<div style="font-size:8px;color:#2ab88a;margin-top:3px;">Equipped</div>':"";
+    return'<div class="cosm-acc-cell'+(isEquipped?" equipped":"")+(isUnlocked?"":(acc.cost?(canAffordAcc?" locked can-afford":" locked cant-afford"):" locked cant-afford"))+'" onclick="'+accClickFn+'"><div class="cosm-acc-icon">'+acc.icon+'</div><div class="cosm-acc-label">'+acc.label+'</div>'+priceOrUnlock+'</div>';
+  }).join("");
+  document.getElementById("avModal").innerHTML=
+    '<div class="av-modal-bg" onclick="if(event.target===this)closeAvModal()"><div class="av-modal">'+
+      '<div class="av-modal-title">Choose Your Character</div>'+
+      '<div class="av-modal-sub">'+tnames[tier]+' · Lv.'+tl+(tier<5?" · Next form at Lv."+nlvs[tier]:" · Max tier!")+'</div>'+
+      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:88px;border-radius:10px;overflow:hidden;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;"></div></div>'+
+      '<div class="av-class-grid">'+cells+'</div>'+
+      '<div class="cosm-title">Accessories</div>'+
+      '<div class="cosm-acc-grid">'+accCells+'</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:7px;">Hero name</div>'+
+      '<input class="av-name-input" id="avNameIn" type="text" maxlength="20" placeholder="Enter your hero name..." value="'+(G.avatarName||"").replace(/"/g,"&quot;")+'" onkeydown="if(event.key===\'Enter\')saveAvName()" />'+
+      '<button class="av-modal-save" onclick="saveAvName()">Save</button>'+
+      '<button class="av-modal-close" onclick="closeAvModal()">Close</button>'+
+    '</div></div>';
+  setTimeout(function(){
+    var big=document.getElementById("avBig");
+    if(big)big.innerHTML=drawSVG(G.avatarClass,tl,88);
+    AVATAR_CLASSES.forEach(function(cls){
+      var s=document.getElementById("avci"+cls.id);
+      if(s)s.innerHTML=drawSVG(cls.id,tl,44);
+    });
+  },50);
+}
+window.selAvClass=function(id){
+  if(!isClassUnlocked(id)){buyClass(id);return;}
+  G.avatarClass=id;
+  savePersist();
+  // Update visual selection
+  document.querySelectorAll(".cosm-cell").forEach(function(c){
+    c.style.border="1px solid var(--border)";c.style.boxShadow="";c.style.background="var(--bg)";
+  });
+  var sel=document.getElementById("avc"+id);
+  var rc=ringColor(totalLv());
+  if(sel){sel.style.border="2px solid "+rc;sel.style.boxShadow="0 0 10px "+rc+"44";sel.style.background="var(--bg3)";}
+  var big=document.getElementById("avBig");if(big)big.innerHTML=drawSVG(id,totalLv(),88);
+  // Update header avatar
+  var slot=document.getElementById("avImg");if(slot)slot.innerHTML=drawSVG(id,totalLv(),40);
+};
+window.closeAvModal=function(){document.getElementById("avModal").innerHTML="";};
+window.saveAvName=function(){
+  var inp=document.getElementById("avNameIn");
+  if(!inp)return;
+  G.avatarName=inp.value.trim().slice(0,20);
+  savePersist();closeAvModal();
+  var avn=document.getElementById("avName");if(avn)avn.textContent=G.avatarName||"Hero";
+};
+window.openAvModal=openAvModal;
+
+// Handlers
+var questCountdownTick=null;
+
+window.setTab=function(tOrEl){var t=typeof tOrEl==="string"?tOrEl:tOrEl.dataset.id;
+  G.tab=t;render();
+  if(t==="spin"){
+    requestAnimationFrame(function(){
+      var canvas=document.getElementById("spinCanvas");
+      if(canvas)drawWheel(canvas,spinAngle);
+      if(!canSpinToday())startSpinCountdown();
+    });
+  }
+  if(t==="shop"){startRotTicker();}
+  // Live countdown on quests tab
+  if(questCountdownTick)clearInterval(questCountdownTick);
+  if(t==="quests"){
+    questCountdownTick=setInterval(function(){
+      if(G.tab!=="quests"){clearInterval(questCountdownTick);return;}
+      // Re-render only the deadline labels without full render
+      var hasRotating=(G.rotatingQuests||[]).some(function(q){return !q.done;});
+      if(hasRotating)render();
+    },10000); // update every 10 seconds — enough precision without spam
+  }
+};
+window.setFilter=function(f){G.filter=f;render();};
+window.setJournalTab=function(t){G.journalTab=t;render();};
+window.doAction=function(id){
+  var a=acById(id);if(!a)return;
+  if(!a.repeatable&&doneToday(id)){showToast("Already done today! Resets at 4AM.");return;}
+  if(!a.repeatable)markDone(id);
+  // Suppress level up popups during earnXP so quests can show first
+  G._suppressLvlUp=true;
+  G._pendingLvUps=G._pendingLvUps||[];
+  // Apply pet bonuses
+  var petBonus=applyPetBonus(a.xp,a.gold,a.domain);
+  earnXP(a.skill,petBonus.xp,a.label,petBonus.gold);
+  checkOrbBonus();
+  checkInfernoDragonGem(a.id);
+  // Check quest progress — if a quest completes it shows popup, then level ups after Claim
+  var prevPending=G._pendingLvUps.length;
+  checkQuestProgress(id, a.domain);
+  // If no quest completed, fire level ups now
+  if(G._pendingLvUps.length===prevPending){
+    G._suppressLvlUp=false;
+    var pending=G._pendingLvUps.slice();
+    G._pendingLvUps=[];
+    pending.forEach(function(item){showLvlUp(item.skill,item.level);});
+    var newTL=totalLv();
+    if(newTL>G._lastTotalLv){G._lastTotalLv=newTL;showTotalLvUp(newTL);}
+  }
+  // If quest completed, closeQCPopup will handle level ups
+};
+window.completeQuest=function(id){
+  var q=questById(id);
+  if(q&&!q.done){
+    q.done=true;
+    q.gemReward=2; // Main quests give 2 gems
+    showQuestCompletePopup(q);
+  }
+};
+window.buyItem=function(id){
+  var item=shopById(id);
+  if(!item||G.gold<item.cost){showToast("Not enough gold!");return;}
+  G.gold-=item.cost;
+  // Handle special item types
+  if(item.type==="boost3"){
+    G.boostActionsLeft=(G.boostActionsLeft||0)+3;
+    showToast("Quick Boost active! 2x XP for next 3 actions.");
+  } else if(item.type==="boost6h"){
+    G.boostHourExpiry=Date.now()+(6*3600*1000);
+    showToast("Power Hour active! 2x XP for 6 hours.");
+  } else if(item.type==="shield"){
+    G.streakShield=(G.streakShield||0)+1;
+    showToast("Streak Shield ready! Your streak is protected.");
+  } else if(item.type==="key"){
+    G.keys=(G.keys||0)+1;
+    showToast("Key added to Inventory!");
+  } else if(item.type==="class"){
+    if(isClassUnlocked(item.classId)){showToast("Already unlocked!");G.gold+=item.cost;return;}
+    if(!G.unlockedClasses)G.unlockedClasses=[0,1,2,3,4,5];
+    G.unlockedClasses.push(item.classId);
+    showToast("Class unlocked: "+item.name+"! Pick it in your avatar.");
+  } else if(item.type==="accessory"){
+    if(isAccessoryUnlocked({id:item.accId})){showToast("Already owned!");G.gold+=item.cost;return;}
+    if(!G.unlockedAccessories)G.unlockedAccessories=[];
+    G.unlockedAccessories.push(item.accId);
+    showToast("Accessory unlocked: "+item.name+"!");
+  } else {
+    showToast("Purchased: "+item.name);
+  }
+  G.purchases.unshift({icon:item.icon,name:item.name,cost:item.cost,time:new Date().toLocaleTimeString()});
+  savePersist();render();
+};
+window.confirmReset=function(){
+  if(confirm("Reset ALL progress? This cannot be undone.")){
+    // Clear ALL save keys including legacy ones
+    localStorage.removeItem(STORAGE_KEY);
+    OLD_KEYS.forEach(function(k){localStorage.removeItem(k);});
+    location.reload();
+  }
+};
+window.onJI=function(){
+  var ta=document.getElementById("journalInput");
+  var cnt=ta?ta.value.split("\n").map(function(l){return l.trim();}).filter(function(l){return l.length>0;}).length:0;
+  var el=document.getElementById("journalCount"),pv=document.getElementById("xpPreview"),btn=document.getElementById("saveJBtn");
+  if(el){el.textContent=cnt+" item"+(cnt!==1?"s":"");el.className="journal-count"+(cnt>=10?" ten":cnt>=5?" enough":"");}
+  var isG=G.journalTab==="gratitude";
+  if(cnt>=5){var xp=isG?(cnt>=10?40:25):(cnt>=10?50:30),gld=cnt>=10?12:8;if(pv)pv.innerHTML='<div class="xp-preview-val" style="color:'+(cnt>=10?"var(--gold)":"var(--success)")+'">+'+xp+' XP</div><div class="xp-preview-label">+'+gld+'g</div>';if(btn)btn.disabled=false;}
+  else{if(pv)pv.innerHTML='<div class="xp-preview-val" style="color:var(--text3)">—</div><div class="xp-preview-label">need 5 items</div>';if(btn)btn.disabled=true;}
+};
+window.saveJEntry=function(){
+  var ta=document.getElementById("journalInput");
+  var items=ta?ta.value.split("\n").map(function(l){return l.trim();}).filter(function(l){return l.length>0;}):[];
+  if(items.length<5)return;
+  var isG=G.journalTab==="gratitude";
+  var xp=isG?(items.length>=10?40:25):(items.length>=10?50:30),gld=items.length>=10?12:8;
+  var label=isG?"Gratitude List "+(items.length>=10?"10":"5"):"I AM List "+(items.length>=10?"10":"5");
+  var entry={items:items,xp:xp,gold:gld,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};
+  if(isG)G.gratitudeEntries.unshift(entry);else G.iamEntries.unshift(entry);
+  earnXP("mindset",xp,label,gld);
+  // Trigger quest tracking for journal actions
+  var actionId=isG?(items.length>=10?"grateful10":"grateful5"):(items.length>=10?"iam10":"iam5");
+  checkQuestProgress(actionId,"Mindset");
+};
+window.onFJI=function(){var ta=document.getElementById("fjInput"),len=ta?ta.value.length:0;var el=document.getElementById("fjCC"),btn=document.getElementById("fjSB");if(el)el.textContent=len+" chars";if(btn)btn.disabled=len<10;};
+window.saveFJ=function(){
+  var ta=document.getElementById("fjInput");
+  if(!ta||ta.value.trim().length<10)return;
+  var body=ta.value.trim();
+  G.freeJournalEntries.unshift({body:body,chars:body.length,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString(),id:Date.now()});
+  savePersist();
+  showToast("Entry saved.");
+  // Trigger quest tracking for free journal
+  checkQuestProgress("_freejournal","Mindset");
+  render();
+};
+window.delFJ=function(idx){if(!confirm("Delete this entry?"))return;G.freeJournalEntries.splice(idx,1);savePersist();render();};
+window.setFJSearch=function(val){G.fjSearch=val;render();};
+var tInt=null;
+window.tSetMins=function(m){if(G.timer.running)return;G.timer.mins=Math.max(1,Math.min(99,m));G.timer.seconds=0;G.timer.totalSeconds=0;G.timer.finished=false;render();};
+window.tAdj=function(d){if(G.timer.running)return;G.timer.mins=Math.max(1,Math.min(99,G.timer.mins+d));G.timer.seconds=0;G.timer.totalSeconds=0;G.timer.finished=false;render();};
+window.tStart=function(){
+  if(G.timer.mins<1)return;
+  G.timer.totalSeconds=G.timer.mins*60;
+  G.timer.seconds=0;G.timer.running=true;G.timer.finished=false;
+  G.timer.endTime=Date.now()+(G.timer.mins*60*1000);
+  // Request notification permission upfront so it's ready when timer ends
+  if("Notification" in window && Notification.permission==="default"){
+    Notification.requestPermission();
+  }
+  tTick();render();
+};
+window.tPause=function(){G.timer.running=false;clearInterval(tInt);render();};
+window.tResume=function(){G.timer.running=true;G.timer.endTime=Date.now()+((G.timer.mins*60+G.timer.seconds)*1000);tTick();render();};
+window.tReset=function(){clearInterval(tInt);var m=Math.round(G.timer.totalSeconds/60)||25;G.timer={mins:m,seconds:0,totalSeconds:0,running:false,finished:false};render();};
+function tTick(){
+  clearInterval(tInt);
+  tInt=setInterval(function(){
+    if(!G.timer.running)return;
+    // Use wall clock: calculate remaining from endTime
+    var remaining=Math.max(0,Math.round((G.timer.endTime-Date.now())/1000));
+    if(remaining<=0){
+      G.timer.mins=0;G.timer.seconds=0;
+      clearInterval(tInt);G.timer.running=false;G.timer.finished=true;
+      render();alarm();return;
+    }
+    G.timer.mins=Math.floor(remaining/60);
+    G.timer.seconds=remaining%60;
+    if(G.tab==="timer")render();
+  },500); // Poll every 500ms so it never lags more than half a second
+}
+function alarm(){
+  document.body.classList.add("flash-alarm");
+  setTimeout(function(){document.body.classList.remove("flash-alarm");},3500);
+  // Sound
+  try{var ctx=new(window.AudioContext||window.webkitAudioContext)();function beep(f,s,d){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(0,ctx.currentTime+s);g.gain.linearRampToValueAtTime(.4,ctx.currentTime+s+.05);g.gain.linearRampToValueAtTime(0,ctx.currentTime+s+d);o.start(ctx.currentTime+s);o.stop(ctx.currentTime+s+d+.05);}beep(520,.0,.18);beep(620,.25,.18);beep(780,.5,.35);beep(520,1.1,.18);beep(620,1.35,.18);beep(780,1.6,.35);beep(880,2.2,.6);}catch(e){}
+  // Browser notification (works even when tab is in background / fullscreen game)
+  var mins=Math.round((G.timer.totalSeconds||0)/60);
+  var msg=mins>0?"Your "+mins+" minute timer is done. Well done, adventurer!":"Timer done. Well done, adventurer!";
+  if("Notification" in window){
+    if(Notification.permission==="granted"){
+      new Notification("Life RPG — Time is up! ⚔️",{body:msg,icon:"icon-192.png",requireInteraction:false});
+    } else if(Notification.permission!=="denied"){
+      Notification.requestPermission().then(function(perm){
+        if(perm==="granted"){new Notification("Life RPG — Time is up! ⚔️",{body:msg,icon:"icon-192.png",requireInteraction:false});}
+      });
+    }
+  }
+  showToast("Time is up! Well done, adventurer.");
+}
+
+// Snap timer to correct time when tab becomes visible again
+document.addEventListener("visibilitychange",function(){
+  if(!document.hidden&&G.timer.running&&G.timer.endTime){
+    var remaining=Math.max(0,Math.round((G.timer.endTime-Date.now())/1000));
+    if(remaining<=0){
+      G.timer.mins=0;G.timer.seconds=0;
+      clearInterval(tInt);G.timer.running=false;G.timer.finished=true;
+      render();alarm();
+    } else {
+      G.timer.mins=Math.floor(remaining/60);
+      G.timer.seconds=remaining%60;
+      if(G.tab==="timer")render();
+    }
+  }
+});
+
+
+// ════════════════════════════════════════════════
+// LEVEL UP POPUP + FIREWORKS
+// ════════════════════════════════════════════════
+var lvlUpQueue=[];
+var lvlUpShowing=false;
+
+var SKILL_MESSAGES={
+  strength:["Your body grows stronger. The iron remembers.","Power forged through discipline and sweat.","Muscles built, limits broken."],
+  endurance:["You can go further than you thought.","Stamina carved from every step.","Your body endures. Your will persists."],
+  focus:["Your mind sharpens like a blade.","Deep work becomes second nature.","Distraction fades. Clarity rises."],
+  discipline:["You do what others won't.","The gap between decision and action shrinks.","Systems built. Habits locked in."],
+  wisdom:["Knowledge compounds like interest.","Every page turns into power.","The more you learn, the more you see."],
+  creativity:["Your craft deepens with every hour.","Expression finds new form.","The blank page holds less fear now."],
+  mindset:["Your inner world shifts. Reality follows.","Gratitude rewires the brain.","Identity solidifies. You become who you choose."],
+  serenity:["Stillness is not emptiness. It is everything.","The quieter you become, the more you can hear.","Peace is not found. It is cultivated.","Your inner world grows calmer with each practice.","Presence is the rarest gift you can give yourself."],
+};
+
+function getSkillMsg(skillId){
+  var msgs=SKILL_MESSAGES[skillId]||["Keep going. The legend grows."];
+  return msgs[Math.floor(Math.random()*msgs.length)];
+}
+
+function getSkillColor(skillId){
+  var map={strength:"#e85d3a",endurance:"#e8923a",focus:"#4a8fff",discipline:"#8b6fe8",wisdom:"#2ab88a",creativity:"#5ab83a",mindset:"#c456a0"};
+  return map[skillId]||"#f4c842";
+}
+
+function showLvlUp(skill,newLevel){
+  lvlUpQueue.push({skill:skill,level:newLevel});
+  if(!lvlUpShowing)processLvlUpQueue();
+}
+
+function processLvlUpQueue(){
+  if(lvlUpQueue.length===0){lvlUpShowing=false;return;}
+  lvlUpShowing=true;
+  var item=lvlUpQueue.shift();
+  var skill=item.skill,level=item.level;
+  var isTL=item.isTotalLevel||false;
+
+  var color=isTL?"#f4c842":getSkillColor(skill.id);
+  var msg=isTL
+    ?TOTAL_LV_MESSAGES[Math.floor(Math.random()*TOTAL_LV_MESSAGES.length)]
+    :getSkillMsg(skill.id);
+
+  var numEl=document.getElementById("lvlup-num");
+  var skillEl=document.getElementById("lvlup-skill");
+  var subEl=document.getElementById("lvlup-sub");
+  var titleEl=document.querySelector(".lvlup-title");
+  var overlay=document.getElementById("lvlup-overlay");
+
+  if(!numEl||!overlay)return;
+
+  if(titleEl)titleEl.textContent=isTL?"Total Level Up!":"Level Up!";
+  numEl.textContent=level;
+  numEl.style.color=color;
+  numEl.style.animation="none";
+  skillEl.textContent=isTL?"Lv."+level+" Total":""+skill.name+" — Lv."+level;
+  skillEl.style.color=color;
+  subEl.textContent=msg;
+
+  overlay.classList.add("show");
+  requestAnimationFrame(function(){
+    numEl.style.animation="lvlup-glow 1.5s ease-in-out infinite";
+  });
+
+  stopFireworksForce(); // clear any previous
+  startFireworks(color);
+  // No auto-stop — fireworks stop when user clicks Continue
+}
+
+
+var TOTAL_LV_MESSAGES=[
+  "A new chapter begins. The legend grows.",
+  "Power, wisdom and discipline — all rising.",
+  "You are not who you were yesterday.",
+  "Every action compounds. This is proof.",
+  "The grind is real. So is the reward.",
+  "Most people quit here. You level up.",
+  "Your future self thanks you.",
+  "Consistency is the rarest superpower.",
+  "This level belongs to you. Earn the next.",
+];
+
+function showTotalLvUp(newLevel){
+  // Queue a special total level popup
+  var fakeSkill={id:"total",name:"Total Level",_isTotalLevel:true};
+  // Use gold color for total level
+  lvlUpQueue.push({skill:fakeSkill,level:newLevel,isTotalLevel:true});
+  if(!lvlUpShowing)processLvlUpQueue();
+}
+
+window.closeLvlUp=function(){
+  var overlay=document.getElementById("lvlup-overlay");
+  if(overlay)overlay.classList.remove("show");
+  stopFireworksForce();
+  // Wait for overlay hide animation, then show next
+  setTimeout(function(){
+    lvlUpShowing=false;
+    processLvlUpQueue();
+  },450);
+};
+
+// ── Fireworks ──────────────────────────────────
+var fwInterval=null;
+var fwParticles=[];
+var fwActiveCount=0;
+
+function startFireworks(primaryColor){
+  fwActiveCount++;
+  var canvas=document.getElementById("lvlup-canvas");
+  if(!canvas)return;
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  fwParticles=[];
+
+  // Launch initial burst
+  launchBurst(canvas.width*0.3,canvas.height*0.3,primaryColor);
+  launchBurst(canvas.width*0.7,canvas.height*0.25,"#f4c842");
+  launchBurst(canvas.width*0.5,canvas.height*0.2,primaryColor);
+
+  var frame=0;
+  fwInterval=setInterval(function(){
+    frame++;
+    // New bursts periodically
+    if(frame%28===0){
+      launchBurst(
+        canvas.width*(0.2+Math.random()*0.6),
+        canvas.height*(0.1+Math.random()*0.35),
+        [primaryColor,"#f4c842","#ffffff","#c456a0","#4a8fff"][Math.floor(Math.random()*5)]
+      );
+    }
+    drawFireworks(canvas);
+  },16); // ~60fps
+}
+
+function stopFireworks(){
+  fwActiveCount=Math.max(0,fwActiveCount-1);
+  if(fwActiveCount>0)return; // another caller still running
+  clearInterval(fwInterval);
+  fwInterval=null;
+  fwParticles=[];
+  var canvas=document.getElementById("lvlup-canvas");
+  if(canvas){var ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);}
+}
+function stopFireworksForce(){
+  fwActiveCount=0;
+  clearInterval(fwInterval);
+  fwInterval=null;
+  fwParticles=[];
+  var canvas=document.getElementById("lvlup-canvas");
+  if(canvas){var ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);}
+}
+
+function launchBurst(x,y,color){
+  var count=60+Math.floor(Math.random()*40);
+  for(var i=0;i<count;i++){
+    var angle=Math.random()*Math.PI*2;
+    var speed=2+Math.random()*8;
+    var size=2+Math.random()*3;
+    var life=0.7+Math.random()*0.5;
+    fwParticles.push({
+      x:x,y:y,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed-3,
+      color:color,size:size,
+      life:life,maxLife:life,
+      gravity:0.18+Math.random()*0.1,
+      trail:[],
+    });
+  }
+}
+
+function drawFireworks(canvas){
+  var ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  fwParticles=fwParticles.filter(function(p){return p.life>0;});
+
+  fwParticles.forEach(function(p){
+    p.trail.push({x:p.x,y:p.y});
+    if(p.trail.length>6)p.trail.shift();
+
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.vy+=p.gravity;
+    p.vx*=0.98;
+    p.life-=0.018;
+
+    var alpha=Math.max(0,p.life/p.maxLife);
+
+    // Draw trail
+    if(p.trail.length>1){
+      ctx.beginPath();
+      ctx.moveTo(p.trail[0].x,p.trail[0].y);
+      for(var i=1;i<p.trail.length;i++)ctx.lineTo(p.trail[i].x,p.trail[i].y);
+      ctx.strokeStyle=p.color;
+      ctx.globalAlpha=alpha*0.3;
+      ctx.lineWidth=p.size*0.5;
+      ctx.stroke();
+    }
+
+    // Draw particle
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size*alpha,0,Math.PI*2);
+    ctx.fillStyle=p.color;
+    ctx.globalAlpha=alpha;
+    ctx.fill();
+
+    // Sparkle core
+    if(alpha>0.6){
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size*0.4,0,Math.PI*2);
+      ctx.fillStyle="#ffffff";
+      ctx.globalAlpha=alpha*0.8;
+      ctx.fill();
+    }
+
+    ctx.globalAlpha=1;
+  });
+}
+
+
+// ════════════════════════════════════════════════
+// DAILY SPIN
+// ════════════════════════════════════════════════
+var SPIN_REWARDS = [
+  {id:"gold_sm",   label:"50 Gold",        icon:"💰", color:"#f4c842", desc:"A modest treasury boost.",           weight:25, apply:function(){G.gold+=50;  savePersist();}},
+  {id:"gold_md",   label:"150 Gold",       icon:"💰", color:"#f4c842", desc:"The coffers grow heavier.",          weight:15, apply:function(){G.gold+=150; savePersist();}},
+  {id:"gold_lg",   label:"300 Gold",       icon:"💎", color:"#f4c842", desc:"A golden windfall.",                  weight:8,  apply:function(){G.gold+=300; savePersist();}},
+  {id:"xp_sm",     label:"Quick Boost x1",  icon:"⚡", color:"#4a8fff", desc:"2x XP on your next 3 actions!",     weight:20, apply:function(){G.boostActionsLeft=(G.boostActionsLeft||0)+3; savePersist(); showToast("Quick Boost active!");}},
+  {id:"xp_lg",     label:"Power Hour",      icon:"🔥", color:"#8b6fe8", desc:"2x XP for the next 6 hours!",       weight:10, apply:function(){G.boostHourExpiry=Date.now()+(6*3600*1000); savePersist(); showToast("Power Hour active! 2x XP for 6 hours.");}},
+  {id:"shield",    label:"Streak Shield",  icon:"🛡️", color:"#2ab88a", desc:"Your streak is protected for one missed day.", weight:8, apply:function(){G.streakShield=(G.streakShield||0)+1; savePersist();}},
+  {id:"chest",     label:"Mystery Chest",  icon:"📦", color:"#e8923a", desc:"A locked chest awaits your key.",    weight:6,  apply:function(){G.chests=(G.chests||0)+1; savePersist();}},
+  {id:"jackpot",   label:"JACKPOT! 777 Gold",icon:"🌟",color:"#f4c842",desc:"Legendary luck. The gods smile.",    weight:3,  apply:function(){G.gold+=777;G.gems=(G.gems||0)+2;savePersist();showToast("JACKPOT! 777g +2💎");}},
+  {id:"nothing",   label:"Better luck next time",icon:"🎲",color:"#6a8aaa",desc:"The wheel is fickle.",           weight:5,  apply:function(){}},
+];
+
+function spinWeightedPick(){
+  var total=SPIN_REWARDS.reduce(function(a,r){return a+r.weight;},0);
+  var roll=Math.random()*total;
+  var cum=0;
+  for(var i=0;i<SPIN_REWARDS.length;i++){
+    cum+=SPIN_REWARDS[i].weight;
+    if(roll<cum)return i;
+  }
+  return 0;
+}
+
+function canSpinToday(){
+  return G.lastSpinDate!==getDayKey();
+}
+
+function getSpinCountdown(){
+  var now=new Date();
+  var next=new Date();
+  if(now.getHours()<4){
+    next.setHours(4,0,0,0);
+  } else {
+    next.setDate(next.getDate()+1);
+    next.setHours(4,0,0,0);
+  }
+  var diff=Math.max(0,Math.floor((next-now)/1000));
+  var h=Math.floor(diff/3600);
+  var m=Math.floor((diff%3600)/60);
+  var s=diff%60;
+  return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+// Canvas wheel drawing
+function drawWheel(canvas, angle){
+  var ctx=canvas.getContext("2d");
+  var W=canvas.width, H=canvas.height;
+  var cx=W/2, cy=H/2, r=cx-8;
+  var n=SPIN_REWARDS.length;
+  var arc=2*Math.PI/n;
+  ctx.clearRect(0,0,W,H);
+
+  // Outer ring
+  ctx.beginPath();
+  ctx.arc(cx,cy,r+6,0,2*Math.PI);
+  ctx.strokeStyle="#2a3a55";
+  ctx.lineWidth=4;
+  ctx.stroke();
+
+  for(var i=0;i<n;i++){
+    var startA=angle+i*arc;
+    var endA=startA+arc;
+    var reward=SPIN_REWARDS[i];
+
+    // Slice fill
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,startA,endA);
+    ctx.closePath();
+    var isEven=i%2===0;
+    ctx.fillStyle=isEven?"#0f1a2a":"#0a1220";
+    ctx.fill();
+    ctx.strokeStyle=reward.color+"44";
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+
+    // Colored arc edge
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,startA,endA);
+    ctx.strokeStyle=reward.color;
+    ctx.lineWidth=3;
+    ctx.stroke();
+
+    // Icon text
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(startA+arc/2);
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.font="18px serif";
+    ctx.fillText(reward.icon,r*0.62,0);
+
+    // Label
+    ctx.font="bold 9px 'Cinzel', serif";
+    ctx.fillStyle=reward.color;
+    ctx.fillText(reward.label.length>12?reward.label.slice(0,12)+"..":reward.label, r*0.34, 0);
+    ctx.restore();
+  }
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(cx,cy,28,0,2*Math.PI);
+  ctx.fillStyle="#0d1220";
+  ctx.fill();
+  ctx.strokeStyle="#f4c842";
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // Center icon
+  ctx.font="18px serif";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText("⚔️",cx,cy);
+}
+
+var spinAnimFrame=null;
+var spinAngle=0;
+var spinVelocity=0;
+var spinTargetIdx=0;
+
+function rSpin(){
+  var canSpin=canSpinToday();
+  var countdown=canSpin?"":getSpinCountdown();
+  var histHTML="";
+  if(G.spinHistory.length>0){
+    histHTML='<div class="spin-history"><div class="card-title" style="margin-bottom:8px;">Past Spins</div>'+
+      G.spinHistory.slice(0,7).map(function(h){
+        return'<div class="spin-history-row"><span>'+h.icon+' '+h.label+'</span><span style="font-size:11px;color:var(--text3);">'+h.date+'</span></div>';
+      }).join("")+
+    '</div>';
+  }
+  var resultHTML="";
+  if(G.spinResult){
+    resultHTML='<div class="spin-result"><div class="spin-result-icon">'+G.spinResult.icon+'</div><div class="spin-result-name" style="color:'+G.spinResult.color+';">'+G.spinResult.label+'</div><div class="spin-result-desc">'+G.spinResult.desc+'</div></div>';
+  }
+  return(
+    '<div class="spin-wrapper">'+
+      '<div class="spin-outer">'+
+        '<div class="spin-pointer"></div>'+
+        '<canvas id="spinCanvas" class="spin-canvas" width="280" height="280"></canvas>'+
+      '</div>'+
+      '<button class="spin-btn" id="spinBtn" onclick="doSpin()" '+(canSpin?"":"disabled")+'>'+
+        (canSpin?"Spin the Wheel!":"Come back in "+countdown)+
+      '</button>'+
+      (canSpin?'<div class="spin-cooldown">One spin per day. Resets at 4AM.</div>':'<div class="spin-cooldown">Next spin in <span id="spinCountdown">'+countdown+'</span></div>')+
+      resultHTML+
+      histHTML+
+    '</div>'
+  );
+}
+
+window.doSpin=function(){
+  if(!canSpinToday())return;
+  var canvas=document.getElementById("spinCanvas");
+  if(!canvas)return;
+
+  // Pick result
+  spinTargetIdx=spinWeightedPick();
+  var n=SPIN_REWARDS.length;
+  var arc=2*Math.PI/n;
+
+  // Calculate target angle: spin multiple full rotations + land on target
+  // Pointer is at top (angle offset = -PI/2)
+  // Target slice center should end up at top
+  var targetAngle=-(spinTargetIdx*arc+arc/2)-(Math.PI/2);
+  var extraSpins=(5+Math.floor(Math.random()*4))*2*Math.PI;
+  var finalAngle=targetAngle+extraSpins;
+
+  var startAngle=spinAngle;
+  var totalRotation=finalAngle-startAngle;
+  // Normalize so we always spin forward
+  while(totalRotation<4*Math.PI)totalRotation+=2*Math.PI;
+
+  var duration=4000+Math.random()*1000; // 4-5 seconds
+  var startTime=null;
+  var btn=document.getElementById("spinBtn");
+  if(btn)btn.disabled=true;
+
+  function easeOut(t){return 1-Math.pow(1-t,4);}
+
+  function animate(ts){
+    if(!startTime)startTime=ts;
+    var elapsed=ts-startTime;
+    var progress=Math.min(1,elapsed/duration);
+    var eased=easeOut(progress);
+    spinAngle=startAngle+totalRotation*eased;
+    drawWheel(canvas,spinAngle);
+
+    if(progress<1){
+      spinAnimFrame=requestAnimationFrame(animate);
+    } else {
+      // Done
+      spinAngle=targetAngle%(2*Math.PI);
+      drawWheel(canvas,spinAngle);
+      var reward=SPIN_REWARDS[spinTargetIdx];
+      reward.apply();
+      G.lastSpinDate=getDayKey();
+      G.spinResult=reward;
+      G.spinHistory.unshift({icon:reward.icon,label:reward.label,date:new Date().toLocaleDateString(),color:reward.color});
+      savePersist();
+      // Show level up effect if jackpot
+      if(reward.id==="jackpot")showToast("JACKPOT! 777 Gold!");
+      else showToast("You won: "+reward.label+"!");
+      render();
+    }
+  }
+  spinAnimFrame=requestAnimationFrame(animate);
+};
+
+// Countdown timer for spin tab
+var spinCountdownTick=null;
+function startSpinCountdown(){
+  if(spinCountdownTick)clearInterval(spinCountdownTick);
+  spinCountdownTick=setInterval(function(){
+    if(G.tab!=="spin"){clearInterval(spinCountdownTick);return;}
+    var el=document.getElementById("spinCountdown");
+    if(el)el.textContent=getSpinCountdown();
+    if(canSpinToday()){clearInterval(spinCountdownTick);render();}
+  },1000);
+}
+
+
+// ════════════════════════════════════════════════
+// CHESTS + KEYS + INVENTORY
+// ════════════════════════════════════════════════
+
+var CHEST_REWARDS = {
+  common: [
+    {id:"gold_100",  label:"100 Gold",        icon:"💰", color:"#f4c842", desc:"A welcome treasure.",          weight:30, apply:function(){G.gold+=100;  savePersist();}},
+    {id:"gold_250",  label:"250 Gold",         icon:"💰", color:"#f4c842", desc:"A fine haul.",                 weight:20, apply:function(){G.gold+=250;  savePersist();}},
+    {id:"xp_200",    label:"200 XP",           icon:"⚡", color:"#4a8fff", desc:"Experience surges forward.",  weight:25, apply:function(){G.totalXP=(G.totalXP||0)+200; savePersist();}},
+    {id:"xp_500",    label:"500 XP",           icon:"⚡", color:"#8b6fe8", desc:"A powerful surge.",           weight:12, apply:function(){G.totalXP=(G.totalXP||0)+500; savePersist();}},
+    {id:"shield",    label:"Streak Shield",    icon:"🛡️", color:"#2ab88a", desc:"Miss a day without penalty.",  weight:8,  apply:function(){G.streakShield=(G.streakShield||0)+1; savePersist();}},
+    {id:"key_back",  label:"2 Keys",           icon:"🗝️", color:"#e8923a", desc:"Two keys returned to you.",   weight:5,  apply:function(){G.keys=(G.keys||0)+2; savePersist();}},
+  ],
+  rare: [
+    {id:"gold_500",  label:"500 Gold",         icon:"💎", color:"#f4c842", desc:"The vault opens wide.",       weight:25, apply:function(){G.gold+=500;  savePersist();}},
+    {id:"gold_1000", label:"1000 Gold",        icon:"💎", color:"#f4c842", desc:"A legendary bounty.",         weight:10, apply:function(){G.gold+=1000; savePersist();}},
+    {id:"xp_1000",   label:"1000 XP",          icon:"⚡", color:"#c456a0", desc:"Massive experience surge.",  weight:20, apply:function(){G.totalXP=(G.totalXP||0)+1000; savePersist();}},
+    {id:"shields_2", label:"2 Streak Shields", icon:"🛡️", color:"#2ab88a", desc:"Double protection.",         weight:15, apply:function(){G.streakShield=(G.streakShield||0)+2; savePersist();}},
+    {id:"rare_chest",label:"Another Rare Chest",icon:"📦",color:"#4a8fff", desc:"Fortune favours the bold.",  weight:10, apply:function(){G.rareChests=(G.rareChests||0)+1; savePersist();}},
+    {id:"keys_3",    label:"3 Keys",           icon:"🗝️", color:"#e8923a", desc:"A ring of keys.",            weight:10, apply:function(){G.keys=(G.keys||0)+3; savePersist();}},
+    {id:"title_brave",label:'Title: "The Brave"',icon:"👑",color:"#f4c842",desc:"A title earned through chance.", weight:5, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("The Brave"))G.inventory.push("The Brave"); savePersist();}},
+    {id:"leg_chest", label:"Legendary Chest",  icon:"🌟", color:"#f4c842", desc:"The rarest of all chests.",  weight:5,  apply:function(){G.legendaryChests=(G.legendaryChests||0)+1; savePersist();}},
+  ],
+  legendary: [
+    {id:"gold_2000", label:"2000 Gold",        icon:"👑", color:"#f4c842", desc:"The ultimate treasury.",     weight:20, apply:function(){G.gold+=2000; savePersist();}},
+    {id:"xp_2500",   label:"2500 XP",          icon:"⚡", color:"#f4c842", desc:"Godlike experience surge.",  weight:20, apply:function(){G.totalXP=(G.totalXP||0)+2500; savePersist();}},
+    {id:"shields_5", label:"5 Streak Shields", icon:"🛡️", color:"#2ab88a", desc:"A fortress of protection.", weight:15, apply:function(){G.streakShield=(G.streakShield||0)+5; savePersist();}},
+    {id:"keys_5",    label:"5 Keys",           icon:"🗝️", color:"#e8923a", desc:"A legendary key ring.",     weight:15, apply:function(){G.keys=(G.keys||0)+5; savePersist();}},
+    {id:"title_legend",label:'Title: "The Legendary"',icon:"⭐",color:"#f4c842",desc:"Few will ever hold this.",weight:10, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("The Legendary"))G.inventory.push("The Legendary"); savePersist();}},
+    {id:"title_iron", label:'Title: "Iron Will"',icon:"⚔️",color:"#e85d3a",desc:"Forged in the hardest moments.",weight:10, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("Iron Will"))G.inventory.push("Iron Will"); savePersist();}},
+    {id:"rare_x2",   label:"2 Rare Chests",    icon:"📦", color:"#4a8fff", desc:"Double your fortune.",       weight:10, apply:function(){G.rareChests=(G.rareChests||0)+2; savePersist();}},
+  ],
+};
+
+function chestWeightedPick(tier){
+  var pool=CHEST_REWARDS[tier];
+  var total=pool.reduce(function(a,r){return a+r.weight;},0);
+  var roll=Math.random()*total, cum=0;
+  for(var i=0;i<pool.length;i++){cum+=pool[i].weight;if(roll<cum)return pool[i];}
+  return pool[0];
+}
+
+function rInventory(){
+  var totalChests=(G.chests||0)+(G.rareChests||0)+(G.legendaryChests||0);
+  var canOpen=G.keys>0&&totalChests>0;
+
+  // Summary cards
+  var summaryHTML=
+    '<div class="inv-summary">'+
+      '<div class="inv-card"><div class="inv-card-icon">🗝️</div><div class="inv-card-val">'+(G.keys||0)+'</div><div class="inv-card-label">Keys</div></div>'+
+      '<div class="inv-card"><div class="inv-card-icon">📦</div><div class="inv-card-val">'+totalChests+'</div><div class="inv-card-label">Chests</div></div>'+
+      '<div class="inv-card"><div class="inv-card-icon">🛡️</div><div class="inv-card-val">'+(G.streakShield||0)+'</div><div class="inv-card-label">Shields</div></div>'+
+      '<div class="inv-card"><div class="inv-card-icon">⚡</div><div class="inv-card-val">'+(isBoostActive()?'ON':'OFF')+'</div><div class="inv-card-label" style="color:'+(isBoostActive()?'var(--success)':'var(--text2)')+';">XP Boost</div></div>'+
+    '</div>';
+
+  // Key shop
+  var keyShopHTML=
+    '<div class="key-shop">'+
+      '<div class="key-shop-left">'+
+        '<div class="key-shop-icon">🗝️</div>'+
+        '<div><div class="key-shop-name">Buy a Key</div><div class="key-shop-desc">100 Gold · Opens any chest</div></div>'+
+      '</div>'+
+      '<button class="key-buy-btn" onclick="buyKey()" '+(G.gold<100?"disabled":"")+'>Buy — 100g</button>'+
+    '</div>';
+
+  // Chest list
+  var chestHTML="";
+  if(totalChests===0){
+    chestHTML='<div class="empty">No chests yet. Complete special quests or spin the wheel to find them.</div>';
+  } else {
+    var chestDefs=[
+      {key:"chests",      tier:"common",    name:"Common Chest",     icon:"📦", desc:"Contains Gold, XP, and basic rewards."},
+      {key:"rareChests",  tier:"rare",      name:"Rare Chest",       icon:"🎁", desc:"Better loot, rare titles, more keys."},
+      {key:"legendaryChests",tier:"legendary",name:"Legendary Chest",icon:"🌟", desc:"The rarest rewards in the game."},
+    ];
+    chestDefs.forEach(function(cd){
+      var count=G[cd.key]||0;
+      if(count===0)return;
+      var needKey=G.keys<1;
+      for(var i=0;i<count;i++){
+        chestHTML+=
+          '<div class="chest-item '+cd.tier+'">'+
+            '<div style="display:flex;align-items:center;flex:1;">'+
+              '<div class="chest-icon">'+cd.icon+'</div>'+
+              '<div><div class="chest-name">'+cd.name+'</div><div class="chest-desc">'+cd.desc+'</div>'+
+                (needKey?'<div style="font-size:11px;color:var(--danger);margin-top:3px;">Needs a key to open</div>':'')+
+              '</div>'+
+            '</div>'+
+            '<button class="chest-open-btn '+cd.tier+'" onclick="openChest(this)" data-key="'+cd.key+'" data-tier="'+cd.tier+'" '+(needKey?"disabled":"")+'>Open</button>'+
+          '</div>';
+      }
+    });
+  }
+
+  // Inventory items (titles etc.)
+  var invItemsHTML="";
+  if(G.inventory&&G.inventory.length>0){
+    invItemsHTML=
+      '<div class="card" style="margin-top:4px;"><div class="card-title">Items & Titles</div>'+
+      G.inventory.map(function(item){
+        return'<div class="inv-history-row"><span>👑 '+item+'</span><span style="font-size:11px;color:var(--text2);">Title</span></div>';
+      }).join("")+
+      '</div>';
+  }
+
+  // Chest history
+  var histHTML="";
+  if(G.chestHistory&&G.chestHistory.length>0){
+    histHTML=
+      '<div class="card" style="margin-top:4px;"><div class="card-title">Chest History</div>'+
+      G.chestHistory.slice(0,8).map(function(h){
+        return'<div class="inv-history-row"><span>'+h.icon+' '+h.label+'</span><span style="font-size:11px;color:var(--text3);">'+h.date+'</span></div>';
+      }).join("")+
+      '</div>';
+  }
+
+  var petsHTML='<div class="pet-stable-title" style="margin-top:16px;">🐾 Pets</div>'+rPets();
+  return summaryHTML+keyShopHTML+'<div class="chest-list">'+chestHTML+'</div>'+invItemsHTML+histHTML+petsHTML;
+}
+
+window.buyKey=function(){
+  if(G.gold<100){showToast("Not enough gold!");return;}
+  G.gold-=100;
+  G.keys=(G.keys||0)+1;
+  savePersist();
+  showToast("Key obtained! You now have "+(G.keys)+" key"+(G.keys!==1?"s":"")+".");
+  render();
+};
+
+window.openChest=function(btn){
+  var chestKey=btn.getAttribute("data-key");
+  var tier=btn.getAttribute("data-tier");
+  if((G.keys||0)<1){showToast("You need a key to open this chest!");return;}
+  if((G[chestKey]||0)<1)return;
+
+  // Spend key and chest
+  G.keys--;
+  G[chestKey]--;
+
+  // Pick reward
+  var reward=chestWeightedPick(tier);
+  reward.apply();
+  // Legendary chest gives 1 gem
+  if(tier==="legendary"){G.gems=(G.gems||0)+1;showToast("+1 💎 for opening a Legendary Chest!");}
+
+  // Log it
+  G.chestHistory.unshift({icon:reward.icon,label:reward.label,date:new Date().toLocaleDateString()});
+
+  savePersist();
+
+  // Show popup
+  showChestPopup(tier,reward);
+  render();
+};
+
+function showChestPopup(tier,reward){
+  var tierIcons={common:"📦",rare:"🎁",legendary:"🌟"};
+  var tierColors={common:"#c87a3a",rare:"#4a8fff",legendary:"#f4c842"};
+  var borderColor=tierColors[tier]||"#f4c842";
+  var container=document.createElement("div");
+  container.id="chestPopupContainer";
+  container.innerHTML=
+    '<div class="chest-popup-bg" onclick="if(event.target===this)closeChestPopup()">'+
+      '<div class="chest-popup" style="border:1px solid '+borderColor+'55;box-shadow:0 0 40px '+borderColor+'33;">'+
+        '<div class="chest-popup-opening">Chest Opened!</div>'+
+        '<div class="chest-popup-icon">'+tierIcons[tier]+'</div>'+
+        '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;font-style:italic;">You found...</div>'+
+        '<div class="chest-popup-reward-icon">'+reward.icon+'</div>'+
+        '<div class="chest-popup-reward-name" style="color:'+reward.color+';">'+reward.label+'</div>'+
+        '<div class="chest-popup-reward-desc">'+reward.desc+'</div>'+
+        '<button class="chest-popup-close" onclick="closeChestPopup()">Claim ✓</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(container);
+  stopFireworksForce();
+  startFireworks(reward.color||"#f4c842");
+  setTimeout(stopFireworks,2500); // chest is quick, auto-stop is fine here
+}
+
+window.closeChestPopup=function(){
+  var el=document.getElementById("chestPopupContainer");
+  if(el)el.remove();
+  stopFireworks();
+};
+
+
+// ════════════════════════════════════════════════
+// SAVE EXPORT / IMPORT
+// ════════════════════════════════════════════════
+window.exportSave = function(){
+  try {
+    var saveData = localStorage.getItem(STORAGE_KEY);
+    if(!saveData){ showToast("Nothing to export yet!"); return; }
+    var blob = new Blob([saveData], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "liferp-save-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Save exported! Keep that file safe.");
+  } catch(e) {
+    showToast("Export failed: " + e.message);
+  }
+};
+
+window.importSave = function(){
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = function(e){
+    var file = e.target.files[0];
+    if(!file){ return; }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      try {
+        var parsed = JSON.parse(ev.target.result);
+        if(!parsed || typeof parsed !== "object"){
+          showToast("Invalid save file.");
+          return;
+        }
+        // Validate it looks like a Life RPG save
+        if(!parsed.skills && !parsed.gold && !parsed.log){
+          showToast("This doesn't look like a Life RPG save file.");
+          return;
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        showToast("Save imported! Reloading...");
+        setTimeout(function(){ location.reload(); }, 1200);
+      } catch(err){
+        showToast("Failed to read save file.");
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+};
+
+
+// ════════════════════════════════════════════════
+// QUEST SYSTEM — TRACKING + ROTATING + CUSTOM
+// ════════════════════════════════════════════════
+
+// ── Rotating quest pool ──────────────────────────
+var DAILY_QUESTS = [
+  {title:"Morning Warrior",    desc:"Log 3 different actions today.",              type:"count", actions:null,      domain:"any",     target:3,  xp:80,  gold:25, skill:"discipline"},
+  {title:"Mindful Day",        desc:"Complete a meditation and a gratitude list.", type:"multi", actions:["meditate","grateful5","grateful10"], target:2, xp:70, gold:20, skill:"mindset"},
+  {title:"Body First",         desc:"Log any 2 Health actions today.",             type:"domain",domain:"Health",   target:2,  xp:70,  gold:20, skill:"strength"},
+  {title:"Deep Focus",         desc:"Complete one deep work session today.",       type:"count", actions:["deep_work"],target:1, xp:90,  gold:30, skill:"focus"},
+  {title:"Read Today",         desc:"Log a reading session today.",                type:"count", actions:["read30"],target:1, xp:60,  gold:18, skill:"wisdom"},
+  {title:"Hydration Quest",    desc:"Drink 2L of water today.",                   type:"count", actions:["water2l"],target:1, xp:40,  gold:12, skill:"endurance"},
+  {title:"Cold & Bold",        desc:"Take a cold shower today.",                   type:"count", actions:["cold"],  target:1, xp:50,  gold:15, skill:"strength"},
+  {title:"I AM Warrior",       desc:"Write your I AM list today.",                 type:"count", actions:["iam5","iam10"],target:1,xp:55,gold:16,skill:"mindset"},
+  {title:"Move It",            desc:"Log a cardio or workout session today.",      type:"multi", actions:["run","workout"],target:1,xp:65,gold:18,skill:"endurance"},
+  {title:"Pomodoro Power",     desc:"Complete 2 Pomodoro sessions today.",         type:"count", actions:["pomodoro"],target:2,xp:75,gold:22,skill:"focus"},
+  {title:"Inner Peace",        desc:"Complete any spiritual practice today.",       type:"domain",domain:"Spiritual",target:1,xp:60,gold:18,skill:"serenity"},
+  {title:"Morning Ritual",     desc:"Complete Morning Stillness today.",            type:"count", actions:["stillness"],target:1,xp:55,gold:16,skill:"serenity"},
+  {title:"Breathe Deep",       desc:"Complete a breathwork session today.",         type:"count", actions:["breathwork"],target:1,xp:45,gold:14,skill:"serenity"},
+];
+
+var WEEKLY_QUESTS = [
+  {title:"Scholar's Week",     desc:"Read for 5 different days this week.",        type:"streak",actions:["read30"],target:5, xp:250, gold:80,  skill:"wisdom",    chest:"common"},
+  {title:"Iron Week",          desc:"Complete 4 workouts this week.",              type:"count", actions:["workout"],target:4,xp:280, gold:90,  skill:"strength",  chest:"common"},
+  {title:"Mind Master",        desc:"Meditate 5 times this week.",                 type:"count", actions:["meditate"],target:5,xp:220,gold:70,  skill:"mindset"},
+  {title:"Deep Worker",        desc:"Log 5 deep work sessions this week.",         type:"count", actions:["deep_work"],target:5,xp:300,gold:100,skill:"focus",    chest:"common"},
+  {title:"Gratitude Week",     desc:"Write 5 gratitude lists this week.",          type:"count", actions:["grateful5","grateful10"],target:5,xp:200,gold:65,skill:"mindset"},
+  {title:"Cold Streak",        desc:"Take a cold shower 5 days this week.",        type:"streak",actions:["cold"],   target:5, xp:260, gold:85,  skill:"strength",  chest:"common"},
+  {title:"Step Master",        desc:"Hit 10,000 steps 4 times this week.",         type:"count", actions:["steps"],  target:4, xp:200, gold:65,  skill:"endurance"},
+  {title:"The Grind",          desc:"Complete 10 Pomodoros this week.",            type:"count", actions:["pomodoro"],target:10,xp:240,gold:75,  skill:"focus"},
+];
+
+var WEEKEND_QUESTS = [
+  {title:"Weekend Warrior",    desc:"Complete 3 Health actions this weekend.",     type:"domain",domain:"Health",   target:3, xp:350, gold:120, skill:"strength",  chest:"rare"},
+  {title:"Rest & Reflect",     desc:"Journal freely and write a gratitude list.",  type:"multi", actions:["grateful5","grateful10","_freejournal"],target:2,xp:280,gold:90,skill:"mindset",chest:"common"},
+  {title:"Power Weekend",      desc:"Do a deep work session and skill practice.",  type:"multi", actions:["deep_work","practice"],target:2,xp:400,gold:130,skill:"focus",chest:"rare"},
+  {title:"Mind & Body",        desc:"Meditate and work out this weekend.",         type:"multi", actions:["meditate","workout"],target:2,xp:320,gold:100,skill:"mindset"},
+  {title:"Learning Spree",     desc:"Complete 3 Learning actions this weekend.",   type:"domain",domain:"Learning", target:3, xp:300, gold:95,  skill:"wisdom",    chest:"common"},
+];
+
+function getQuestDeadline(q){
+  var now=new Date();
+  var deadline=null;
+
+  if(q.rtype==="daily"){
+    // Resets at next 4AM
+    var next=new Date();
+    if(now.getHours()<4){next.setHours(4,0,0,0);}
+    else{next.setDate(next.getDate()+1);next.setHours(4,0,0,0);}
+    deadline=next;
+  } else if(q.rtype==="weekly"){
+    // Resets next Monday at 4AM
+    var day=now.getDay(); // 0=Sun,1=Mon...
+    var daysToMon=day===0?1:8-day;
+    var next=new Date();
+    next.setDate(now.getDate()+daysToMon);
+    next.setHours(4,0,0,0);
+    deadline=next;
+  } else if(q.rtype==="weekend"){
+    // Resets Monday 4AM
+    var day=now.getDay();
+    var daysToMon=day===0?1:8-day;
+    var next=new Date();
+    next.setDate(now.getDate()+daysToMon);
+    next.setHours(4,0,0,0);
+    deadline=next;
+  }
+
+  if(!deadline)return null;
+  var diff=Math.max(0,Math.floor((deadline-now)/1000));
+  var d=Math.floor(diff/86400);
+  var h=Math.floor((diff%86400)/3600);
+  var m=Math.floor((diff%3600)/60);
+  var s=diff%60;
+
+  var label="";
+  if(d>0)label=d+"d "+h+"h left";
+  else if(h>0)label=h+"h "+m+"m left";
+  else if(m>0)label=m+"m "+s+"s left";
+  else label=s+"s left";
+
+  // Urgency color
+  var color="var(--text3)";
+  if(diff<3600)color="var(--danger)";       // under 1 hour — red
+  else if(diff<86400)color="var(--gold)";   // under 24 hours — gold
+
+  return{label:label,color:color,urgent:diff<3600};
+}
+
+function getWeekKey(){
+  var n=new Date(),day=n.getDay();
+  var mon=new Date(n);mon.setDate(n.getDate()-(day===0?6:day-1));
+  return mon.toISOString().slice(0,10);
+}
+function getWeekendKey(){
+  // Weekend starts Friday 4AM
+  var n=new Date();
+  var day=n.getDay(); // 0=Sun,5=Fri,6=Sat
+  var fri=new Date(n);
+  if(day===0)fri.setDate(n.getDate()-2);
+  else if(day===6)fri.setDate(n.getDate()-1);
+  else if(day===5&&n.getHours()<4)fri.setDate(n.getDate()-7);
+  else{var diff=day>=5?day-5:day+2;fri.setDate(n.getDate()-diff);}
+  return fri.toISOString().slice(0,10);
+}
+function isWeekend(){
+  var day=new Date().getDay(),hour=new Date().getHours();
+  return(day===5&&hour>=4)||day===6||day===0;
+}
+
+function refreshRotatingQuests(){
+  var dk=getDayKey(),wk=getWeekKey(),wek=getWeekendKey();
+  var rq=G.rotatingQuests||[];
+  var changed=false;
+
+  // Daily
+  var daily=rq.filter(function(q){return q.rtype==="daily";});
+  if(daily.length===0||daily[0].dayKey!==dk){
+    rq=rq.filter(function(q){return q.rtype!=="daily";});
+    var pick=DAILY_QUESTS[Math.floor(Math.random()*DAILY_QUESTS.length)];
+    var nq=JSON.parse(JSON.stringify(pick));
+    nq.id="daily_"+dk;nq.rtype="daily";nq.dayKey=dk;nq.done=false;nq.progress=0;
+    rq.push(nq);changed=true;
+  }
+
+  // Weekly
+  var weekly=rq.filter(function(q){return q.rtype==="weekly";});
+  if(weekly.length===0||weekly[0].weekKey!==wk){
+    rq=rq.filter(function(q){return q.rtype!=="weekly";});
+    var pickW=WEEKLY_QUESTS[Math.floor(Math.random()*WEEKLY_QUESTS.length)];
+    var nqW=JSON.parse(JSON.stringify(pickW));
+    nqW.id="weekly_"+wk;nqW.rtype="weekly";nqW.weekKey=wk;nqW.done=false;nqW.progress=0;
+    rq.push(nqW);changed=true;
+  }
+
+  // Weekend
+  if(isWeekend()){
+    var weekend=rq.filter(function(q){return q.rtype==="weekend";});
+    if(weekend.length===0||weekend[0].weekendKey!==wek){
+      rq=rq.filter(function(q){return q.rtype!=="weekend";});
+      var pickWE=WEEKEND_QUESTS[Math.floor(Math.random()*WEEKEND_QUESTS.length)];
+      var nqWE=JSON.parse(JSON.stringify(pickWE));
+      nqWE.id="weekend_"+wek;nqWE.rtype="weekend";nqWE.weekendKey=wek;nqWE.done=false;nqWE.progress=0;
+      rq.push(nqWE);changed=true;
+    }
+  }
+
+  G.rotatingQuests=rq;
+  if(changed)savePersist();
+}
+
+// ── Quest progress tracking ──────────────────────
+function checkQuestProgress(actionId, domain){
+  var allQuests=(G.quests||[]).concat(G.rotatingQuests||[]).concat(G.customQuests||[]);
+  var completed=[];
+
+  allQuests.forEach(function(q){
+    if(q.done)return;
+    if(!q.type||q.type==="manual")return;
+
+    var matched=false;
+
+    if(q.type==="count"||q.type==="streak"){
+      if(q.actions&&q.actions.length>0){
+        matched=q.actions.indexOf(actionId)!==-1;
+      }
+    } else if(q.type==="domain"){
+      matched=(domain===q.domain);
+    } else if(q.type==="multi"){
+      // Any of the listed actions count
+      if(q.actions&&q.actions.indexOf(actionId)!==-1)matched=true;
+    } else if(q.type==="any"){
+      matched=true;
+    }
+
+    if(matched){
+      q.progress=(q.progress||0)+1;
+      if(q.progress>=q.target){
+        q.done=true;
+        completed.push(q);
+      }
+    }
+  });
+
+  if(completed.length>0){
+    savePersist();
+    // Suppress level up popups while quest popup is showing
+    // They'll fire after user clicks Claim
+    G._suppressLvlUp=true;
+    completed.forEach(function(q){
+      setTimeout(function(){showQuestCompletePopup(q);},300);
+    });
+  } else if(allQuests.some(function(q){return!q.done&&q.type&&q.type!=="manual";})){
+    savePersist();
+  }
+}
+
+function showQuestCompletePopup(q){
+  var sk=skById(q.skill);
+  var color=sk?sk.color:"#f4c842";
+  var chestLine=q.chest?'<div style="font-size:13px;color:var(--text2);margin-bottom:12px;">+1 '+q.chest+' chest added to Inventory</div>':"";
+
+  // Award gold + XP directly WITHOUT triggering level up popup yet
+  // Level up popups will fire after user clicks Claim
+  G.gold+=(q.gold||0);
+  G.totalXP=(G.totalXP||0)+q.xp;
+  G.log.unshift({label:"Quest: "+q.title,xp:q.xp,gold:q.gold||0,time:new Date().toLocaleTimeString(),date:new Date().toLocaleDateString(),skillId:q.skill||"discipline"});
+  // Apply XP to skill silently, collect any level ups
+  var skillId=q.skill||"discipline";
+  var sk2=G.skills[skillId];
+  var nx=sk2.xp+q.xp,nl=sk2.level,lvUps=[];
+  while(nx>=xpForSkillLv(nl)){nx-=xpForSkillLv(nl);nl++;lvUps.push({skill:skById(skillId),level:nl});}
+  G.skills[skillId]={xp:nx,level:nl};
+  if(q.chest){
+    var ck=q.chest==="legendary"?"legendaryChests":q.chest==="rare"?"rareChests":"chests";
+    G[ck]=(G[ck]||0)+1;
+  }
+  // Award gems based on quest type
+  var gemsToAward=0;
+  if(q.gemReward){gemsToAward=q.gemReward;}
+  else if(q.rtype==="weekly"||q.rtype==="weekend"){gemsToAward=1;}
+  else if(!q.rtype&&!q.isCustom){gemsToAward=2;}
+  if(gemsToAward>0){G.gems=(G.gems||0)+gemsToAward;showToast("+"+gemsToAward+" 💎 earned!");}
+  savePersist();
+  render();
+  // Store pending level ups to show AFTER quest popup is claimed
+  G._pendingLvUps=(G._pendingLvUps||[]).concat(lvUps);
+
+  var container=document.createElement("div");
+  container.className="qc-popup-bg";
+  container.id="qcPopup";
+  container.innerHTML=
+    '<div class="qc-popup" style="border:1px solid '+color+'44;">'+
+      '<div class="qc-icon">🏆</div>'+
+      '<div class="qc-title">Quest Complete!</div>'+
+      '<div class="qc-name">'+q.title+'</div>'+
+      '<div class="qc-rewards">'+
+        '<div class="qc-reward"><div class="qc-reward-val" style="color:'+color+';">+'+q.xp+'</div><div class="qc-reward-lbl">XP</div></div>'+
+        '<div class="qc-reward"><div class="qc-reward-val" style="color:var(--gold);">+'+(q.gold||0)+'</div><div class="qc-reward-lbl">Gold</div></div>'+
+      '</div>'+
+      chestLine+
+      '<button class="qc-close" onclick="closeQCPopup()">Claim ✓</button>'+
+    '</div>';
+  document.body.appendChild(container);
+  stopFireworksForce();
+  startFireworks(color);
+  // Stops when user clicks Claim
+}
+
+window.closeQCPopup=function(){
+  var el=document.getElementById("qcPopup");
+  if(el)el.remove();
+  stopFireworksForce();
+  G._suppressLvlUp=false;
+  // Now show any level ups queued during this quest
+  var pending=G._pendingLvUps||[];
+  G._pendingLvUps=[];
+  pending.forEach(function(item){
+    showLvlUp(item.skill,item.level);
+  });
+  var newTL=totalLv();
+  if(newTL>G._lastTotalLv){
+    G._lastTotalLv=newTL;
+    showTotalLvUp(newTL);
+  }
+};
+
+// ── Custom Quest functions ───────────────────────
+window.addCustomQuest=function(){
+  var title=document.getElementById("cqTitle");
+  var desc=document.getElementById("cqDesc");
+  var xpEl=document.getElementById("cqXP");
+  var goldEl=document.getElementById("cqGold");
+  var skillEl=document.getElementById("cqSkill");
+  var trackEl=document.getElementById("cqTrack");
+  var targetEl=document.getElementById("cqTarget");
+
+  if(!title||!title.value.trim()){showToast("Quest needs a title!");return;}
+
+  var trackAction=trackEl?trackEl.value:"";
+  var target=parseInt(targetEl?targetEl.value:"1")||1;
+
+  var q={
+    id:"custom_"+Date.now(),
+    title:title.value.trim(),
+    desc:desc?desc.value.trim():"",
+    xp:Math.min(500,Math.max(10,parseInt(xpEl?xpEl.value:100)||100)),
+    gold:Math.min(200,Math.max(0,parseInt(goldEl?goldEl.value:30)||30)),
+    skill:skillEl?skillEl.value:"discipline",
+    done:false,
+    progress:0,
+    isCustom:true,
+    type:trackAction?"count":"manual",
+    actions:trackAction?[trackAction]:null,
+    target:trackAction?target:1,
+  };
+
+  if(!G.customQuests)G.customQuests=[];
+  G.customQuests.push(q);
+  savePersist();
+  showToast("Custom quest added!");
+  render();
+};
+
+window.deleteCustomQuest=function(btnOrId){var id=typeof btnOrId==="string"?btnOrId:btnOrId.dataset.id;
+  if(!confirm("Delete this custom quest?"))return;
+  G.customQuests=G.customQuests.filter(function(q){return q.id!==id;});
+  savePersist();render();
+};
+
+window.manualCompleteQuest=function(btnOrId){var id=typeof btnOrId==="string"?btnOrId:btnOrId.dataset.id;
+  var q=G.customQuests.filter(function(x){return x.id===id;})[0];
+  if(!q||q.done)return;
+  q.done=true;
+  showQuestCompletePopup(q);
+};
+
+
+// ── Drawer navigation ─────────────────────────
+window.toggleDrawer = function(){
+  G._drawerOpen = !G._drawerOpen;
+  render();
+};
+window.closeDrawer = function(){
+  G._drawerOpen = false;
+  render();
+};
+window.drawerNav = function(el){
+  var id = typeof el === "string" ? el : el.dataset.id;
+  G._drawerOpen = false;
+  G.tab = id;
+  render();
+};
+
+
+// ════════════════════════════════════════════════
+// COSMETICS — CLASSES + ACCESSORIES
+// ════════════════════════════════════════════════
+var ACCESSORIES = [
+  {id:"crown",   icon:"👑", label:"Crown",     cost:400, msg:"Buy the Crown for 400 Gold in the shop — a symbol of wealth."},
+  {id:"halo",    icon:"✨", label:"Halo",      cost:0,   reqLevel:10, msg:"Reach Total Level 10 to unlock the Halo. Keep levelling up!"},
+  {id:"flame",   icon:"🔥", label:"Fire Aura", cost:0,   reqStreak:7, msg:"Maintain a 7-day streak to ignite your Fire Aura. Stay consistent!"},
+  {id:"crystal", icon:"💎", label:"Crystal",   cost:300, msg:"Buy the Crystal Aura for 300 Gold in the shop."},
+  {id:"wings",   icon:"🦋", label:"Wings",     cost:0,   fromChest:"rare", msg:"Open Rare or Legendary chests — Wings are found inside."},
+  {id:"star",    icon:"⭐", label:"Star",      cost:0,   reqLevel:5, msg:"Reach Total Level 5 to earn your Star. You are almost there!"},
+];
+
+var CLASS_DESCRIPTIONS = {
+  0:"The Knight — strength and honor",
+  1:"The Mage — wisdom and power",
+  2:"The Ranger — swift and deadly",
+  3:"The Rogue — shadow and cunning",
+  4:"The Paladin — light and justice",
+  5:"The Shaman — spirit and nature",
+  6:"The Necromancer — death and rebirth",
+  7:"The Samurai — discipline and blade",
+  8:"The Druid — earth and growth",
+};
+
+function isAccessoryUnlocked(acc){
+  var unlocked=G.unlockedAccessories||[];
+  if(unlocked.indexOf(acc.id)!==-1)return true;
+  // Auto-unlock by condition
+  if(acc.reqLevel&&totalLv()>=acc.reqLevel)return true;
+  if(acc.reqStreak&&(G.streakDays||0)>=acc.reqStreak)return true;
+  return false;
+}
+
+function isClassUnlocked(classId){
+  return(G.unlockedClasses||[]).indexOf(classId)!==-1;
+}
+
+window.buyClass=function(classId){
+  var cls=AVATAR_CLASSES[classId];
+  if(!cls||!cls.cost)return;
+  if(isClassUnlocked(classId)){showToast("Already unlocked!");return;}
+  if(G.gold<cls.cost){showToast("Not enough gold! Need "+cls.cost+"g");return;}
+  G.gold-=cls.cost;
+  if(!G.unlockedClasses)G.unlockedClasses=[0,1,2,3,4,5];
+  G.unlockedClasses.push(classId);
+  G.avatarClass=classId; // auto-equip purchased class
+  savePersist();
+  showToast("Unlocked & equipped: "+cls.name+"!");
+  render();
+  setTimeout(function(){openAvModal();},150);
+};
+
+window.buyAccessory=function(id){
+  var acc=ACCESSORIES.filter(function(a){return a.id===id;})[0];
+  if(!acc||!acc.cost)return;
+  if(isAccessoryUnlocked(acc)){showToast("Already owned!");return;}
+  if(G.gold<acc.cost){showToast("Not enough gold! Need "+acc.cost+"g");return;}
+  G.gold-=acc.cost;
+  if(!G.unlockedAccessories)G.unlockedAccessories=[];
+  G.unlockedAccessories.push(id);
+  savePersist();showToast("Accessory unlocked: "+acc.label+"!");
+  openAvModal();
+};
+
+window.equipAccessory=function(id){
+  if(G.equippedAccessory===id){
+    G.equippedAccessory=null;showToast("Accessory removed.");
+  } else {
+    G.equippedAccessory=id;
+    var acc=ACCESSORIES.filter(function(a){return a.id===id;})[0];
+    showToast("Equipped: "+(acc?acc.label:id)+"!");
+  }
+  savePersist();render();openAvModal();
+};
+
+
+window.showAccMsg = function(id){
+  var acc = ACCESSORIES.filter(function(a){return a.id===id;})[0];
+  if(!acc)return;
+  // Show a nice popup overlay with the unlock message
+  var existing = document.getElementById("accMsgPopup");
+  if(existing)existing.remove();
+  var div = document.createElement("div");
+  div.id = "accMsgPopup";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;";
+  div.innerHTML =
+    '<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid #2a3a50;border-radius:16px;padding:28px 24px;max-width:300px;width:100%;text-align:center;">'+
+      '<div style="font-size:44px;margin-bottom:12px;">'+acc.icon+'</div>'+
+      '<div style="font-family:"Cinzel",serif;font-size:16px;color:#e8d5a0;margin-bottom:10px;">'+acc.label+'</div>'+
+      '<div style="font-size:13px;color:#6a8aaa;font-style:italic;line-height:1.6;margin-bottom:20px;">'+acc.msg+'</div>'+
+      '<button onclick="document.getElementById(&quot;accMsgPopup&quot;).remove()" style="background:transparent;border:1px solid #2a3a50;border-radius:10px;padding:9px 24px;color:#c8d4e8;font-family:"Cinzel",serif;font-size:12px;cursor:pointer;">Got it</button>'+
+    '</div>';
+  div.addEventListener("click", function(e){if(e.target===div)div.remove();});
+  document.body.appendChild(div);
+};
+
+
+// ════════════════════════════════════════════════
+// GEMS + ROTATING SHOP
+// ════════════════════════════════════════════════
+
+var ROT_POOL = [
+  // Tier 1 — Gold only
+  {id:"mystery_bundle", name:"Mystery Bundle",   icon:"🔮", desc:"A random chest + key + Quick Boost.",  tier:1, gold:250, gems:0,  dur:function(){return(12+Math.random()*24)*3600000;}, apply:function(){G.chests=(G.chests||0)+1;G.keys=(G.keys||0)+1;G.boostActionsLeft=(G.boostActionsLeft||0)+3;savePersist();showToast("Mystery Bundle claimed!");}},
+  {id:"key_bundle",     name:"Key Bundle x3",    icon:"🗝️", desc:"3 keys for the price of 2.",           tier:1, gold:180, gems:0,  dur:function(){return(12+Math.random()*36)*3600000;}, apply:function(){G.keys=(G.keys||0)+3;savePersist();showToast("3 Keys added to Inventory!");}},
+  {id:"rare_chest_rot", name:"Rare Chest",        icon:"🎁", desc:"A Rare chest delivered directly.",    tier:1, gold:300, gems:0,  dur:function(){return(18+Math.random()*30)*3600000;}, apply:function(){G.rareChests=(G.rareChests||0)+1;savePersist();showToast("Rare Chest added to Inventory!");}},
+  // Tier 2 — Gold + Gems
+  {id:"mega_boost",     name:"Mega Boost 24h",   icon:"⚡", desc:"2x XP for a full 24 hours.",           tier:2, gold:300, gems:3,  dur:function(){return(24+Math.random()*24)*3600000;}, apply:function(){G.boostHourExpiry=Date.now()+(24*3600000);savePersist();showToast("Mega Boost active! 2x XP for 24 hours!");}},
+  {id:"xp_surge",       name:"XP Surge +500",    icon:"🌀", desc:"500 XP injected instantly.",           tier:2, gold:250, gems:2,  dur:function(){return(12+Math.random()*36)*3600000;}, apply:function(){G.totalXP=(G.totalXP||0)+500;savePersist();showToast("+500 XP claimed!");}},
+  {id:"double_spin",    name:"Double Spin",       icon:"🎰", desc:"Spin the wheel twice today.",          tier:2, gold:150, gems:2,  dur:function(){return(12+Math.random()*24)*3600000;}, apply:function(){G.lastSpinDate=null;G.bonusSpin=(G.bonusSpin||0)+1;savePersist();showToast("Double Spin ready! Go spin twice today.");}},
+  {id:"shield_pack",    name:"Shield Pack x3",   icon:"🛡️", desc:"Three streak shields at once.",        tier:2, gold:200, gems:3,  dur:function(){return(18+Math.random()*30)*3600000;}, apply:function(){G.streakShield=(G.streakShield||0)+3;savePersist();showToast("3 Streak Shields added!");}},
+  // Tier 3 — Gems only
+  {id:"leg_chest_rot",  name:"Legendary Chest",  icon:"🌟", desc:"The rarest chest in the game.",       tier:3, gold:0,   gems:8,  dur:function(){return(24+Math.random()*48)*3600000;}, apply:function(){G.legendaryChests=(G.legendaryChests||0)+1;savePersist();showToast("Legendary Chest added to Inventory!");}},
+  {id:"title_relentless",name:"Title: The Relentless", icon:"👑",desc:"An exclusive title. Few earn this.", tier:3, gold:0, gems:10, dur:function(){return(36+Math.random()*36)*3600000;}, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("The Relentless"))G.inventory.push("The Relentless");savePersist();showToast("Title unlocked: The Relentless!");}},
+  {id:"title_seeker",   name:"Title: Seeker of Truth", icon:"💫",desc:"For those who seek deeper wisdom.", tier:3, gold:0, gems:10, dur:function(){return(36+Math.random()*36)*3600000;}, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("Seeker of Truth"))G.inventory.push("Seeker of Truth");savePersist();showToast("Title unlocked: Seeker of Truth!");}},
+  {id:"title_awakened", name:"Title: Awakened",  icon:"🔥", desc:"Reserved for the truly dedicated.",   tier:3, gold:0,   gems:12, dur:function(){return(48+Math.random()*24)*3600000;}, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("Awakened"))G.inventory.push("Awakened");savePersist();showToast("Title unlocked: Awakened!");}},
+];
+
+function rotPoolById(id){return ROT_POOL.filter(function(r){return r.id===id;})[0];}
+
+function initRotatingSlots(){
+  var slots=G.rotatingSlots||[];
+  var now=Date.now();
+  // Refresh expired slots
+  while(slots.length<2){slots.push(newRotSlot(slots));}
+  slots=slots.map(function(s){
+    if(now>=s.expiresAt){return newRotSlot(slots);}
+    return s;
+  });
+  // Make sure slots have different items
+  if(slots.length>=2&&slots[0].itemId===slots[1].itemId){
+    slots[1]=newRotSlot([slots[0]]);
+  }
+  G.rotatingSlots=slots;
+  savePersist();
+}
+
+function newRotSlot(existing){
+  var usedIds=(existing||[]).map(function(s){return s.itemId;});
+  var available=ROT_POOL.filter(function(r){return usedIds.indexOf(r.id)===-1;});
+  var item=available[Math.floor(Math.random()*available.length)];
+  var duration=item.dur();
+  // Cap at 3 days
+  duration=Math.min(duration,3*24*3600000);
+  return{itemId:item.id,expiresAt:Date.now()+duration,purchased:false};
+}
+
+function getRotTimeLeft(slot){
+  var diff=Math.max(0,slot.expiresAt-Date.now());
+  var h=Math.floor(diff/3600000);
+  var m=Math.floor((diff%3600000)/60000);
+  var urgent=diff<3600000;
+  var label=h>0?h+"h "+m+"m left":m+"m left";
+  return{label:label,urgent:urgent};
+}
+
+function rRotShop(){
+  initRotatingSlots();
+  var slotsHTML=G.rotatingSlots.map(function(slot,idx){
+    var item=rotPoolById(slot.itemId);
+    if(!item)return"";
+    var tl=getRotTimeLeft(slot);
+    var tierLabel=item.tier===1?"Gold":item.tier===2?"Gold + Gems":"Gems Only";
+    var canAfford=(G.gold>=item.gold)&&(G.gems>=item.gems);
+    var costHTML="";
+    if(item.gold>0)costHTML+='<span class="rot-cost-gold">'+item.gold+'g</span>';
+    if(item.gems>0)costHTML+='<span class="rot-cost-gems">'+item.gems+'💎</span>';
+    return'<div class="rot-slot tier'+item.tier+'">'+
+      '<div class="rot-slot-badge">'+tierLabel+'</div>'+
+      '<div class="rot-icon">'+item.icon+'</div>'+
+      '<div class="rot-name">'+item.name+'</div>'+
+      '<div class="rot-desc">'+item.desc+'</div>'+
+      '<div class="rot-cost">'+costHTML+'</div>'+
+      (slot.purchased
+        ?'<div style="font-size:11px;color:var(--success);font-family:"Cinzel",serif;">✓ Purchased</div>'
+        :'<button class="rot-buy-btn tier'+item.tier+'" onclick="buyRotItem('+idx+')" '+(canAfford?"":"disabled")+'>'+
+          (canAfford?"Buy Now":"Not enough "+(G.gold<item.gold?"Gold":"Gems"))+
+        '</button>')+
+      '<div class="rot-timer'+(tl.urgent?" urgent":"")+'">⏰ '+tl.label+'</div>'+
+    '</div>';
+  }).join("");
+
+  return slotsHTML;
+}
+
+window.buyRotItem=function(slotIdx){
+  initRotatingSlots();
+  var slot=G.rotatingSlots[slotIdx];
+  if(!slot||slot.purchased)return;
+  var item=rotPoolById(slot.itemId);
+  if(!item)return;
+  if(G.gold<item.gold||G.gems<item.gems){
+    showToast("Not enough "+(G.gold<item.gold?"Gold":"Gems")+"!");return;
+  }
+  G.gold-=item.gold;
+  G.gems-=item.gems;
+  slot.purchased=true;
+  item.apply();
+  savePersist();render();
+};
+
+// ── Gem earning ──────────────────────────────
+function earnGems(amount, reason){
+  G.gems=(G.gems||0)+amount;
+  savePersist();
+  showToast("+"+amount+" 💎 "+reason);
+}
+
+// Rotating slot countdown ticker
+var rotTicker=null;
+function startRotTicker(){
+  if(rotTicker)clearInterval(rotTicker);
+  rotTicker=setInterval(function(){
+    if(G.tab!=="shop"){clearInterval(rotTicker);rotTicker=null;return;}
+    // Check if any slot expired
+    var now=Date.now();
+    var changed=false;
+    (G.rotatingSlots||[]).forEach(function(s){if(now>=s.expiresAt){changed=true;}});
+    if(changed){initRotatingSlots();}
+    render();
+  },30000); // check every 30s
+}
+
+
+// ════════════════════════════════════════════════
+// PETS + EVOLUTION
+// ════════════════════════════════════════════════
+
+var PET_DATA = {
+  dog:       {name:"Dog",            icon:"🐕",  bonus:"3 Gold per action",          evolved:false},
+  wolf:      {name:"Wolf",           icon:"🐺",  bonus:"+8% XP · Health",            evolved:false},
+  owl:       {name:"Owl",            icon:"🦉",  bonus:"+8% XP · Learning",          evolved:false},
+  dragon:    {name:"Dragon",         icon:"🐉",  bonus:"+8% XP · Productivity",      evolved:false},
+  butterfly: {name:"Butterfly",      icon:"🦋",  bonus:"+8% XP · Spiritual",         evolved:false},
+  cat:       {name:"Cat",            icon:"🐱",  bonus:"Daily Spin +1 reward",       evolved:false},
+  orb:       {name:"Spirit Orb",     icon:"🔮",  bonus:"Every 5th action: free chest",evolved:false},
+  // Evolved forms
+  guardian_dog:    {name:"Guardian Dog",    icon:"🐕‍🦺", bonus:"+6 Gold per action · free key weekly", evolved:true},
+  shadow_wolf:     {name:"Shadow Wolf",     icon:"🌑",  bonus:"+18% XP · Health · streak protected", evolved:true},
+  star_owl:        {name:"Star Owl",        icon:"⭐",  bonus:"+18% XP · Learning · Wisdom doubled", evolved:true},
+  inferno_dragon:  {name:"Inferno Dragon",  icon:"🔥",  bonus:"+18% XP · Productivity · +1💎 Deep Work", evolved:true},
+  soul_butterfly:  {name:"Soul Butterfly",  icon:"🌸",  bonus:"+18% XP · Spiritual · Journal 2x XP", evolved:true},
+  golden_cat:      {name:"Golden Cat",      icon:"👑",  bonus:"Spin always Gold or better",          evolved:true},
+  void_orb:        {name:"Void Orb",        icon:"💫",  bonus:"Chests upgrade one tier on open",     evolved:true},
+};
+
+var EVOLVE_MAP = {
+  dog:"guardian_dog", wolf:"shadow_wolf", owl:"star_owl",
+  dragon:"inferno_dragon", butterfly:"soul_butterfly",
+  cat:"golden_cat", orb:"void_orb"
+};
+
+function getActivePetData(slotIdx){
+  var petUid=G.activePets[slotIdx];
+  if(!petUid)return null;
+  var pet=(G.ownedPets||[]).filter(function(p){return p.id===petUid;})[0];
+  if(!pet)return null;
+  return PET_DATA[pet.petId]?Object.assign({},PET_DATA[pet.petId],{uid:pet.id,petId:pet.petId}):null;
+}
+
+function isPetActive(uid){
+  return(G.activePets||[]).indexOf(uid)!==-1;
+}
+
+function isSlotLocked(slotIdx){
+  var cd=(G.slotCooldowns||[])[slotIdx];
+  return cd&&Date.now()<cd;
+}
+
+function getSlotCooldownLabel(slotIdx){
+  var cd=(G.slotCooldowns||[])[slotIdx];
+  if(!cd||Date.now()>=cd)return null;
+  var diff=cd-Date.now();
+  var h=Math.floor(diff/3600000);
+  var m=Math.floor((diff%3600000)/60000);
+  return h>0?h+"h "+m+"m":m+"m left";
+}
+
+function canEvolve(){
+  var owned=G.ownedPets||[];
+  var counts={};
+  owned.forEach(function(p){if(!p.evolved){counts[p.petId]=(counts[p.petId]||0)+1;}});
+  return Object.keys(counts).filter(function(k){return counts[k]>=2;});
+}
+
+function applyPetBonus(baseXP, baseGold, domain){
+  var xp=baseXP, gold=baseGold;
+  for(var i=0;i<2;i++){
+    var pet=getActivePetData(i);
+    if(!pet)continue;
+    if(pet.petId==="dog"||pet.petId==="guardian_dog"){
+      gold+=pet.petId==="guardian_dog"?6:3;
+    }
+    if(pet.petId==="wolf"&&domain==="Health")xp=Math.round(xp*1.08);
+    if(pet.petId==="shadow_wolf"&&domain==="Health")xp=Math.round(xp*1.18);
+    if(pet.petId==="owl"&&domain==="Learning")xp=Math.round(xp*1.08);
+    if(pet.petId==="star_owl"&&domain==="Learning")xp=Math.round(xp*1.18);
+    if(pet.petId==="dragon"&&domain==="Productivity")xp=Math.round(xp*1.08);
+    if(pet.petId==="inferno_dragon"&&domain==="Productivity")xp=Math.round(xp*1.18);
+    if(pet.petId==="butterfly"&&domain==="Spiritual")xp=Math.round(xp*1.08);
+    if(pet.petId==="soul_butterfly"&&domain==="Spiritual")xp=Math.round(xp*1.18);
+  }
+  return{xp:xp,gold:gold};
+}
+
+function checkOrbBonus(){
+  // Spirit Orb: every 5th action gives free chest
+  for(var i=0;i<2;i++){
+    var pet=getActivePetData(i);
+    if(!pet)continue;
+    if(pet.petId==="orb"||pet.petId==="void_orb"){
+      G.actionCount=(G.actionCount||0)+1;
+      if(G.actionCount%5===0){
+        if(pet.petId==="void_orb"){G.rareChests=(G.rareChests||0)+1;showToast("💫 Void Orb: free Rare Chest!");}
+        else{G.chests=(G.chests||0)+1;showToast("🔮 Spirit Orb: free Common Chest!");}
+      }
+      break;
+    }
+  }
+}
+
+function checkInfernoDragonGem(actionId){
+  if(actionId!=="deep_work")return;
+  for(var i=0;i<2;i++){
+    var pet=getActivePetData(i);
+    if(pet&&pet.petId==="inferno_dragon"){G.gems=(G.gems||0)+1;showToast("🔥 Inferno Dragon: +1💎!");}
+  }
+}
+
+function checkWeeklyPetKey(){
+  // Guardian Dog: free key once per week
+  var wk=getWeekKey();
+  if(G._lastPetKeyWeek===wk)return;
+  for(var i=0;i<2;i++){
+    var pet=getActivePetData(i);
+    if(pet&&pet.petId==="guardian_dog"){
+      G.keys=(G.keys||0)+1;
+      G._lastPetKeyWeek=wk;
+      showToast("🐕‍🦺 Guardian Dog: free key this week!");
+      savePersist();break;
+    }
+  }
+}
+
+window.openPetPicker=function(slotIdx){
+  if(isSlotLocked(slotIdx)){showToast("Slot locked for "+getSlotCooldownLabel(slotIdx)+"!");return;}
+  G._pickingSlot=slotIdx;
+  render();
+};
+
+window.closePetPicker=function(){
+  G._pickingSlot=null;
+  render();
+};
+
+window.assignPet=function(uid){
+  var slotIdx=G._pickingSlot;
+  if(slotIdx===null||slotIdx===undefined)return;
+  if(isSlotLocked(slotIdx)){showToast("Slot is locked!");return;}
+  // Unassign from other slot if already active
+  var other=G.activePets[slotIdx===0?1:0];
+  if(uid===other){showToast("Pet already in other slot!");return;}
+  // Apply cooldown to this slot
+  if(!G.slotCooldowns)G.slotCooldowns=[null,null];
+  if(G.activePets[slotIdx]!==null){
+    G.slotCooldowns[slotIdx]=Date.now()+(24*3600000);
+  }
+  G.activePets[slotIdx]=uid;
+  G._pickingSlot=null;
+  var pet=(G.ownedPets||[]).filter(function(p){return p.id===uid;})[0];
+  var pd=pet?PET_DATA[pet.petId]:null;
+  showToast((pd?pd.icon:"🐾")+" "+(pd?pd.name:"Pet")+" activated in slot "+(slotIdx+1)+"!");
+  savePersist();render();
+};
+
+window.removePet=function(slotIdx){
+  if(isSlotLocked(slotIdx)){showToast("Slot locked for "+getSlotCooldownLabel(slotIdx)+"!");return;}
+  if(!G.slotCooldowns)G.slotCooldowns=[null,null];
+  if(G.activePets[slotIdx]!==null){
+    G.slotCooldowns[slotIdx]=Date.now()+(24*3600000);
+  }
+  G.activePets[slotIdx]=null;
+  savePersist();render();
+};
+
+window.evolvePets=function(petId){
+  var owned=G.ownedPets||[];
+  var pair=owned.filter(function(p){return p.petId===petId&&!p.evolved;}).slice(0,2);
+  if(pair.length<2){showToast("Need 2 of the same pet to evolve!");return;}
+  var evolvedId=EVOLVE_MAP[petId];
+  if(!evolvedId){showToast("No evolution found!");return;}
+  var ePet=PET_DATA[evolvedId];
+  // Remove both base pets
+  var removed=0;
+  G.ownedPets=owned.filter(function(p){
+    if(p.petId===petId&&!p.evolved&&removed<2){removed++;return false;}
+    return true;
+  });
+  // Remove from active slots if either was active
+  for(var i=0;i<2;i++){
+    if(pair.some(function(p){return p.id===G.activePets[i];})){
+      G.activePets[i]=null;
+      G.slotCooldowns[i]=null;
+    }
+  }
+  // Add evolved pet
+  var newPet={id:Date.now(),petId:evolvedId,name:ePet.name,icon:ePet.icon,evolved:true};
+  G.ownedPets.push(newPet);
+  savePersist();
+  showToast(ePet.icon+" Evolution! "+ePet.name+" has awakened!");
+  render();
+};
+
+function rPets(){
+  var owned=G.ownedPets||[];
+  var evolvable=canEvolve();
+
+  // Active slots
+  var slotsHTML='<div class="pet-stable-title">Active Pets</div><div class="pet-active-slots">';
+  for(var i=0;i<2;i++){
+    var pet=getActivePetData(i);
+    var locked=isSlotLocked(i);
+    var cdLabel=getSlotCooldownLabel(i);
+    if(pet){
+      slotsHTML+='<div class="pet-slot filled'+(pet.evolved?" evolved":"")+(locked?" locked":"")+'">'+
+        '<div class="pet-slot-icon">'+pet.icon+'</div>'+
+        '<div class="pet-slot-name">'+pet.name+'</div>'+
+        '<div class="pet-slot-bonus">'+pet.bonus+'</div>'+
+        (locked
+          ?'<div class="pet-slot-cooldown">🔒 '+cdLabel+'</div>'
+          :'<button class="pet-slot-swap" onclick="openPetPicker('+i+')">Swap</button>')+
+      '</div>';
+    } else {
+      slotsHTML+='<div class="pet-slot empty" onclick="'+(locked?'':' openPetPicker('+i+')')+'">'+
+        '<div class="pet-slot-icon" style="opacity:.3;">🐾</div>'+
+        (locked
+          ?'<div class="pet-slot-cooldown">🔒 '+cdLabel+'</div>'
+          :'<div class="pet-slot-empty-text">Tap to assign a pet</div>')+
+      '</div>';
+    }
+  }
+  slotsHTML+='</div>';
+
+  // Evolution section
+  var evolveHTML="";
+  if(evolvable.length>0){
+    evolveHTML='<div class="pet-evolve-section">';
+    evolvable.forEach(function(petId){
+      var base=PET_DATA[petId];
+      var evolved=PET_DATA[EVOLVE_MAP[petId]];
+      evolveHTML+=
+        '<div class="pet-evolve-title">✨ Evolution Available!</div>'+
+        '<div class="pet-evolve-desc">'+base.icon+' '+base.name+' × 2 → '+evolved.icon+' '+evolved.name+'</div>'+
+        '<div style="font-size:11px;color:var(--success);margin-bottom:12px;">'+evolved.bonus+'</div>'+
+        '<button class="pet-evolve-btn" onclick="evolvePets(\''+petId+'\')">Evolve Now ✨</button>';
+    });
+    evolveHTML+='</div>';
+  }
+
+  // Stable
+  var stableHTML='<div class="pet-stable-title">Your Stable — '+owned.length+' pet'+(owned.length!==1?"s":"")+'</div>';
+  if(owned.length===0){
+    stableHTML+='<div class="empty">No pets yet. Buy your first companion in the Shop!</div>';
+  } else {
+    stableHTML+='<div class="pet-stable-grid">';
+    owned.forEach(function(p){
+      var pd=PET_DATA[p.petId];
+      if(!pd)return;
+      var isActive=isPetActive(p.id);
+      stableHTML+='<div class="pet-card'+(isActive?" active-pet":"")+(p.evolved?" evolved-pet":"")+'">'+
+        (isActive?'<div class="pet-active-badge">Active</div>':'')+
+        '<div class="pet-card-icon">'+pd.icon+'</div>'+
+        '<div class="pet-card-name">'+pd.name+'</div>'+
+        '<div class="pet-card-bonus">'+pd.bonus+'</div>'+
+      '</div>';
+    });
+    stableHTML+='</div>';
+  }
+
+  // Pet picker modal
+  var pickerHTML="";
+  if(G._pickingSlot!==null&&G._pickingSlot!==undefined){
+    var available=owned.filter(function(p){
+      var otherSlot=G._pickingSlot===0?1:0;
+      return G.activePets[otherSlot]!==p.id;
+    });
+    var pickerCards=available.map(function(p){
+      var pd=PET_DATA[p.petId];if(!pd)return"";
+      var isActive=isPetActive(p.id);
+      return'<div class="pet-card'+(isActive?" active-pet":"")+(p.evolved?" evolved-pet":"")+'" onclick="assignPet('+p.id+')">'+
+        '<div class="pet-card-icon">'+pd.icon+'</div>'+
+        '<div class="pet-card-name">'+pd.name+'</div>'+
+        '<div class="pet-card-bonus">'+pd.bonus+'</div>'+
+      '</div>';
+    }).join("");
+    pickerHTML='<div class="pet-picker-bg" onclick="if(event.target.classList.contains(&quot;pet-picker-bg&quot;))closePetPicker()">'+
+      '<div class="pet-picker">'+
+        '<div class="pet-picker-title">Choose Pet for Slot '+(G._pickingSlot+1)+'</div>'+
+        '<div class="pet-picker-sub">Select a companion to activate.</div>'+
+        (available.length>0
+          ?'<div class="pet-picker-grid">'+pickerCards+'</div>'
+          :'<div class="empty" style="margin-bottom:12px;">No pets available. Buy one in the Shop!</div>')+
+        '<button class="pet-picker-close" onclick="closePetPicker()">Cancel</button>'+
+      '</div>'+
+    '</div>';
+  }
+
+  return slotsHTML+evolveHTML+stableHTML+pickerHTML;
+}
+
+if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){});}
+checkStreakShield();
+refreshRotatingQuests();
+checkWeeklyPetKey();
+G._lastTotalLv=totalLv();
+render();
+// Draw spin wheel if on spin tab
+if(G.tab==="spin"){
+  requestAnimationFrame(function(){
+    var canvas=document.getElementById("spinCanvas");
+    if(canvas)drawWheel(canvas,spinAngle);
+  });
+}
+</script>
+<canvas id="lvlup-canvas"></canvas>
+<div id="lvlup-overlay">
+  <div id="lvlup-box">
+    <div class="lvlup-title">Level Up!</div>
+    <div class="lvlup-level" id="lvlup-num">1</div>
+    <div class="lvlup-skill" id="lvlup-skill">Strength</div>
+    <div class="lvlup-sub" id="lvlup-sub">Keep forging your legend.</div>
+    <button class="lvlup-close" onclick="closeLvlUp()">Continue ⚔</button>
+  </div>
+</div>
+</body>
+</html>
