@@ -421,6 +421,78 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .pet-picker-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px;font-style:italic;}
   .pet-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
   .pet-picker-close{width:100%;background:transparent;border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text2);font-family:"Cinzel",serif;font-size:12px;cursor:pointer;}
+
+  /* ── Onboarding ── */
+  .ob-screen{position:fixed;inset:0;background:linear-gradient(180deg,#050810,#07090f);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;}
+  .ob-logo{font-family:"Cinzel",serif;font-size:28px;font-weight:700;letter-spacing:6px;background:linear-gradient(135deg,#f4c842,#e8923a,#f4c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 16px rgba(244,200,66,.5));margin-bottom:8px;}
+  .ob-tagline{font-size:14px;color:var(--text2);font-style:italic;margin-bottom:48px;letter-spacing:.5px;}
+  .ob-title{font-family:"Cinzel",serif;font-size:20px;color:#e8d5a0;margin-bottom:8px;letter-spacing:1px;}
+  .ob-sub{font-size:13px;color:var(--text2);margin-bottom:32px;line-height:1.6;max-width:320px;}
+  .ob-input{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:14px 18px;font-family:"Cinzel",serif;font-size:16px;color:#e8d5a0;width:100%;max-width:300px;text-align:center;outline:none;margin-bottom:24px;box-sizing:border-box;}
+  .ob-input:focus{border-color:#f4c842;box-shadow:0 0 12px rgba(244,200,66,.2);}
+  .ob-btn{background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:14px;padding:14px 40px;font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#1a1200;cursor:pointer;letter-spacing:.5px;transition:all .2s;margin-bottom:12px;}
+  .ob-btn:active{transform:scale(.97);}
+  .ob-skip{background:transparent;border:none;font-size:12px;color:var(--text3);cursor:pointer;font-family:"Cinzel",serif;letter-spacing:.3px;padding:8px;}
+  .ob-class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:400px;margin-bottom:28px;}
+  .ob-class-cell{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 8px;cursor:pointer;transition:all .2s;position:relative;}
+  .ob-class-cell:active{transform:scale(.95);}
+  .ob-class-cell.selected{border:2px solid #f4c842;background:var(--bg3);box-shadow:0 0 14px rgba(244,200,66,.2);}
+  .ob-class-icon{font-size:28px;margin-bottom:6px;}
+  .ob-class-name{font-family:"Cinzel",serif;font-size:11px;color:#e8d5a0;margin-bottom:4px;}
+  .ob-class-bonus{font-size:9px;color:var(--text2);font-style:italic;line-height:1.3;}
+  .ob-tour-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px 20px;max-width:320px;width:100%;margin-bottom:28px;}
+  .ob-tour-icon{font-size:40px;margin-bottom:12px;}
+  .ob-tour-name{font-family:"Cinzel",serif;font-size:16px;color:#e8d5a0;margin-bottom:8px;}
+  .ob-tour-desc{font-size:13px;color:var(--text2);line-height:1.6;}
+  .ob-dots{display:flex;gap:8px;justify-content:center;margin-bottom:28px;}
+  .ob-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .2s;}
+  .ob-dot.active{background:#f4c842;width:20px;border-radius:4px;}
+  .ob-progress{font-size:11px;color:var(--text3);margin-bottom:20px;font-family:"Cinzel",serif;letter-spacing:.5px;}
+
+  /* ── Hero Profile ── */
+  .hero-page{max-width:480px;margin:0 auto;padding:8px 0 24px;}
+  .hero-avatar-section{text-align:center;padding:24px 16px 20px;position:relative;}
+  .hero-av-wrap{display:inline-block;position:relative;margin-bottom:12px;}
+  .hero-av-img{width:120px;height:120px;border-radius:20px;overflow:hidden;margin:0 auto;}
+  .hero-av-ring{position:absolute;inset:-4px;border-radius:24px;border:3px solid transparent;background:linear-gradient(135deg,#f4c842,#e8923a,#f4c842) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;}
+  .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:22px;}
+  .hero-name{font-family:"Cinzel",serif;font-size:24px;font-weight:700;color:#e8d5a0;margin-bottom:4px;}
+  .hero-class-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-family:"Cinzel",serif;font-size:12px;color:var(--text2);margin-bottom:6px;}
+  .hero-title-badge{font-family:"Cinzel",serif;font-size:11px;color:#f4c842;letter-spacing:.5px;margin-bottom:16px;font-style:italic;}
+  .hero-level-row{display:flex;gap:12px;justify-content:center;margin-bottom:20px;}
+  .hero-stat-pill{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 16px;text-align:center;}
+  .hero-stat-pill-val{font-family:"Cinzel",serif;font-size:18px;font-weight:700;color:#f4c842;}
+  .hero-stat-pill-lbl{font-size:9px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
+  /* Class bonus card */
+  .hero-class-card{background:linear-gradient(135deg,#0f1a2a,#07090f);border-radius:16px;padding:16px;margin:0 16px 12px;border:1px solid var(--border2);}
+  .hero-class-card-title{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+  .hero-class-bonus-row{display:flex;align-items:center;gap:10px;}
+  .hero-class-bonus-icon{font-size:32px;}
+  .hero-class-bonus-text{font-size:13px;color:var(--success);font-style:italic;}
+  .hero-class-bonus-name{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:3px;}
+  /* Companions */
+  .hero-section{margin:0 16px 12px;}
+  .hero-section-title{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+  .hero-companions{display:flex;gap:10px;}
+  .hero-companion{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;flex:1;text-align:center;}
+  .hero-companion-icon{font-size:28px;margin-bottom:4px;}
+  .hero-companion-name{font-family:"Cinzel",serif;font-size:10px;color:#e8d5a0;}
+  .hero-companion-bonus{font-size:9px;color:var(--text2);font-style:italic;margin-top:2px;}
+  .hero-companion-empty{background:var(--bg);border:1px dashed var(--border);border-radius:12px;padding:12px;flex:1;text-align:center;font-size:11px;color:var(--text3);font-style:italic;}
+  /* Stats grid */
+  .hero-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .hero-stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+  .hero-stat-icon{font-size:20px;}
+  .hero-stat-val{font-family:"Cinzel",serif;font-size:16px;font-weight:700;color:#e8d5a0;}
+  .hero-stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;}
+  /* Titles */
+  .hero-titles{display:flex;flex-wrap:wrap;gap:8px;}
+  .hero-title-chip{background:rgba(244,200,66,.08);border:1px solid rgba(244,200,66,.3);border-radius:20px;padding:5px 12px;font-family:"Cinzel",serif;font-size:10px;color:#f4c842;}
+  /* Share button */
+  .hero-share-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:14px;padding:14px;font-family:"Cinzel",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;width:calc(100% - 32px);margin:4px 16px 0;letter-spacing:.5px;}
+  .hero-share-btn:active{transform:scale(.98);}
+  /* Time played */
+  .hero-time{font-size:11px;color:var(--text3);text-align:center;margin-top:4px;font-style:italic;}
 </style>
 </head>
 <body>
@@ -533,7 +605,7 @@ function loadSaved(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var p=JSO
 function savePersist(){
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify({
-      gold:G.gold,
+      gold:G.gold,onboarded:G.onboarded,
       totalXP:G.totalXP,
       skills:G.skills,
       quests:G.quests,
@@ -573,6 +645,10 @@ function mkSkills(){var o={};SKILLS.forEach(function(s){o[s.id]={xp:0,level:1};}
 
 var G={
   tab:"dashboard",filter:"All",journalTab:"gratitude",
+  onboarded: sv&&sv.onboarded||false,
+  _obStep: 0,
+  _obClass: sv&&sv.avatarClass||0,
+  _obTourStep: 0,
   gold:sv&&sv.gold||0,
   totalXP:backfillXP(sv),
   skills:sv&&sv.skills||mkSkills(),
@@ -975,6 +1051,7 @@ var NAV_TABS=[
   {id:"dashboard", icon:"🏠", label:"Home"},
   {id:"actions",   icon:"⚔",  label:"Actions"},
   {id:"quests",    icon:"📜", label:"Quests"},
+  {id:"hero",      icon:"🧙", label:"Hero"},
   {id:"journal",   icon:"🙏", label:"Journal"},
   {id:"fjournal",  icon:"📓", label:"My Notes"},
   {id:"timer",     icon:"⏱", label:"Timer"},
@@ -1000,9 +1077,10 @@ function render(){
   else if(G.tab==="inventory")content=rInventory();
   else if(G.tab==="shop")content=rShop();
   else if(G.tab==="log")content=rLog();
+  else if(G.tab==="hero")content=rHero();
   var streakH="";
   if(G.streakDays>0){var fc=flameColor(G.streakDays);streakH='<div class="streak-inline"><span class="flame" style="font-size:20px;color:'+fc+';filter:drop-shadow(0 0 6px '+fc+'99);">🔥</span><span class="streak-num" style="color:'+fc+';">'+G.streakDays+'</span></div>';}
-  var PRIMARY_IDS=["dashboard","actions","quests","inventory"];
+  var PRIMARY_IDS=["dashboard","actions","quests","hero"];
   var drawerOpen=G._drawerOpen||false;
   var anyDrawerActive=["journal","fjournal","spin","inventory","shop","log"].indexOf(G.tab)!==-1;
   var navBtns=NAV_TABS.filter(function(t){return PRIMARY_IDS.indexOf(t.id)!==-1;}).map(function(t){
@@ -1022,6 +1100,8 @@ function render(){
       '<span class="drawer-label">'+t.label+'</span>'+
     '</button>';
   }).join("");
+  // Will inject hero avatar after render if on hero tab
+  var _needHeroAv = G.tab==="hero";
   document.getElementById("app").innerHTML=
     '<div class="header">'+
       '<div class="hdr-row1">'+
@@ -1166,8 +1246,9 @@ window.doAction=function(id){
   // Suppress level up popups during earnXP so quests can show first
   G._suppressLvlUp=true;
   G._pendingLvUps=G._pendingLvUps||[];
-  // Apply pet bonuses
-  var petBonus=applyPetBonus(a.xp,a.gold,a.domain);
+  // Apply class bonus first, then pet bonus
+  var clsBonus=applyClassBonus(a.xp,a.gold,a.domain,G.streakDays);
+  var petBonus=applyPetBonus(clsBonus.xp,clsBonus.gold,a.domain);
   earnXP(a.skill,petBonus.xp,a.label,petBonus.gold);
   checkOrbBonus();
   checkInfernoDragonGem(a.id);
@@ -1195,7 +1276,7 @@ window.completeQuest=function(id){
 };
 window.buyItem=function(id){
   var item=shopById(id);
-  if(!item||G.gold<item.cost){showToast("Not enough gold!");return;}
+  if(!item){return;}if(G.gold<item.cost){showToast("Not enough gold! Need "+item.cost+"g.");return;}if(item.gems&&G.gems<item.gems){showToast("Not enough Gems! Need "+item.gems+"💎.");return;}if(item.gems){G.gems-=item.gems;}
   G.gold-=item.cost;
   // Handle special item types
   if(item.type==="boost3"){
@@ -1220,6 +1301,10 @@ window.buyItem=function(id){
     if(!G.unlockedAccessories)G.unlockedAccessories=[];
     G.unlockedAccessories.push(item.accId);
     showToast("Accessory unlocked: "+item.name+"!");
+  } else if(item.type==="pet"){
+    if(!G.ownedPets)G.ownedPets=[];
+    G.ownedPets.push({id:Date.now(),petId:item.petId,name:item.name,icon:item.icon,evolved:false});
+    showToast(item.icon+" "+item.name+" joined your stable!");
   } else {
     showToast("Purchased: "+item.name);
   }
@@ -1932,6 +2017,7 @@ window.openChest=function(btn){
   reward.apply();
   // Legendary chest gives 1 gem
   if(tier==="legendary"){G.gems=(G.gems||0)+1;showToast("+1 💎 for opening a Legendary Chest!");}
+  applyClassChestBonus();
 
   // Log it
   G.chestHistory.unshift({icon:reward.icon,label:reward.label,date:new Date().toLocaleDateString()});
@@ -2874,10 +2960,365 @@ function rPets(){
   return slotsHTML+evolveHTML+stableHTML+pickerHTML;
 }
 
+
+var CLASS_BONUSES = {
+  0: {name:"Knight",    icon:"⚔️",  bonus:"+10% Health XP",           desc:"Built for physical mastery."},
+  1: {name:"Mage",      icon:"🧙",  bonus:"+10% Learning XP",          desc:"Knowledge is your power."},
+  2: {name:"Ranger",    icon:"🏹",  bonus:"+10% Productivity XP",      desc:"Swift, focused, relentless."},
+  3: {name:"Rogue",     icon:"🗡️",  bonus:"+10% Gold per action",      desc:"Wealth flows to the cunning."},
+  4: {name:"Paladin",   icon:"✨",  bonus:"+10% XP on streak days",    desc:"Consistency is your weapon."},
+  5: {name:"Shaman",    icon:"🌿",  bonus:"+10% Spiritual XP",         desc:"The inner world shapes all."},
+  6: {name:"Necromancer",icon:"🧟", bonus:"+1💎 per chest opened",     desc:"Power from the hidden realm."},
+  7: {name:"Samurai",   icon:"⚔️",  bonus:"+15% XP at 7+ day streak",  desc:"Discipline above all else."},
+  8: {name:"Druid",     icon:"🌿",  bonus:"+10% Spiritual+Learning XP",desc:"Nature and wisdom entwined."},
+};
+
+function applyClassBonus(xp, gold, domain, streakDays){
+  var cls=G.avatarClass||0;
+  var streak=streakDays||G.streakDays||0;
+  if(cls===0&&domain==="Health")   xp=Math.round(xp*1.10);
+  if(cls===1&&domain==="Learning") xp=Math.round(xp*1.10);
+  if(cls===2&&domain==="Productivity") xp=Math.round(xp*1.10);
+  if(cls===3) gold=Math.round(gold*1.10);
+  if(cls===4&&streak>0) xp=Math.round(xp*1.10);
+  if(cls===5&&domain==="Spiritual") xp=Math.round(xp*1.10);
+  if(cls===7&&streak>=7) xp=Math.round(xp*1.15);
+  if(cls===8&&(domain==="Spiritual"||domain==="Learning")) xp=Math.round(xp*1.10);
+  return{xp:xp,gold:gold};
+}
+
+function applyClassChestBonus(){
+  // Necromancer gets +1 gem per chest opened
+  if(G.avatarClass===6){
+    G.gems=(G.gems||0)+1;
+    showToast("🧟 Necromancer: +1💎 from chest!");
+  }
+}
+
+
+// ════════════════════════════════════════════════
+// ONBOARDING
+// ════════════════════════════════════════════════
+
+var OB_TOUR = [{"icon": "🏠", "name": "Home", "desc": "Your dashboard. See all your skills, XP progress and recent deeds at a glance."}, {"icon": "⚔️", "name": "Actions", "desc": "Log real life actions to earn XP and Gold. Every action trains a skill. Do the work, get the reward."}, {"icon": "📜", "name": "Quests", "desc": "Daily, weekly and main quests give big XP and chests. Check them every day."}, {"icon": "🎒", "name": "Inventory", "desc": "Your keys, chests, pets and purchases live here. Open chests for loot and manage your companions."}, {"icon": "🛒", "name": "Shop", "desc": "Spend Gold and Gems on boosts, classes, accessories and pets. Check the rotating offers daily."}, {"icon": "☰", "name": "More", "desc": "Journal, Spin wheel, Timer, Log and your Notes are all in the More drawer. Explore them."}];
+
+function renderOnboarding(){
+  var step=G._obStep||0;
+  var el=document.getElementById("ob-container");
+  if(!el){
+    var div=document.createElement("div");
+    div.id="ob-container";
+    document.body.appendChild(div);
+    el=div;
+  }
+
+  if(step===0){
+    // Welcome screen
+    el.innerHTML='<div class="ob-screen">'+
+      '<div class="ob-logo">⚔ LIFE RPG ✦</div>'+
+      '<div class="ob-tagline">Your real life. Gamified.</div>'+
+      '<div class="ob-title">Welcome, Warrior</div>'+
+      '<div class="ob-sub">Turn your daily habits into an epic adventure. Every action you take in real life earns XP, Gold and rewards.</div>'+
+      '<button class="ob-btn" onclick="obNext()">Begin Your Journey</button>'+
+      '<button class="ob-skip" onclick="obSkip()">Skip Tutorial</button>'+
+    '</div>';
+  }
+  else if(step===1){
+    // Name input
+    var current=G.avatarName||"";
+    el.innerHTML='<div class="ob-screen">'+
+      '<div class="ob-progress">Step 1 of 4</div>'+
+      '<div class="ob-title">Name Your Hero</div>'+
+      '<div class="ob-sub">What shall you be called in the chronicles of this world?</div>'+
+      '<input class="ob-input" id="obNameInput" type="text" placeholder="Enter your name..." maxlength="16" value="'+current+'" />'+
+      '<button class="ob-btn" onclick="obSetName()">Continue →</button>'+
+      '<button class="ob-skip" onclick="obSkip()">Skip</button>'+
+    '</div>';
+    setTimeout(function(){var inp=document.getElementById("obNameInput");if(inp)inp.focus();},100);
+  }
+  else if(step===2){
+    // Class selection
+    var classGrid=Object.keys(CLASS_BONUSES).map(function(id){
+      var cls=CLASS_BONUSES[id];
+      var isSel=G._obClass===parseInt(id);
+      return'<div class="ob-class-cell'+(isSel?" selected":"")+'" onclick="obSelectClass('+id+')">'+
+        '<div class="ob-class-icon">'+cls.icon+'</div>'+
+        '<div class="ob-class-name">'+cls.name+'</div>'+
+        '<div class="ob-class-bonus">'+cls.bonus+'</div>'+
+      '</div>';
+    }).join("");
+    el.innerHTML='<div class="ob-screen" style="justify-content:flex-start;padding-top:48px;overflow-y:auto;">'+
+      '<div class="ob-progress">Step 2 of 4</div>'+
+      '<div class="ob-title">Choose Your Class</div>'+
+      '<div class="ob-sub">Your class shapes your journey. Each gives unique bonuses. You can evolve at Level 10.</div>'+
+      '<div class="ob-class-grid">'+classGrid+'</div>'+
+      '<button class="ob-btn" onclick="obConfirmClass()">Confirm Class →</button>'+
+      '<button class="ob-skip" onclick="obSkip()">Skip</button>'+
+    '</div>';
+  }
+  else if(step===3){
+    // Tour — swipeable cards
+    var ts=G._obTourStep||0;
+    var t=OB_TOUR[ts];
+    var dots=OB_TOUR.map(function(_,i){return'<div class="ob-dot'+(i===ts?" active":"")+'"></div>';}).join("");
+    el.innerHTML='<div class="ob-screen">'+
+      '<div class="ob-progress">Step 3 of 4 — Quick Tour</div>'+
+      '<div class="ob-dots">'+dots+'</div>'+
+      '<div class="ob-tour-card">'+
+        '<div class="ob-tour-icon">'+t.icon+'</div>'+
+        '<div class="ob-tour-name">'+t.name+'</div>'+
+        '<div class="ob-tour-desc">'+t.desc+'</div>'+
+      '</div>'+
+      (ts<OB_TOUR.length-1
+        ?'<button class="ob-btn" onclick="obTourNext()">Next →</button>'
+        :'<button class="ob-btn" onclick="obNext()">Ready! →</button>')+
+      '<button class="ob-skip" onclick="obSkip()">Skip Tour</button>'+
+    '</div>';
+  }
+  else if(step===4){
+    // Final — first quest
+    var cls=CLASS_BONUSES[G._obClass||0];
+    el.innerHTML='<div class="ob-screen">'+
+      '<div style="font-size:64px;margin-bottom:16px;">'+cls.icon+'</div>'+
+      '<div class="ob-title">'+cls.name+'</div>'+
+      '<div class="ob-sub" style="margin-bottom:8px;">'+cls.bonus+'</div>'+
+      '<div class="ob-sub">'+cls.desc+'</div>'+
+      '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:16px 20px;margin:24px 0;max-width:300px;width:100%;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:11px;color:var(--text2);letter-spacing:1px;margin-bottom:8px;">YOUR FIRST QUEST</div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:15px;color:#f4c842;margin-bottom:4px;">📜 First Blood</div>'+
+        '<div style="font-size:12px;color:var(--text2);">Log your first action to begin your legend.</div>'+
+      '</div>'+
+      '<button class="ob-btn" onclick="obFinish()">Begin Adventure ⚔</button>'+
+    '</div>';
+  }
+}
+
+window.obNext=function(){
+  G._obStep=(G._obStep||0)+1;
+  renderOnboarding();
+};
+
+window.obSkip=function(){
+  obFinish();
+};
+
+window.obSetName=function(){
+  var inp=document.getElementById("obNameInput");
+  var name=inp?inp.value.trim():"";
+  if(!name){showToast("Please enter a name!");return;}
+  G.avatarName=name;
+  G._obStep=2;
+  renderOnboarding();
+};
+
+window.obSelectClass=function(id){
+  G._obClass=parseInt(id);
+  renderOnboarding();
+};
+
+window.obConfirmClass=function(){
+  G.avatarClass=G._obClass||0;
+  G.unlockedClasses=G.unlockedClasses||[0,1,2,3,4,5];
+  G._obStep=3;
+  renderOnboarding();
+};
+
+window.obTourNext=function(){
+  G._obTourStep=(G._obTourStep||0)+1;
+  renderOnboarding();
+};
+
+window.obFinish=function(){
+  G.onboarded=true;
+  G.avatarClass=G._obClass||G.avatarClass||0;
+  var el=document.getElementById("ob-container");
+  if(el)el.remove();
+  savePersist();
+  render();
+};
+
+
+// ════════════════════════════════════════════════
+// HERO PROFILE PAGE
+// ════════════════════════════════════════════════
+
+function getTimePlayed(){
+  // Estimate from first log entry date or creation date
+  var log=G.log||[];
+  if(log.length===0)return"Just started";
+  // Count unique day keys from log
+  var days=new Set();
+  log.forEach(function(e){if(e.date)days.add(e.date);});
+  var d=days.size;
+  if(d===0)return"Day 1";
+  if(d===1)return"1 day";
+  return d+" days";
+}
+
+function getTotalActionsLogged(){
+  return(G.log||[]).filter(function(e){return!e.label||!e.label.startsWith("Quest:");}).length;
+}
+
+function getTotalQuestsCompleted(){
+  var main=(G.quests||[]).filter(function(q){return q.done;}).length;
+  var custom=(G.customQuests||[]).filter(function(q){return q.done;}).length;
+  return main+custom;
+}
+
+function getTotalGoldEarned(){
+  return(G.log||[]).reduce(function(sum,e){return sum+(e.gold||0);},0);
+}
+
+function getTopSkill(){
+  var top=null,topLv=0;
+  SKILLS.forEach(function(sk){
+    var s=G.skills[sk.id]||(G.skills[sk.id]={xp:0,level:1});
+    if(s.level>topLv){topLv=s.level;top=sk;}
+  });
+  return top;
+}
+
+function getEarnedTitles(){
+  var titles=[];
+  // From inventory
+  (G.inventory||[]).forEach(function(t){
+    if(typeof t==="string"&&["The Relentless","Seeker of Truth","Awakened"].includes(t)){
+      titles.push(t);
+    }
+  });
+  // From quests
+  (G.quests||[]).forEach(function(q){
+    if(q.done&&q.title)titles.push(q.title);
+  });
+  return titles.slice(0,6);
+}
+
+function rHero(){
+  var tl=totalLv();
+  var rc=ringColor(tl);
+  var cls=CLASS_BONUSES[G.avatarClass||0];
+  var title=playerTitle();
+  var topSkill=getTopSkill();
+  var timePlayed=getTimePlayed();
+  var actionsLogged=getTotalActionsLogged();
+  var questsDone=getTotalQuestsCompleted();
+  var goldEarned=getTotalGoldEarned();
+  var earnedTitles=getEarnedTitles();
+
+  // Active pets
+  var pet0=getActivePetData(0);
+  var pet1=getActivePetData(1);
+  var companionHTML=
+    '<div class="hero-companion">'+(pet0
+      ?'<div class="hero-companion-icon">'+pet0.icon+'</div><div class="hero-companion-name">'+pet0.name+'</div><div class="hero-companion-bonus">'+pet0.bonus+'</div>'
+      :'<div style="font-size:24px;opacity:.3;">🐾</div><div style="font-size:10px;color:var(--text3);">No pet</div>')+
+    '</div>'+
+    '<div class="hero-companion">'+(pet1
+      ?'<div class="hero-companion-icon">'+pet1.icon+'</div><div class="hero-companion-name">'+pet1.name+'</div><div class="hero-companion-bonus">'+pet1.bonus+'</div>'
+      :'<div style="font-size:24px;opacity:.3;">🐾</div><div style="font-size:10px;color:var(--text3);">No pet</div>')+
+    '</div>';
+
+  // Accessory
+  var acc=G.equippedAccessory?ACCESSORIES.filter(function(a){return a.id===G.equippedAccessory;})[0]:null;
+
+  // Stats grid
+  var statsHTML=
+    '<div class="hero-stat-card"><div class="hero-stat-icon">⚔️</div><div><div class="hero-stat-val">'+actionsLogged+'</div><div class="hero-stat-lbl">Actions Logged</div></div></div>'+
+    '<div class="hero-stat-card"><div class="hero-stat-icon">📜</div><div><div class="hero-stat-val">'+questsDone+'</div><div class="hero-stat-lbl">Quests Done</div></div></div>'+
+    '<div class="hero-stat-card"><div class="hero-stat-icon">💰</div><div><div class="hero-stat-val">'+goldEarned+'g</div><div class="hero-stat-lbl">Gold Earned</div></div></div>'+
+    '<div class="hero-stat-card"><div class="hero-stat-icon">💎</div><div><div class="hero-stat-val">'+G.gems+'</div><div class="hero-stat-lbl">Gems Owned</div></div></div>'+
+    '<div class="hero-stat-card"><div class="hero-stat-icon">🔥</div><div><div class="hero-stat-val">'+G.streakDays+'</div><div class="hero-stat-lbl">Day Streak</div></div></div>'+
+    '<div class="hero-stat-card"><div class="hero-stat-icon">🗝️</div><div><div class="hero-stat-val">'+((G.chests||0)+(G.rareChests||0)+(G.legendaryChests||0))+'</div><div class="hero-stat-lbl">Chests Owned</div></div></div>';
+
+  // Titles
+  var titlesHTML=earnedTitles.length>0
+    ?earnedTitles.map(function(t){return'<div class="hero-title-chip">'+t+'</div>';}).join("")
+    :'<div style="font-size:12px;color:var(--text3);font-style:italic;">Complete quests to earn titles</div>';
+
+  return'<div class="hero-page">'+
+    // Avatar section
+    '<div class="hero-avatar-section">'+
+      '<div class="hero-av-wrap">'+
+        '<div class="hero-av-img" id="heroAvImg" style="border-radius:20px;overflow:hidden;"></div>'+
+        '<div class="hero-av-ring" style="border-color:'+rc+';box-shadow:0 0 20px '+rc+'44;"></div>'+
+        (acc?'<div class="hero-av-accessory">'+acc.icon+'</div>':'')+
+      '</div>'+
+      '<div class="hero-name">'+(G.avatarName||"Hero")+'</div>'+
+      '<div class="hero-class-badge">'+cls.icon+' '+cls.name+'</div>'+
+      '<div class="hero-title-badge">'+title+'</div>'+
+      '<div class="hero-level-row">'+
+        '<div class="hero-stat-pill"><div class="hero-stat-pill-val">'+tl+'</div><div class="hero-stat-pill-lbl">Total Level</div></div>'+
+        '<div class="hero-stat-pill"><div class="hero-stat-pill-val">'+timePlayed+'</div><div class="hero-stat-pill-lbl">Time Played</div></div>'+
+        '<div class="hero-stat-pill"><div class="hero-stat-pill-val">'+(topSkill?topSkill.name:"—")+'</div><div class="hero-stat-pill-lbl">Top Skill</div></div>'+
+      '</div>'+
+    '</div>'+
+    // Class bonus
+    '<div class="hero-class-card">'+
+      '<div class="hero-class-card-title">Class Bonus</div>'+
+      '<div class="hero-class-bonus-row">'+
+        '<div class="hero-class-bonus-icon">'+cls.icon+'</div>'+
+        '<div><div class="hero-class-bonus-name">'+cls.name+'</div><div class="hero-class-bonus-text">'+cls.bonus+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;font-style:italic;">'+cls.desc+'</div></div>'+
+      '</div>'+
+      (tl<10?'<div style="margin-top:10px;font-size:10px;color:var(--text3);font-style:italic;">⚡ Evolve your class at Total Level 10</div>':
+       '<div style="margin-top:10px;font-size:11px;color:#f4c842;font-style:italic;">✨ Evolution available! Coming soon.</div>')+
+    '</div>'+
+    // Companions
+    '<div class="hero-section">'+
+      '<div class="hero-section-title">Companions</div>'+
+      '<div class="hero-companions">'+companionHTML+'</div>'+
+    '</div>'+
+    // Stats
+    '<div class="hero-section">'+
+      '<div class="hero-section-title">Chronicle</div>'+
+      '<div class="hero-stats-grid">'+statsHTML+'</div>'+
+    '</div>'+
+    // Titles
+    '<div class="hero-section">'+
+      '<div class="hero-section-title">Titles Earned</div>'+
+      '<div class="hero-titles">'+titlesHTML+'</div>'+
+    '</div>'+
+    // Share button
+    '<button class="hero-share-btn" onclick="shareHero()">📤 Share Your Hero</button>'+
+  '</div>';
+}
+
+// Inject avatar SVG after render
+function injectHeroAvatar(){
+  var el=document.getElementById("heroAvImg");
+  if(el)el.innerHTML=drawSVG(G.avatarClass||0,totalLv(),120);
+}
+
+
+window.shareHero=function(){
+  var cls=CLASS_BONUSES[G.avatarClass||0];
+  var text="⚔ LIFE RPG\n\n"+
+    (G.avatarName||"Hero")+" · "+cls.name+"\n"+
+    "Level "+totalLv()+" · "+playerTitle()+"\n"+
+    "🔥 "+G.streakDays+" day streak\n"+
+    "💎 "+G.gems+" Gems · "+G.gold+"g\n\n"+
+    "Play Life RPG: https://ayniboy.github.io/Life-RPG";
+  if(navigator.share){
+    navigator.share({title:"Life RPG — "+G.avatarName,text:text})
+      .catch(function(){});
+  } else {
+    navigator.clipboard.writeText(text).then(function(){
+      showToast("Hero stats copied to clipboard!");
+    }).catch(function(){
+      showToast("Share: "+text);
+    });
+  }
+};
+
 if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){});}
 checkStreakShield();
 refreshRotatingQuests();
 checkWeeklyPetKey();
+// Show onboarding for new players
+if(!G.onboarded){
+  G._obStep=0;
+  G._obClass=G.avatarClass||0;
+  setTimeout(function(){renderOnboarding();},300);
+}
 G._lastTotalLv=totalLv();
 render();
 // Draw spin wheel if on spin tab
