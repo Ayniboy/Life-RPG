@@ -3165,7 +3165,7 @@ function renderOnboarding(){
       '<div class="ob-title">Welcome, Warrior</div>'+
       '<div class="ob-sub">Turn your daily habits into an epic adventure. Every action you take in real life earns XP, Gold and rewards.</div>'+
       '<button class="ob-btn" onclick="obNext()">Begin Your Journey</button>'+
-      '<button class="ob-skip" onclick="obRestoreAccount()">Already have an account? Restore</button>'+
+      '<button class="ob-skip" onclick="obRestoreAccount()">Already have an account? Log in</button>'+
     '</div>';
   }
   else if(step===1){
@@ -3230,7 +3230,6 @@ function renderOnboarding(){
       '<input class="ob-input" id="obEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
       '<input class="ob-input" id="obSyncPass" type="password" placeholder="Password (8+ chars, A-z, 0-9, !@#...)..." maxlength="50" />'+
       '<button class="ob-btn" onclick="obCreateAccount()">Create Account →</button>'+
-      '<button class="ob-skip" onclick="obNext()">Skip for now</button>'+
       '<div id="obAccountMsg" class="sync-status" style="margin-top:8px;"></div>'+
     '</div>';
   }
@@ -3298,7 +3297,7 @@ window.obRestoreAccount=function(){
     '<input class="ob-input" id="obRestorePass" type="password" placeholder="Password..." maxlength="50" />'+
     '<button class="ob-btn" onclick="obDoRestore()">Restore My Progress</button>'+
     '<button class="ob-skip" onclick="obForgotPassword()">Forgot password?</button>'+
-    '<button class="ob-skip" onclick="obNext()">Start Fresh Instead</button>'+
+    
     '<div id="obRestoreMsg" class="sync-status" style="margin-top:8px;"></div>'+
   '</div>';
 };
