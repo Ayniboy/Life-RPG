@@ -1213,6 +1213,10 @@ function render(){
       '<span class="drawer-label">'+t.label+'</span>'+
     '</button>';
   }).join("");
+  drawerBtns+='<button class="drawer-btn'+(G._syncUser?' active':'')+'" onclick="closeDrawer();openSyncModal()">'+
+    '<span class="drawer-icon">☁</span>'+
+    '<span class="drawer-label">'+(G._syncUser?'Synced':'Sync')+'</span>'+
+  '</button>';
   // Will inject hero avatar after render if on hero tab
   var _needHeroAv = G.tab==="hero";
   // Sync indicator
