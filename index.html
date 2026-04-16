@@ -3410,9 +3410,6 @@ window.obCreateAccount=async function(){
     if(msg)msg.textContent="Account created!"; if(msg)msg.className="sync-status ok";
     setTimeout(function(){G._obStep=5;renderOnboarding();},1500);
   }
-  G._syncUser=uid;
-  G._obStep=5;
-  renderOnboarding();
 };
 
 window.obFinish=function(){
