@@ -667,7 +667,7 @@ function loadSaved(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var p=JSO
 function savePersist(){
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify({
-      gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,_passHash:G._passHash,
+      gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,_syncEmail:G._syncEmail,_passHash:G._passHash,
       totalXP:G.totalXP,
       skills:G.skills,
       quests:G.quests,
@@ -744,6 +744,7 @@ var G={
   fjSearch:"",
   _drawerOpen:false,
   _syncUser: sv&&sv._syncUser||null,
+  _syncEmail: sv&&sv._syncEmail||null,
   _passHash: sv&&sv._passHash||null,
   _syncStatus: "idle",
   dailyChallenge: sv&&sv.dailyChallenge||null,
@@ -1139,13 +1140,15 @@ function rShop(){
 
 function rLog(){
   var resetBtnHTML='<div style="padding:0 0 12px;"><button onclick="confirmReset()" style="background:transparent;border:1px solid #e85d3a66;border-radius:12px;padding:16px;color:#e85d3a;font-size:14px;cursor:pointer;width:100%;font-family:\"Cinzel\",serif;letter-spacing:.5px;">⚠ Reset All Progress</button></div>';
-  var exportImport=
-    '<div class="save-mgmt">'+
-      '<button class="save-mgmt-btn" style="background:linear-gradient(135deg,#0a1428,#050a14);border:1px solid #4a8fff44;color:#4a8fff;" onclick="openSyncModal()">☁ '+(G._syncUser?'Sync: ON':'Cloud Sync')+'</button>'+
-      '<button class="save-mgmt-btn save-export-btn" onclick="exportSave()">📤 Export Save</button>'+
-      '<button class="save-mgmt-btn save-import-btn" onclick="importSave()">📥 Import Save</button>'+
+  var syncActive=!!_sbSession;
+  var exportImport='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid '+(syncActive?'#2ab88a44':'var(--border)')+';border-radius:12px;padding:12px 14px;">'+
+    '<div style="display:flex;align-items:center;gap:8px;">'+
+      '<div style="font-size:20px;">☁</div>'+
+      '<div><div style="font-family:\"Cinzel\",serif;font-size:12px;color:'+(syncActive?'#2ab88a':'#e8d5a0')+'">'+(syncActive?'Cloud Sync Active':'Not Synced')+'</div>'+
+      '<div style="font-size:11px;color:var(--text3);font-style:italic;">'+(syncActive?(G._syncEmail||'Logged in'):'No account yet')+'</div></div>'+
     '</div>'+
-    '<div class="save-mgmt-note">Export your save before updating the app. Import it after to restore all progress.</div>';
+    (syncActive?'<button onclick="doSignOut()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text3);font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;">Log Out</button>':'')+
+  '</div>';
   var rows=G.log.length===0?'<div class="empty">No deeds yet.</div>':'<div class="card" style="padding:4px 16px;">'+G.log.map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>';
   return resetBtnHTML+exportImport+'<p style="font-size:12px;color:var(--text3);margin-bottom:8px;">'+G.log.length+' deed'+(G.log.length!==1?'s':'')+' recorded.</p>'+rows+'<div style="margin-top:14px;text-align:center;"></div>';
 }
@@ -1218,10 +1221,7 @@ function render(){
       '<span class="drawer-label">'+t.label+'</span>'+
     '</button>';
   }).join("");
-  drawerBtns+='<button class="drawer-btn'+(G._syncUser?' active':'')+'" onclick="closeDrawer();openSyncModal()">'+
-    '<span class="drawer-icon">☁</span>'+
-    '<span class="drawer-label">'+(G._syncUser?'Synced':'Sync')+'</span>'+
-  '</button>';
+
   // Will inject hero avatar after render if on hero tab
   var _needHeroAv = G.tab==="hero";
   // Sync indicator
@@ -1448,7 +1448,7 @@ window.confirmReset=function(){
   div.innerHTML='<div style="background:linear-gradient(135deg,#1a0808,#07090f);border:1px solid #e85d3a55;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;">'+
     '<div style="font-size:40px;margin-bottom:12px;">⚠️</div>'+
     '<div style="font-family:\"Cinzel\",serif;font-size:16px;color:#e85d3a;margin-bottom:10px;">Reset All Progress?</div>'+
-    '<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">This will erase ALL your XP, Gold, Pets, Quests and progress. Your cloud save will NOT be deleted — you can restore it by logging in again.</div>'+
+    '<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">This will erase ALL local progress — XP, Gold, Pets, Quests. Your cloud save stays safe. Log back in after to restore everything from the cloud.</div>'+
     '<button onclick="doReset()" style="background:linear-gradient(135deg,#8a1a0a,#e85d3a);border:none;border-radius:12px;padding:14px;font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;width:100%;margin-bottom:10px;">Yes, Reset Everything</button>'+
     '<button onclick="document.getElementById(&quot;resetPopup&quot;).remove()" style="background:transparent;border:1px solid var(--border);border-radius:12px;padding:12px;font-family:\"Cinzel\",serif;font-size:12px;color:var(--text2);cursor:pointer;width:100%;">Cancel</button>'+
   '</div>';
@@ -3165,7 +3165,7 @@ function renderOnboarding(){
       '<div class="ob-title">Welcome, Warrior</div>'+
       '<div class="ob-sub">Turn your daily habits into an epic adventure. Every action you take in real life earns XP, Gold and rewards.</div>'+
       '<button class="ob-btn" onclick="obNext()">Begin Your Journey</button>'+
-      '<button class="ob-skip" onclick="obSkip()">Skip Tutorial</button>'+
+      '<button class="ob-skip" onclick="obRestoreAccount()">Already have an account? Restore</button>'+
     '</div>';
   }
   else if(step===1){
@@ -3221,6 +3221,20 @@ function renderOnboarding(){
     '</div>';
   }
   else if(step===4){
+    // Account creation with email
+    el.innerHTML='<div class="ob-screen">'+
+      '<div class="ob-progress">Step 4 of 5</div>'+
+      '<div style="font-size:40px;margin-bottom:12px;">☁</div>'+
+      '<div class="ob-title">Protect Your Progress</div>'+
+      '<div class="ob-sub">Create an account so your progress is safely backed up. If you ever lose your phone, just log in to restore everything.</div>'+
+      '<input class="ob-input" id="obEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
+      '<input class="ob-input" id="obSyncPass" type="password" placeholder="Password (8+ chars, A-z, 0-9, !@#...)..." maxlength="50" />'+
+      '<button class="ob-btn" onclick="obCreateAccount()">Create Account →</button>'+
+      '<button class="ob-skip" onclick="obNext()">Skip for now</button>'+
+      '<div id="obAccountMsg" class="sync-status" style="margin-top:8px;"></div>'+
+    '</div>';
+  }
+  else if(step===5){
     // Final — first quest
     var cls=CLASS_BONUSES[G._obClass||0];
     el.innerHTML='<div class="ob-screen">'+
@@ -3270,6 +3284,92 @@ window.obConfirmClass=function(){
 
 window.obTourNext=function(){
   G._obTourStep=(G._obTourStep||0)+1;
+  renderOnboarding();
+};
+
+window.obRestoreAccount=function(){
+  var el=document.getElementById("ob-container");
+  if(!el)return;
+  el.innerHTML='<div class="ob-screen">'+
+    '<div class="ob-logo">↩ RESTORE</div>'+
+    '<div class="ob-title">Welcome Back</div>'+
+    '<div class="ob-sub">Enter your email and password to restore all your progress.</div>'+
+    '<input class="ob-input" id="obRestoreEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
+    '<input class="ob-input" id="obRestorePass" type="password" placeholder="Password..." maxlength="50" />'+
+    '<button class="ob-btn" onclick="obDoRestore()">Restore My Progress</button>'+
+    '<button class="ob-skip" onclick="obForgotPassword()">Forgot password?</button>'+
+    '<button class="ob-skip" onclick="obNext()">Start Fresh Instead</button>'+
+    '<div id="obRestoreMsg" class="sync-status" style="margin-top:8px;"></div>'+
+  '</div>';
+};
+
+window.obForgotPassword=function(){
+  var el=document.getElementById("ob-container");
+  if(!el)return;
+  el.innerHTML='<div class="ob-screen">'+
+    '<div class="ob-logo">🔑 RESET</div>'+
+    '<div class="ob-title">Reset Password</div>'+
+    '<div class="ob-sub">Enter your email and we will send you a reset link.</div>'+
+    '<input class="ob-input" id="obForgotEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
+    '<button class="ob-btn" onclick="obDoForgot()">Send Reset Link</button>'+
+    '<button class="ob-skip" onclick="obRestoreAccount()">Back to Login</button>'+
+    '<div id="obForgotMsg" class="sync-status" style="margin-top:8px;"></div>'+
+  '</div>';
+};
+
+window.obDoForgot=async function(){
+  var email=document.getElementById("obForgotEmail").value.trim().toLowerCase();
+  var msg=document.getElementById("obForgotMsg");
+  if(!email||!email.includes("@")){msg.textContent="Enter a valid email.";msg.className="sync-status err";return;}
+  msg.textContent="Sending...";msg.className="sync-status";
+  var ok=await sbResetPassword(email);
+  if(ok){
+    msg.textContent="✓ Reset link sent! Check your email.";msg.className="sync-status ok";
+  } else {
+    msg.textContent="Error sending reset email. Try again.";msg.className="sync-status err";
+  }
+};
+
+window.obDoRestore=async function(){
+  var email=document.getElementById("obRestoreEmail").value.trim().toLowerCase();
+  var pass=document.getElementById("obRestorePass").value;
+  var msg=document.getElementById("obRestoreMsg");
+  if(!email||!pass){msg.textContent="Enter your email and password.";msg.className="sync-status err";return;}
+  msg.textContent="Logging in...";msg.className="sync-status";
+  var result=await sbSignIn(email,pass);
+  if(result.error){
+    msg.textContent=result.error.message||"Login failed. Check your email and password.";msg.className="sync-status err";
+    return;
+  }
+  if(result.access_token){
+    _sbSession=result;
+    localStorage.setItem("sb_session",JSON.stringify(result));
+    var cloudSave=await loadSaveFromCloud();
+    if(cloudSave){
+      Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+    }
+    G._syncUser=result.user.id;
+    G._syncEmail=email;
+    G.onboarded=true;
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+    var el=document.getElementById("ob-container");
+    if(el)el.remove();
+    render();
+    showToast("Welcome back! Progress restored.");
+  }
+};
+
+window.obCreateAccount=async function(){
+  var user=document.getElementById("obSyncUser").value.trim().toLowerCase();
+  var pass=document.getElementById("obSyncPass").value;
+  if(!user||user.length<2){showToast("Username must be at least 2 characters.");return;}
+  var passErr=validatePassword(pass);
+  if(passErr){showToast(passErr);return;}
+  var uid=hashPass(user+":"+pass);
+  var existing=await loadFromCloud(uid);
+  if(existing){showToast("Username taken! Try a different one.");return;}
+  G._syncUser=uid;
+  G._obStep=5;
   renderOnboarding();
 };
 
@@ -3743,7 +3843,7 @@ function renderDCBanner(){
 
 
 // ════════════════════════════════════════════════
-// SUPABASE CLOUD SYNC
+// SUPABASE AUTH + CLOUD SYNC
 // ════════════════════════════════════════════════
 
 var SB_URL = "https://eskucqbkhznrbpxegmgb.supabase.co";
@@ -3751,70 +3851,88 @@ var SB_KEY = "sb_publishable_nNaYyFxruyCZl8NNkHJLvQ_EbhMQykL";
 
 var _syncTimer = null;
 var _lastSyncedData = null;
+var _sbSession = null; // Supabase Auth session
 
-function sbHeaders(){
-  return {
-    "Content-Type": "application/json",
-    "apikey": SB_KEY,
-    "Authorization": "Bearer " + SB_KEY,
-    "Prefer": "resolution=merge-duplicates"
-  };
+// ── Auth API calls ──
+async function sbSignUp(email, password){
+  var resp = await fetch(SB_URL+"/auth/v1/signup", {
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SB_KEY},
+    body:JSON.stringify({email:email, password:password})
+  });
+  return await resp.json();
 }
 
-// Hash password simply (not crypto, just obfuscation for basic protection)
-function hashPass(str){
-  var h=0;
-  for(var i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}
-  return "u_"+Math.abs(h).toString(36)+"_"+str.length;
+async function sbSignIn(email, password){
+  var resp = await fetch(SB_URL+"/auth/v1/token?grant_type=password", {
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SB_KEY},
+    body:JSON.stringify({email:email, password:password})
+  });
+  return await resp.json();
 }
 
-function getSyncUserId(){
-  return G._syncUser||null;
+async function sbResetPassword(email){
+  var resp = await fetch(SB_URL+"/auth/v1/recover", {
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SB_KEY},
+    body:JSON.stringify({email:email, redirect_to:"https://ayniboy.github.io/Life-RPG"})
+  });
+  return resp.ok;
 }
 
+async function sbSignOut(){
+  if(!_sbSession)return;
+  await fetch(SB_URL+"/auth/v1/logout", {
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+_sbSession.access_token}
+  });
+  _sbSession=null;
+  G._syncUser=null;
+  G._syncEmail=null;
+  savePersist();
+}
+
+function sbAuthHeaders(){
+  if(!_sbSession)return{"Content-Type":"application/json","apikey":SB_KEY};
+  return{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+_sbSession.access_token,"Prefer":"resolution=merge-duplicates"};
+}
+
+// ── Save/Load ──
 async function syncSave(){
-  var uid=getSyncUserId();
-  if(!uid)return;
+  if(!_sbSession)return;
   try{
     G._syncStatus="syncing";
-    updateSyncIndicator();
     var saveStr=JSON.stringify(buildSaveObj());
-    if(saveStr===_lastSyncedData){G._syncStatus="synced";updateSyncIndicator();return;}
+    if(saveStr===_lastSyncedData){G._syncStatus="synced";return;}
+    var uid=_sbSession.user.id;
     var resp=await fetch(SB_URL+"/rest/v1/saves",{
       method:"POST",
-      headers:sbHeaders(),
+      headers:sbAuthHeaders(),
       body:JSON.stringify({user_id:uid,save_data:saveStr,updated_at:new Date().toISOString()})
     });
-    if(resp.ok){
-      _lastSyncedData=saveStr;
-      G._syncStatus="synced";
-    } else {
-      G._syncStatus="error";
-    }
-  } catch(e){
-    G._syncStatus="error";
-  }
-  updateSyncIndicator();
+    if(resp.ok){_lastSyncedData=saveStr;G._syncStatus="synced";}
+    else{G._syncStatus="error";}
+  }catch(e){G._syncStatus="error";}
 }
 
-async function loadFromCloud(uid){
+async function loadSaveFromCloud(){
+  if(!_sbSession)return null;
   try{
+    var uid=_sbSession.user.id;
     var resp=await fetch(SB_URL+"/rest/v1/saves?user_id=eq."+uid+"&select=save_data",{
-      headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
+      headers:{"apikey":SB_KEY,"Authorization":"Bearer "+_sbSession.access_token}
     });
     if(!resp.ok)return null;
     var data=await resp.json();
-    if(data&&data.length>0&&data[0].save_data){
-      return JSON.parse(data[0].save_data);
-    }
+    if(data&&data.length>0&&data[0].save_data)return JSON.parse(data[0].save_data);
     return null;
-  } catch(e){return null;}
+  }catch(e){return null;}
 }
 
 function buildSaveObj(){
-  // Same fields as savePersist but as object
-  return {
-    gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,
+  return{
+    gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,_syncEmail:G._syncEmail,
     totalXP:G.totalXP,skills:G.skills,quests:G.quests,
     log:G.log,purchases:G.purchases,gratitudeEntries:G.gratitudeEntries,
     iamEntries:G.iamEntries,dailyDone:G.dailyDone,avatarName:G.avatarName,
@@ -3840,117 +3958,32 @@ function buildSaveObj(){
 
 function scheduleSyncSave(){
   if(_syncTimer)clearTimeout(_syncTimer);
-  _syncTimer=setTimeout(syncSave, 3000); // debounce 3s after last save
+  _syncTimer=setTimeout(syncSave,3000);
 }
 
-function updateSyncIndicator(){
-  var el=document.getElementById("syncIndicator");
-  if(!el)return;
-  var icons={"idle":"☁️","syncing":"🔄","synced":"✓ Synced","error":"⚠ Sync error"};
-  var classes={"idle":"","syncing":"syncing","synced":"synced","error":"error"};
-  el.textContent=icons[G._syncStatus]||"☁️";
-  el.className="sync-indicator "+(classes[G._syncStatus]||"");
+// Try to restore session from stored token
+async function tryRestoreSession(){
+  var stored=localStorage.getItem("sb_session");
+  if(!stored)return false;
+  try{
+    var sess=JSON.parse(stored);
+    // Check if token is still valid by refreshing
+    var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SB_KEY},
+      body:JSON.stringify({refresh_token:sess.refresh_token})
+    });
+    if(!resp.ok){localStorage.removeItem("sb_session");return false;}
+    var data=await resp.json();
+    if(data.access_token){
+      _sbSession=data;
+      localStorage.setItem("sb_session",JSON.stringify(data));
+      return true;
+    }
+  }catch(e){}
+  return false;
 }
 
-// ── Login / Register UI ──
-window.openSyncModal=function(){
-  var existing=document.getElementById("syncModal");
-  if(existing)existing.remove();
-  var uid=getSyncUserId();
-  var div=document.createElement("div");
-  div.id="syncModal";
-  div.className="sync-modal";
-  if(uid){
-    // Already logged in
-    div.innerHTML='<div class="sync-card">'+
-      '<div class="sync-logo">☁ SYNC</div>'+
-      '<div class="sync-sub">Cloud save active</div>'+
-      '<div style="font-size:13px;color:var(--success);margin-bottom:20px;">✓ Logged in</div>'+
-      '<div style="font-size:12px;color:var(--text2);margin-bottom:20px;font-style:italic;">Your save syncs automatically across all devices.</div>'+
-      '<button class="sync-btn" onclick="forceSyncNow()">Sync Now</button>'+
-      '<button class="sync-btn-secondary" onclick="logoutSync()">Log Out</button>'+
-      '<button class="sync-btn-secondary" onclick="document.getElementById(&quot;syncModal&quot;).remove()">Close</button>'+
-    '</div>';
-  } else {
-    div.innerHTML='<div class="sync-card">'+
-      '<div class="sync-logo">☁ SYNC</div>'+
-      '<div class="sync-sub">Play on any device, same save</div>'+
-      '<input class="sync-input" id="syncUser" placeholder="Username..." maxlength="20" />'+
-      '<input class="sync-input" id="syncPass" type="password" placeholder="Password..." maxlength="30" />'+
-      '<button class="sync-btn" onclick="doSyncRegister()">✦ Create New Account</button>'+
-      '<button class="sync-btn-secondary" onclick="doSyncLoginOnly()">Already have account? Login</button>'+
-      '<button class="sync-btn-secondary" onclick="document.getElementById(&quot;syncModal&quot;).remove()">Play offline</button>'+
-      '<div class="sync-status" id="syncMsg"></div>'+
-    '</div>';
-  }
-  document.body.appendChild(div);
-};
-
-function getSyncInputs(){
-  var user=document.getElementById("syncUser").value.trim().toLowerCase();
-  var pass=document.getElementById("syncPass").value;
-  var msg=document.getElementById("syncMsg");
-  return{user:user,pass:pass,msg:msg};
-}
-
-function validatePassword(pass){
-  if(pass.length<8)return"Password must be at least 8 characters.";
-  if(!/[A-Z]/.test(pass))return"Password must contain at least one uppercase letter.";
-  if(!/[a-z]/.test(pass))return"Password must contain at least one lowercase letter.";
-  if(!/[0-9]/.test(pass))return"Password must contain at least one number.";
-  if(!/[^A-Za-z0-9]/.test(pass))return"Password must contain at least one special character (!@#$%...).";
-  return null;
-}
-
-// user_id = hash of username only (for uniqueness lookup)
-// password hash stored inside save_data for verification
-function userHash(username){return "u_"+hashPass(username);}
-function passHash(pass){return "p_"+hashPass(pass);}
-
-window.doSyncRegister=async function(){
-  var inp=getSyncInputs();
-  if(!inp.user||inp.user.length<2){inp.msg.textContent="Username must be at least 2 characters.";inp.msg.className="sync-status err";return;}
-  var passErr=validatePassword(inp.pass);
-  if(passErr){inp.msg.textContent=passErr;inp.msg.className="sync-status err";return;}
-  inp.msg.textContent="Checking username...";inp.msg.className="sync-status";
-  var uid=userHash(inp.user);
-  // Check if username already taken
-  var existing=await loadFromCloud(uid);
-  if(existing){
-    inp.msg.textContent="Username already taken! Choose a different one.";inp.msg.className="sync-status err";return;
-  }
-  // Create account — store password hash in save
-  G._syncUser=uid;
-  G._passHash=passHash(inp.pass);
-  await syncSave();
-  inp.msg.textContent="✓ Account created! Save synced.";inp.msg.className="sync-status ok";
-  setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
-};
-
-window.doSyncLoginOnly=async function(){
-  var inp=getSyncInputs();
-  if(!inp.user||inp.user.length<2){inp.msg.textContent="Enter your username.";inp.msg.className="sync-status err";return;}
-  if(!inp.pass){inp.msg.textContent="Enter your password.";inp.msg.className="sync-status err";return;}
-  inp.msg.textContent="Logging in...";inp.msg.className="sync-status";
-  var uid=userHash(inp.user);
-  var cloudSave=await loadFromCloud(uid);
-  if(!cloudSave){
-    inp.msg.textContent="Username not found. Check spelling or create an account.";inp.msg.className="sync-status err";return;
-  }
-  // Verify password
-  if(cloudSave._passHash&&cloudSave._passHash!==passHash(inp.pass)){
-    inp.msg.textContent="Wrong password. Try again.";inp.msg.className="sync-status err";return;
-  }
-  // Load save
-  G._syncUser=uid;
-  Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
-  G._syncUser=uid;
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
-  inp.msg.textContent="✓ Logged in! Save loaded.";inp.msg.className="sync-status ok";
-  setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
-};
-
-window.doSyncLogin=window.doSyncLoginOnly;
 
 window.forceSyncNow=async function(){
   _lastSyncedData=null; // force re-sync
@@ -3967,20 +4000,29 @@ window.logoutSync=function(){
   render();
 };
 
+
+window.doSignOut=async function(){
+  await sbSignOut();
+  localStorage.removeItem("sb_session");
+  showToast("Logged out of cloud sync.");
+  render();
+};
+
 if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){});}
 checkStreakShield();
 refreshRotatingQuests();
 checkWeeklyPetKey();
+// Try to restore Supabase session silently
+tryRestoreSession().then(function(restored){
+  if(restored&&_sbSession){
+    G._syncUser=_sbSession.user.id;
+    savePersist();
+  }
+});
 // Show onboarding for new players
 initDailyChallenge();
 startSuddenEventTimer();
-// Show sync modal after onboarding if not synced
-if(G.onboarded&&!G._syncUser){
-  setTimeout(function(){
-    // Only show once per session
-    if(!window._syncPrompted){window._syncPrompted=true;openSyncModal();}
-  },2000);
-}
+// Cloud sync handled during onboarding
 if(!G.onboarded){
   G._obStep=0;
   G._obClass=G.avatarClass||0;
