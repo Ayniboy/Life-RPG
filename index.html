@@ -1225,9 +1225,6 @@ function render(){
   // Will inject hero avatar after render if on hero tab
   var _needHeroAv = G.tab==="hero";
   // Sync indicator
-var syncInd=document.getElementById("syncIndicator");
-if(!syncInd){var si=document.createElement("div");si.id="syncIndicator";si.className="sync-indicator";si.onclick=function(){openSyncModal();};document.body.appendChild(si);}
-updateSyncIndicator();
 document.getElementById("app").innerHTML=
     '<div class="header">'+
       '<div class="hdr-row1">'+
