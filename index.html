@@ -494,6 +494,64 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .hero-share-btn:active{transform:scale(.98);}
   /* Time played */
   .hero-time{font-size:11px;color:var(--text3);text-align:center;margin-top:4px;font-style:italic;}
+
+  /* ── Daily Challenge ── */
+  .dc-banner{background:linear-gradient(135deg,#1a0a2a,#0f0518);border:1px solid #8b6fe844;border-radius:14px;padding:14px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
+  .dc-banner::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,111,232,.05),transparent);pointer-events:none;}
+  .dc-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .dc-banner-title{font-family:"Cinzel",serif;font-size:10px;color:#8b6fe8;letter-spacing:1.5px;text-transform:uppercase;}
+  .dc-banner-timer{font-size:10px;color:var(--text3);font-family:"Cinzel",serif;}
+  .dc-banner-timer.urgent{color:var(--danger);}
+  .dc-banner-desc{font-size:13px;color:#e8d5a0;margin-bottom:8px;line-height:1.5;}
+  .dc-banner-reward{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .dc-banner-reward-chip{background:rgba(244,200,66,.1);border:1px solid rgba(244,200,66,.3);border-radius:10px;padding:3px 10px;font-size:11px;color:#f4c842;font-family:"Cinzel",serif;}
+  .dc-banner-progress{background:var(--bg);border-radius:4px;height:6px;margin-top:10px;overflow:hidden;}
+  .dc-banner-fill{height:100%;background:linear-gradient(90deg,#8b6fe8,#c87ae8);border-radius:4px;transition:width .3s;}
+  .dc-banner-done{font-size:11px;color:var(--success);font-family:"Cinzel",serif;margin-top:6px;}
+
+  /* ── Sudden Event Popup ── */
+  .event-popup{position:fixed;top:80px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:linear-gradient(135deg,#0f1a0a,#07090f);border:1px solid #2ab88a55;border-radius:16px;padding:16px;z-index:8000;box-shadow:0 8px 32px rgba(42,184,138,.2);animation:slideDown .4s cubic-bezier(.34,1.1,.64,1);}
+  @keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+  .event-popup-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .event-popup-icon{font-size:28px;}
+  .event-popup-title{font-family:"Cinzel",serif;font-size:14px;color:#2ab88a;}
+  .event-popup-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;font-style:italic;}
+  .event-popup-timer{font-size:11px;color:#f4c842;font-family:"Cinzel",serif;margin-bottom:10px;}
+  .event-popup-close{position:absolute;top:10px;right:12px;background:transparent;border:none;color:var(--text3);font-size:16px;cursor:pointer;}
+  .event-popup-btn{background:linear-gradient(135deg,#1a8a5a,#2ab88a);border:none;border-radius:10px;padding:9px 20px;font-family:"Cinzel",serif;font-size:11px;color:#fff;cursor:pointer;width:100%;}
+
+  /* ── Surprise Merchant ── */
+  .merchant-popup{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:8500;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .merchant-card{background:linear-gradient(135deg,#1a1208,#0f0a04);border:1px solid #f4c84255;border-radius:20px;padding:24px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 40px rgba(244,200,66,.15);}
+  .merchant-icon{font-size:52px;margin-bottom:8px;}
+  .merchant-title{font-family:"Cinzel",serif;font-size:18px;color:#f4c842;margin-bottom:4px;}
+  .merchant-sub{font-size:12px;color:var(--text2);font-style:italic;margin-bottom:16px;}
+  .merchant-timer{font-family:"Cinzel",serif;font-size:13px;color:var(--danger);margin-bottom:16px;}
+  .merchant-item{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:14px;margin-bottom:12px;text-align:left;display:flex;align-items:center;gap:12px;}
+  .merchant-item-icon{font-size:28px;}
+  .merchant-item-name{font-family:"Cinzel",serif;font-size:13px;color:#e8d5a0;margin-bottom:3px;}
+  .merchant-item-desc{font-size:11px;color:var(--text2);font-style:italic;}
+  .merchant-item-cost{font-family:"Cinzel",serif;font-size:12px;color:#f4c842;margin-top:4px;}
+  .merchant-buy-btn{background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:10px;padding:11px;font-family:"Cinzel",serif;font-size:12px;font-weight:700;color:#1a1200;cursor:pointer;width:100%;margin-bottom:8px;}
+  .merchant-close-btn{background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px;font-family:"Cinzel",serif;font-size:11px;color:var(--text2);cursor:pointer;width:100%;}
+
+  /* ── Supabase Sync ── */
+  .sync-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .sync-card{background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;}
+  .sync-logo{font-family:"Cinzel",serif;font-size:22px;color:#f4c842;margin-bottom:4px;letter-spacing:3px;}
+  .sync-sub{font-size:12px;color:var(--text2);margin-bottom:24px;font-style:italic;}
+  .sync-input{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:14px;color:#e8d5a0;width:100%;box-sizing:border-box;margin-bottom:10px;outline:none;font-family:"Cinzel",serif;}
+  .sync-input:focus{border-color:#f4c842;}
+  .sync-btn{background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:12px;padding:13px;font-family:"Cinzel",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;width:100%;margin-bottom:8px;letter-spacing:.5px;}
+  .sync-btn:active{transform:scale(.97);}
+  .sync-btn-secondary{background:transparent;border:1px solid var(--border);border-radius:12px;padding:11px;font-family:"Cinzel",serif;font-size:12px;color:var(--text2);cursor:pointer;width:100%;margin-bottom:8px;}
+  .sync-status{font-size:11px;color:var(--text3);margin-top:8px;font-style:italic;}
+  .sync-status.ok{color:var(--success);}
+  .sync-status.err{color:var(--danger);}
+  .sync-indicator{position:fixed;bottom:80px;right:12px;font-size:10px;font-family:"Cinzel",serif;color:var(--text3);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;z-index:500;opacity:.8;}
+  .sync-indicator.syncing{color:#f4c842;}
+  .sync-indicator.synced{color:var(--success);}
+  .sync-indicator.error{color:var(--danger);}
 </style>
 </head>
 <body>
@@ -606,7 +664,7 @@ function loadSaved(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var p=JSO
 function savePersist(){
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify({
-      gold:G.gold,onboarded:G.onboarded,
+      gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,
       totalXP:G.totalXP,
       skills:G.skills,
       quests:G.quests,
@@ -682,10 +740,21 @@ var G={
   lastStreakDate:sv&&sv.lastStreakDate||null,
   fjSearch:"",
   _drawerOpen:false,
+  _syncUser: sv&&sv._syncUser||null,
+  _syncStatus: "idle",
+  dailyChallenge: sv&&sv.dailyChallenge||null,
+  dcProgress: sv&&sv.dcProgress||0,
+  dcClaimed: sv&&sv.dcClaimed||false,
+  lastDCKey: sv&&sv.lastDCKey||null,
+  suddenEvent: sv&&sv.suddenEvent||null,
+  merchantActive: sv&&sv.merchantActive||null,
+  _showMerchant: false,
   ownedPets: sv&&sv.ownedPets||[],
   activePets: sv&&sv.activePets||[null,null],
   slotCooldowns: sv&&sv.slotCooldowns||[null,null],
   actionCount: sv&&sv.actionCount||0,
+  totalChestsEarned: sv&&sv.totalChestsEarned||0,
+  totalQuestsDone: sv&&sv.totalQuestsDone||0,
   _pickingSlot: null,
   gems: sv&&sv.gems||0,
   rotatingSlots: sv&&sv.rotatingSlots||[],
@@ -816,6 +885,7 @@ function updateStreak(){
 }
 
 function rDashboard(){
+  var dcBanner=renderDCBanner();
   var sr=SKILLS.map(function(sk){var s=G.skills[sk.id]||(G.skills[sk.id]={xp:0,level:1}),need=xpForSkillLv(s.level),pct=Math.min(100,Math.round(s.xp/need*100));return'<div class="skill-row"><div class="skill-meta"><div><span class="skill-name">'+sk.name+'</span><span style="color:var(--text3);margin:0 6px;">|</span><span class="skill-tag" style="color:'+DOMAIN_COLORS[sk.domain]+';">'+sk.domain+'</span></div><div><span class="skill-level" style="color:'+sk.color+'">Lv.'+s.level+'</span><span class="skill-xp">'+s.xp+' / '+need+' XP</span></div></div><div class="xp-wrap"><div class="xp-fill" style="width:'+pct+'%;background:'+sk.color+';box-shadow:0 0 8px '+sk.color+'55;"></div></div></div>';}).join("");
   var logH=G.log.length>0?'<div class="card" style="padding:4px 16px;"><div class="card-title" style="padding-top:14px;">Recent Deeds</div>'+G.log.slice(0,6).map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>':'<div class="empty">Your legend has not yet begun. Head to Actions.</div>';
   return'<div class="card"><div class="card-title">Skill Trees</div>'+sr+'</div>'+logH;
@@ -899,6 +969,15 @@ function rQuests(){
   var standard=G.quests||[];
 
   // ── Custom quest form ──
+  var cqUnlocked = totalLv() >= 5;
+  if(!cqUnlocked){
+    var formHTML = '<div class="cq-form" style="text-align:center;padding:20px 16px;">'+
+      '<div style="font-size:36px;margin-bottom:12px;">🔒</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:14px;color:#e8d5a0;margin-bottom:8px;">Custom Quests Locked</div>'+
+      '<div style="font-size:12px;color:var(--text2);font-style:italic;line-height:1.6;">Reach <span style="color:#f4c842;font-weight:600;">Total Level 5</span> to unlock the ability to create your own quests. Keep grinding!</div>'+
+      '<div style="margin-top:12px;font-size:11px;color:var(--text3);">Current level: '+totalLv()+' / 5</div>'+
+    '</div>';
+  } else {
   var actionOptions=QUICK_ACTIONS.map(function(a){return'<option value="'+a.id+'">'+a.label+'</option>';}).join("");
   var skillOptions=SKILLS.map(function(s){return'<option value="'+s.id+'">'+s.name+'</option>';}).join("");
 
@@ -922,6 +1001,7 @@ function rQuests(){
       '<button class="cq-add-btn" onclick="addCustomQuest()">+ Add Quest</button>'+
     '</div>';
 
+  } // end cqUnlocked
   // ── Rotating quests section ──
   var rotatingHTML="";
   var activeRotating=rotating.filter(function(q){return!q.done;});
@@ -946,7 +1026,38 @@ function rQuests(){
     stdActive.map(function(q){return renderQuestItem(q,false,false);}).join("")+
     stdDone.map(function(q){return renderQuestItem(q,false,false);}).join("");
 
-  return formHTML+rotatingHTML+customHTML+standardHTML;
+  // ── Daily Challenge section ──
+  var dcHTML="";
+  var dc=G.dailyChallenge;
+  if(dc){
+    var pct=Math.min(100,Math.round(((G.dcProgress||0)/dc.target)*100));
+    var done=G.dcClaimed;
+    var statusColor=done?"var(--success)":"#f4c842";
+    dcHTML='<div class="card" style="margin-bottom:12px;">'+
+      '<div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">'+
+        '<span>🎯 Daily Challenge</span>'+
+        '<span style="font-size:10px;color:var(--text3);font-family:\"Cinzel\",serif;">Resets at 4AM</span>'+
+      '</div>'+
+      '<div style="background:linear-gradient(135deg,#1a0a2a,#0f0518);border:1px solid #8b6fe844;border-radius:12px;padding:14px;">'+
+        '<div style="font-size:13px;color:#e8d5a0;margin-bottom:8px;line-height:1.5;">'+dc.desc+'</div>'+
+        '<div style="font-size:11px;color:var(--text2);margin-bottom:10px;">'+
+          'Reward: <span style="color:#f4c842;font-family:\"Cinzel\",serif;">'+dc.reward+'</span>'+
+        '</div>'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'+
+          '<span style="font-size:11px;color:'+statusColor+';">'+
+            (done?"✓ Complete!":(G.dcProgress||0)+"/"+dc.target+" done")+
+          '</span>'+
+          '<span style="font-size:11px;color:var(--text3);">'+pct+'%</span>'+
+        '</div>'+
+        '<div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden;">'+
+          '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,#8b6fe8,#c87ae8);border-radius:4px;transition:width .3s;"></div>'+
+        '</div>'+
+        (done?'<div style="margin-top:8px;font-size:11px;color:var(--success);font-family:\"Cinzel\",serif;text-align:center;">🏆 Reward Claimed!</div>':'')+
+      '</div>'+
+    '</div>';
+  }
+
+  return dcHTML+formHTML+rotatingHTML+customHTML+standardHTML;
 }
 
 function rJournal(){
@@ -1025,6 +1136,7 @@ function rShop(){
 function rLog(){
   var exportImport=
     '<div class="save-mgmt">'+
+      '<button class="save-mgmt-btn" style="background:linear-gradient(135deg,#0a1428,#050a14);border:1px solid #4a8fff44;color:#4a8fff;" onclick="openSyncModal()">☁ '+(G._syncUser?'Sync: ON':'Cloud Sync')+'</button>'+
       '<button class="save-mgmt-btn save-export-btn" onclick="exportSave()">📤 Export Save</button>'+
       '<button class="save-mgmt-btn save-import-btn" onclick="importSave()">📥 Import Save</button>'+
     '</div>'+
@@ -1103,7 +1215,11 @@ function render(){
   }).join("");
   // Will inject hero avatar after render if on hero tab
   var _needHeroAv = G.tab==="hero";
-  document.getElementById("app").innerHTML=
+  // Sync indicator
+var syncInd=document.getElementById("syncIndicator");
+if(!syncInd){var si=document.createElement("div");si.id="syncIndicator";si.className="sync-indicator";si.onclick=function(){openSyncModal();};document.body.appendChild(si);}
+updateSyncIndicator();
+document.getElementById("app").innerHTML=
     '<div class="header">'+
       '<div class="hdr-row1">'+
         '<div class="hdr-left">'+
@@ -1136,6 +1252,8 @@ function render(){
   requestAnimationFrame(function(){
     var slot=document.getElementById("avImg");
     if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,40);
+    var heroSlot=document.getElementById("heroAvImg");
+    if(heroSlot)heroSlot.innerHTML=drawSVG(G.avatarClass,tl,120);
   });
 }
 
@@ -1253,6 +1371,7 @@ window.doAction=function(id){
   earnXP(a.skill,petBonus.xp,a.label,petBonus.gold);
   checkOrbBonus();
   checkInfernoDragonGem(a.id);
+  updateDCProgress(a.id, a.domain);
   // Check quest progress — if a quest completes it shows popup, then level ups after Claim
   var prevPending=G._pendingLvUps.length;
   checkQuestProgress(id, a.domain);
@@ -1659,7 +1778,7 @@ var SPIN_REWARDS = [
   {id:"xp_sm",     label:"Quick Boost x1",  icon:"⚡", color:"#4a8fff", desc:"2x XP on your next 3 actions!",     weight:20, apply:function(){G.boostActionsLeft=(G.boostActionsLeft||0)+3; savePersist(); showToast("Quick Boost active!");}},
   {id:"xp_lg",     label:"Power Hour",      icon:"🔥", color:"#8b6fe8", desc:"2x XP for the next 6 hours!",       weight:10, apply:function(){G.boostHourExpiry=Date.now()+(6*3600*1000); savePersist(); showToast("Power Hour active! 2x XP for 6 hours.");}},
   {id:"shield",    label:"Streak Shield",  icon:"🛡️", color:"#2ab88a", desc:"Your streak is protected for one missed day.", weight:8, apply:function(){G.streakShield=(G.streakShield||0)+1; savePersist();}},
-  {id:"chest",     label:"Mystery Chest",  icon:"📦", color:"#e8923a", desc:"A locked chest awaits your key.",    weight:6,  apply:function(){G.chests=(G.chests||0)+1; savePersist();}},
+  {id:"chest",     label:"Mystery Chest",  icon:"📦", color:"#e8923a", desc:"A locked chest awaits your key.",    weight:6,  apply:function(){G.chests=(G.chests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1; savePersist();}},
   {id:"jackpot",   label:"JACKPOT! 777 Gold",icon:"🌟",color:"#f4c842",desc:"Legendary luck. The gods smile.",    weight:3,  apply:function(){G.gold+=777;G.gems=(G.gems||0)+2;savePersist();showToast("JACKPOT! 777g +2💎");}},
   {id:"nothing",   label:"Better luck next time",icon:"🎲",color:"#6a8aaa",desc:"The wheel is fickle.",           weight:5,  apply:function(){}},
 ];
@@ -1892,10 +2011,10 @@ var CHEST_REWARDS = {
     {id:"gold_1000", label:"1000 Gold",        icon:"💎", color:"#f4c842", desc:"A legendary bounty.",         weight:10, apply:function(){G.gold+=1000; savePersist();}},
     {id:"xp_1000",   label:"1000 XP",          icon:"⚡", color:"#c456a0", desc:"Massive experience surge.",  weight:20, apply:function(){G.totalXP=(G.totalXP||0)+1000; savePersist();}},
     {id:"shields_2", label:"2 Streak Shields", icon:"🛡️", color:"#2ab88a", desc:"Double protection.",         weight:15, apply:function(){G.streakShield=(G.streakShield||0)+2; savePersist();}},
-    {id:"rare_chest",label:"Another Rare Chest",icon:"📦",color:"#4a8fff", desc:"Fortune favours the bold.",  weight:10, apply:function(){G.rareChests=(G.rareChests||0)+1; savePersist();}},
+    {id:"rare_chest",label:"Another Rare Chest",icon:"📦",color:"#4a8fff", desc:"Fortune favours the bold.",  weight:10, apply:function(){G.rareChests=(G.rareChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1; savePersist();}},
     {id:"keys_3",    label:"3 Keys",           icon:"🗝️", color:"#e8923a", desc:"A ring of keys.",            weight:10, apply:function(){G.keys=(G.keys||0)+3; savePersist();}},
     {id:"title_brave",label:'Title: "The Brave"',icon:"👑",color:"#f4c842",desc:"A title earned through chance.", weight:5, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("The Brave"))G.inventory.push("The Brave"); savePersist();}},
-    {id:"leg_chest", label:"Legendary Chest",  icon:"🌟", color:"#f4c842", desc:"The rarest of all chests.",  weight:5,  apply:function(){G.legendaryChests=(G.legendaryChests||0)+1; savePersist();}},
+    {id:"leg_chest", label:"Legendary Chest",  icon:"🌟", color:"#f4c842", desc:"The rarest of all chests.",  weight:5,  apply:function(){G.legendaryChests=(G.legendaryChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1; savePersist();}},
   ],
   legendary: [
     {id:"gold_2000", label:"2000 Gold",        icon:"👑", color:"#f4c842", desc:"The ultimate treasury.",     weight:20, apply:function(){G.gold+=2000; savePersist();}},
@@ -2556,14 +2675,14 @@ var ROT_POOL = [
   // Tier 1 — Gold only
   {id:"mystery_bundle", name:"Mystery Bundle",   icon:"🔮", desc:"A random chest + key + Quick Boost.",  tier:1, gold:250, gems:0,  dur:function(){return(12+Math.random()*24)*3600000;}, apply:function(){G.chests=(G.chests||0)+1;G.keys=(G.keys||0)+1;G.boostActionsLeft=(G.boostActionsLeft||0)+3;savePersist();showToast("Mystery Bundle claimed!");}},
   {id:"key_bundle",     name:"Key Bundle x3",    icon:"🗝️", desc:"3 keys for the price of 2.",           tier:1, gold:180, gems:0,  dur:function(){return(12+Math.random()*36)*3600000;}, apply:function(){G.keys=(G.keys||0)+3;savePersist();showToast("3 Keys added to Inventory!");}},
-  {id:"rare_chest_rot", name:"Rare Chest",        icon:"🎁", desc:"A Rare chest delivered directly.",    tier:1, gold:300, gems:0,  dur:function(){return(18+Math.random()*30)*3600000;}, apply:function(){G.rareChests=(G.rareChests||0)+1;savePersist();showToast("Rare Chest added to Inventory!");}},
+  {id:"rare_chest_rot", name:"Rare Chest",        icon:"🎁", desc:"A Rare chest delivered directly.",    tier:1, gold:300, gems:0,  dur:function(){return(18+Math.random()*30)*3600000;}, apply:function(){G.rareChests=(G.rareChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;savePersist();showToast("Rare Chest added to Inventory!");}},
   // Tier 2 — Gold + Gems
   {id:"mega_boost",     name:"Mega Boost 24h",   icon:"⚡", desc:"2x XP for a full 24 hours.",           tier:2, gold:300, gems:3,  dur:function(){return(24+Math.random()*24)*3600000;}, apply:function(){G.boostHourExpiry=Date.now()+(24*3600000);savePersist();showToast("Mega Boost active! 2x XP for 24 hours!");}},
   {id:"xp_surge",       name:"XP Surge +500",    icon:"🌀", desc:"500 XP injected instantly.",           tier:2, gold:250, gems:2,  dur:function(){return(12+Math.random()*36)*3600000;}, apply:function(){G.totalXP=(G.totalXP||0)+500;savePersist();showToast("+500 XP claimed!");}},
   {id:"double_spin",    name:"Double Spin",       icon:"🎰", desc:"Spin the wheel twice today.",          tier:2, gold:150, gems:2,  dur:function(){return(12+Math.random()*24)*3600000;}, apply:function(){G.lastSpinDate=null;G.bonusSpin=(G.bonusSpin||0)+1;savePersist();showToast("Double Spin ready! Go spin twice today.");}},
   {id:"shield_pack",    name:"Shield Pack x3",   icon:"🛡️", desc:"Three streak shields at once.",        tier:2, gold:200, gems:3,  dur:function(){return(18+Math.random()*30)*3600000;}, apply:function(){G.streakShield=(G.streakShield||0)+3;savePersist();showToast("3 Streak Shields added!");}},
   // Tier 3 — Gems only
-  {id:"leg_chest_rot",  name:"Legendary Chest",  icon:"🌟", desc:"The rarest chest in the game.",       tier:3, gold:0,   gems:8,  dur:function(){return(24+Math.random()*48)*3600000;}, apply:function(){G.legendaryChests=(G.legendaryChests||0)+1;savePersist();showToast("Legendary Chest added to Inventory!");}},
+  {id:"leg_chest_rot",  name:"Legendary Chest",  icon:"🌟", desc:"The rarest chest in the game.",       tier:3, gold:0,   gems:8,  dur:function(){return(24+Math.random()*48)*3600000;}, apply:function(){G.legendaryChests=(G.legendaryChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;savePersist();showToast("Legendary Chest added to Inventory!");}},
   {id:"title_relentless",name:"Title: The Relentless", icon:"👑",desc:"An exclusive title. Few earn this.", tier:3, gold:0, gems:10, dur:function(){return(36+Math.random()*36)*3600000;}, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("The Relentless"))G.inventory.push("The Relentless");savePersist();showToast("Title unlocked: The Relentless!");}},
   {id:"title_seeker",   name:"Title: Seeker of Truth", icon:"💫",desc:"For those who seek deeper wisdom.", tier:3, gold:0, gems:10, dur:function(){return(36+Math.random()*36)*3600000;}, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("Seeker of Truth"))G.inventory.push("Seeker of Truth");savePersist();showToast("Title unlocked: Seeker of Truth!");}},
   {id:"title_awakened", name:"Title: Awakened",  icon:"🔥", desc:"Reserved for the truly dedicated.",   tier:3, gold:0,   gems:12, dur:function(){return(48+Math.random()*24)*3600000;}, apply:function(){if(!G.inventory)G.inventory=[];if(!G.inventory.includes("Awakened"))G.inventory.push("Awakened");savePersist();showToast("Title unlocked: Awakened!");}},
@@ -2764,7 +2883,7 @@ function checkOrbBonus(){
     if(pet.petId==="orb"||pet.petId==="void_orb"){
       G.actionCount=(G.actionCount||0)+1;
       if(G.actionCount%5===0){
-        if(pet.petId==="void_orb"){G.rareChests=(G.rareChests||0)+1;showToast("💫 Void Orb: free Rare Chest!");}
+        if(pet.petId==="void_orb"){G.rareChests=(G.rareChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;showToast("💫 Void Orb: free Rare Chest!");}
         else{G.chests=(G.chests||0)+1;showToast("🔮 Spirit Orb: free Common Chest!");}
       }
       break;
@@ -3163,7 +3282,7 @@ function getTotalActionsLogged(){
 function getTotalQuestsCompleted(){
   var main=(G.quests||[]).filter(function(q){return q.done;}).length;
   var custom=(G.customQuests||[]).filter(function(q){return q.done;}).length;
-  return main+custom;
+  return Math.max(main+custom, G.totalQuestsDone||0);
 }
 
 function getTotalGoldEarned(){
@@ -3229,7 +3348,7 @@ function rHero(){
     '<div class="hero-stat-card"><div class="hero-stat-icon">💰</div><div><div class="hero-stat-val">'+goldEarned+'g</div><div class="hero-stat-lbl">Gold Earned</div></div></div>'+
     '<div class="hero-stat-card"><div class="hero-stat-icon">💎</div><div><div class="hero-stat-val">'+G.gems+'</div><div class="hero-stat-lbl">Gems Owned</div></div></div>'+
     '<div class="hero-stat-card"><div class="hero-stat-icon">🔥</div><div><div class="hero-stat-val">'+G.streakDays+'</div><div class="hero-stat-lbl">Day Streak</div></div></div>'+
-    '<div class="hero-stat-card"><div class="hero-stat-icon">🗝️</div><div><div class="hero-stat-val">'+((G.chests||0)+(G.rareChests||0)+(G.legendaryChests||0))+'</div><div class="hero-stat-lbl">Chests Owned</div></div></div>';
+    '<div class="hero-stat-card"><div class="hero-stat-icon">📦</div><div><div class="hero-stat-val">'+(G.totalChestsEarned||0)+'</div><div class="hero-stat-lbl">Chests Earned</div></div></div>';
 
   // Titles
   var titlesHTML=earnedTitles.length>0
@@ -3315,11 +3434,491 @@ window.shareHero=function(){
   }
 };
 
+
+// ════════════════════════════════════════════════
+// PHASE 1 EVENTS: Daily Challenge + Sudden Events + Surprise Merchant
+// ════════════════════════════════════════════════
+
+// ── Daily Challenges Pool ──
+var DC_POOL = [
+  {id:"dc_health3",  desc:"Complete 3 Health actions today",          type:"domain",  domain:"Health",      target:3,  xp:80,  gold:25, gems:1, reward:"Rare Chest", chest:"rare"},
+  {id:"dc_spirit2",  desc:"Complete 2 Spiritual practices today",     type:"domain",  domain:"Spiritual",   target:2,  xp:70,  gold:20, gems:1, reward:"+70 XP + 1💎"},
+  {id:"dc_prod2",    desc:"Complete 2 Productivity actions today",    type:"domain",  domain:"Productivity",target:2,  xp:70,  gold:20, gems:1, reward:"+70 XP + 1💎"},
+  {id:"dc_learn2",   desc:"Complete 2 Learning actions today",        type:"domain",  domain:"Learning",    target:2,  xp:70,  gold:20, gems:1, reward:"+70 XP + 1💎"},
+  {id:"dc_any5",     desc:"Log any 5 actions today",                  type:"count",   target:5,             xp:100, gold:30, gems:2, reward:"Legendary Chest", chest:"legendary"},
+  {id:"dc_streak",   desc:"Log at least 3 actions to protect streak", type:"count",   target:3,             xp:60,  gold:20, gems:0, reward:"+60 XP + Shield", shield:true},
+  {id:"dc_cold",     desc:"Take a cold shower or plunge today",       type:"action",  action:"cold_shower", target:1, xp:90,  gold:30, gems:1, reward:"Rare Chest", chest:"rare"},
+  {id:"dc_meditate", desc:"Meditate for 10 minutes today",            type:"action",  action:"meditate",    target:1, xp:60,  gold:20, gems:1, reward:"+60 XP + 1💎"},
+  {id:"dc_workout",  desc:"Complete a workout today",                  type:"action",  action:"workout",     target:1, xp:70,  gold:25, gems:1, reward:"+70 XP + 1💎"},
+  {id:"dc_read",     desc:"Read for at least 20 minutes today",       type:"action",  action:"read20",      target:1, xp:65,  gold:20, gems:1, reward:"+65 XP + 1💎"},
+];
+
+// ── Sudden Events Pool ──
+var SE_POOL = [
+  {id:"se_xp2",      icon:"⚡", title:"Lightning Round!",      desc:"All XP doubled for the next 30 minutes!", duration:30*60000,  apply:function(){G.boostHourExpiry=Date.now()+30*60000;showToast("⚡ XP Doubled for 30 minutes!");}},
+  {id:"se_gold",     icon:"💰", title:"Gold Rush!",             desc:"Earn +5 bonus Gold on every action for 1 hour!", duration:60*60000, apply:function(){G.goldRushExpiry=Date.now()+60*60000;showToast("💰 Gold Rush active!");}},
+  {id:"se_chest",    icon:"🎁", title:"Lucky Find!",            desc:"A mysterious chest appeared!", duration:0, apply:function(){G.rareChests=(G.rareChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;savePersist();showToast("🎁 Rare Chest added to Inventory!");}},
+  {id:"se_gem",      icon:"💎", title:"Gem Shower!",            desc:"The universe rewards your dedication!", duration:0, apply:function(){G.gems=(G.gems||0)+2;savePersist();showToast("💎 +2 Gems!");}},
+  {id:"se_shield",   icon:"🛡️", title:"Divine Protection!",    desc:"Your streak is protected for today!", duration:0, apply:function(){G.streakShield=(G.streakShield||0)+1;savePersist();showToast("🛡️ Streak Shield added!");}},
+  {id:"se_merchant", icon:"🧙", title:"Mysterious Merchant!",   desc:"A travelling merchant has appeared for 10 minutes!", duration:10*60000, apply:function(){spawnMerchant();}},
+];
+
+// ── Merchant Items Pool ──
+var MERCHANT_POOL = [
+  {icon:"🌟", name:"Legendary Chest",  desc:"The rarest chest — direct from the merchant.", gold:400, gems:0},
+  {icon:"⚡", name:"Mega Boost 24h",   desc:"2x XP for a full day. Today is the day.", gold:180, gems:2},
+  {icon:"💎", name:"Gem Bundle x5",    desc:"5 gems at a steep discount.", gold:200, gems:0, giveGems:5},
+  {icon:"🗝️", name:"Key Bundle x4",    desc:"4 keys for less than the price of 3.", gold:150, gems:0},
+  {icon:"🛡️", name:"Shield Pack x2",   desc:"Two streak shields. Stay protected.", gold:120, gems:1},
+  {icon:"🔮", name:"Mystery Bundle",   desc:"A chest, a key, and a boost. Guaranteed value.", gold:160, gems:0},
+];
+
+function getDCKey(){return getDayKey();}
+
+function initDailyChallenge(){
+  var dk=getDCKey();
+  if(G.lastDCKey===dk)return; // Already set for today
+  // Pick new challenge
+  var idx=Math.floor(Math.random()*DC_POOL.length);
+  G.dailyChallenge=DC_POOL[idx];
+  G.dcProgress=0;
+  G.dcClaimed=false;
+  G.lastDCKey=dk;
+  savePersist();
+  // Show popup
+  setTimeout(showDCPopup, 800);
+}
+
+function showDCPopup(){
+  var dc=G.dailyChallenge;
+  if(!dc||G.dcClaimed)return;
+  var existing=document.getElementById("dcPopup");
+  if(existing)existing.remove();
+  var div=document.createElement("div");
+  div.id="dcPopup";
+  div.className="event-popup";
+  div.innerHTML=
+    '<button class="event-popup-close" onclick="document.getElementById(\'dcPopup\').remove()">✕</button>'+
+    '<div class="event-popup-top">'+
+      '<div class="event-popup-icon">🎯</div>'+
+      '<div class="event-popup-title">Daily Challenge!</div>'+
+    '</div>'+
+    '<div class="event-popup-desc">'+dc.desc+'</div>'+
+    '<div style="font-size:11px;color:#f4c842;font-family:\"Cinzel\",serif;margin-bottom:10px;">Reward: '+dc.reward+'</div>'+
+    '<button class="event-popup-btn" onclick="setTab(\'quests\');document.getElementById(\'dcPopup\').remove()">View in Quests →</button>';
+  document.body.appendChild(div);
+  setTimeout(function(){var el=document.getElementById("dcPopup");if(el)el.remove();},8000);
+}
+
+function updateDCProgress(actionId, domain){
+  var dc=G.dailyChallenge;
+  if(!dc||G.dcClaimed)return;
+  var dk=getDCKey();
+  if(G.lastDCKey!==dk)return;
+  var hit=false;
+  if(dc.type==="domain"&&domain===dc.domain)hit=true;
+  if(dc.type==="count")hit=true;
+  if(dc.type==="action"&&actionId===dc.action)hit=true;
+  if(hit){
+    G.dcProgress=Math.min((G.dcProgress||0)+1,dc.target);
+    if(G.dcProgress>=dc.target&&!G.dcClaimed){
+      G.dcClaimed=true;
+      claimDC(dc);
+    }
+    savePersist();
+  }
+}
+
+function claimDC(dc){
+  G.gold+=(dc.gold||0);
+  G.totalXP=(G.totalXP||0)+(dc.xp||0);
+  if(dc.gems)G.gems=(G.gems||0)+dc.gems;
+  if(dc.chest==="rare")G.rareChests=(G.rareChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;
+  if(dc.chest==="legendary")G.legendaryChests=(G.legendaryChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;
+  if(dc.shield)G.streakShield=(G.streakShield||0)+1;
+  savePersist();
+  // Show completion popup
+  var div=document.createElement("div");
+  div.className="event-popup";
+  div.style.cssText="position:fixed;top:80px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:linear-gradient(135deg,#0a1a08,#07090f);border:1px solid #f4c84266;border-radius:16px;padding:16px;z-index:8000;box-shadow:0 8px 32px rgba(244,200,66,.2);animation:slideDown .4s cubic-bezier(.34,1.1,.64,1);";
+  div.innerHTML=
+    '<div class="event-popup-top">'+
+      '<div class="event-popup-icon">🏆</div>'+
+      '<div class="event-popup-title" style="color:#f4c842;">Challenge Complete!</div>'+
+    '</div>'+
+    '<div class="event-popup-desc">'+dc.desc+'</div>'+
+    '<div style="font-size:13px;color:var(--success);font-family:\"Cinzel\",serif;">✓ '+dc.reward+' claimed!</div>';
+  document.body.appendChild(div);
+  stopFireworksForce();startFireworks("#f4c842");
+  setTimeout(function(){div.remove();stopFireworks();},4000);
+  render();
+}
+
+// ── Sudden Events ──
+var seTimer=null;
+function startSuddenEventTimer(){
+  if(seTimer)clearTimeout(seTimer);
+  // Random event every 20-45 minutes of active play
+  var delay=(20+Math.floor(Math.random()*25))*60000;
+  seTimer=setTimeout(function(){
+    triggerSuddenEvent();
+  },delay);
+}
+
+function triggerSuddenEvent(){
+  var ev=SE_POOL[Math.floor(Math.random()*SE_POOL.length)];
+  showSuddenEvent(ev);
+  startSuddenEventTimer(); // queue next one
+}
+
+function showSuddenEvent(ev){
+  var existing=document.getElementById("sePopup");
+  if(existing)existing.remove();
+  var div=document.createElement("div");
+  div.id="sePopup";
+  div.className="event-popup";
+  div.style.borderColor="#2ab88a55";
+  var endTime=ev.duration?Date.now()+ev.duration:null;
+  div.innerHTML=
+    '<button class="event-popup-close" onclick="dismissSuddenEvent()">✕</button>'+
+    '<div class="event-popup-top">'+
+      '<div class="event-popup-icon">'+ev.icon+'</div>'+
+      '<div class="event-popup-title">'+ev.title+'</div>'+
+    '</div>'+
+    '<div class="event-popup-desc">'+ev.desc+'</div>'+
+    (ev.duration?'<div class="event-popup-timer">⏰ Available for '+Math.round(ev.duration/60000)+' minutes</div>':'')+
+    '<button class="event-popup-btn" onclick="claimSuddenEvent(\''+ev.id+'\')">Claim Now!</button>';
+  document.body.appendChild(div);
+  G.suddenEvent={id:ev.id,endTime:endTime};
+  savePersist();
+  // Auto dismiss after 60 seconds if not claimed
+  setTimeout(function(){dismissSuddenEvent();},60000);
+}
+
+window.claimSuddenEvent=function(id){
+  var ev=SE_POOL.filter(function(e){return e.id===id;})[0];
+  if(ev)ev.apply();
+  dismissSuddenEvent();
+};
+
+window.dismissSuddenEvent=function(){
+  var el=document.getElementById("sePopup");
+  if(el)el.remove();
+  G.suddenEvent=null;
+  savePersist();
+};
+
+// ── Surprise Merchant ──
+function spawnMerchant(){
+  var items=[];
+  var pool=MERCHANT_POOL.slice();
+  // Pick 2 random items
+  for(var i=0;i<2;i++){
+    var idx=Math.floor(Math.random()*pool.length);
+    items.push(pool.splice(idx,1)[0]);
+  }
+  G.merchantActive={items:items,expiresAt:Date.now()+10*60000};
+  G._showMerchant=true;
+  savePersist();
+  showMerchantPopup();
+}
+
+function showMerchantPopup(){
+  var m=G.merchantActive;
+  if(!m)return;
+  var existing=document.getElementById("merchantPopup");
+  if(existing)existing.remove();
+  var timeLeft=Math.max(0,Math.round((m.expiresAt-Date.now())/60000));
+  var itemsHTML=m.items.map(function(item,idx){
+    return'<div class="merchant-item">'+
+      '<div class="merchant-item-icon">'+item.icon+'</div>'+
+      '<div style="flex:1;">'+
+        '<div class="merchant-item-name">'+item.name+'</div>'+
+        '<div class="merchant-item-desc">'+item.desc+'</div>'+
+        '<div class="merchant-item-cost">'+item.gold+'g'+(item.gems?' + '+item.gems+'💎':'')+'</div>'+
+      '</div>'+
+      '<button onclick="buyMerchantItem('+idx+')" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:8px;padding:6px 12px;font-family:\"Cinzel\",serif;font-size:10px;font-weight:700;color:#1a1200;cursor:pointer;">Buy</button>'+
+    '</div>';
+  }).join("");
+  var div=document.createElement("div");
+  div.id="merchantPopup";
+  div.className="merchant-popup";
+  div.innerHTML='<div class="merchant-card">'+
+    '<div class="merchant-icon">🧙</div>'+
+    '<div class="merchant-title">Mysterious Merchant</div>'+
+    '<div class="merchant-sub">A rare visitor with exclusive wares</div>'+
+    '<div class="merchant-timer" id="merchantTimer">⏰ Leaves in '+timeLeft+' minutes</div>'+
+    itemsHTML+
+    '<button class="merchant-close-btn" onclick="closeMerchant()">Send them away</button>'+
+  '</div>';
+  document.body.appendChild(div);
+  // Start countdown
+  var mInterval=setInterval(function(){
+    var tl=Math.max(0,Math.round((G.merchantActive.expiresAt-Date.now())/60000));
+    var timerEl=document.getElementById("merchantTimer");
+    if(timerEl)timerEl.textContent="⏰ Leaves in "+tl+" minutes";
+    if(Date.now()>=G.merchantActive.expiresAt){
+      clearInterval(mInterval);
+      closeMerchant();
+      showToast("🧙 The merchant has disappeared...");
+    }
+  },30000);
+}
+
+window.buyMerchantItem=function(idx){
+  var m=G.merchantActive;
+  if(!m||!m.items[idx])return;
+  var item=m.items[idx];
+  if(G.gold<item.gold){showToast("Not enough Gold!");return;}
+  if(item.gems&&G.gems<item.gems){showToast("Not enough Gems!");return;}
+  G.gold-=item.gold;
+  if(item.gems)G.gems-=item.gems;
+  // Apply item
+  if(item.name==="Legendary Chest"){G.legendaryChests=(G.legendaryChests||0)+1;G.totalChestsEarned=(G.totalChestsEarned||0)+1;}
+  else if(item.name==="Mega Boost 24h")G.boostHourExpiry=Date.now()+24*3600000;
+  else if(item.giveGems)G.gems=(G.gems||0)+item.giveGems;
+  else if(item.name==="Key Bundle x4")G.keys=(G.keys||0)+4;
+  else if(item.name==="Shield Pack x2")G.streakShield=(G.streakShield||0)+2;
+  else if(item.name==="Mystery Bundle"){G.chests=(G.chests||0)+1;G.keys=(G.keys||0)+1;G.boostActionsLeft=(G.boostActionsLeft||0)+3;}
+  m.items.splice(idx,1);
+  savePersist();
+  showToast("✓ "+item.name+" purchased!");
+  if(m.items.length===0){closeMerchant();return;}
+  showMerchantPopup(); // refresh
+};
+
+window.closeMerchant=function(){
+  var el=document.getElementById("merchantPopup");
+  if(el)el.remove();
+  G.merchantActive=null;
+  G._showMerchant=false;
+  savePersist();
+};
+
+// Daily Challenge banner in rDashboard
+function renderDCBanner(){
+  var dc=G.dailyChallenge;
+  if(!dc)return"";
+  var pct=Math.min(100,Math.round(((G.dcProgress||0)/dc.target)*100));
+  var done=G.dcClaimed;
+  return'<div class="dc-banner">'+
+    '<div class="dc-banner-top">'+
+      '<div class="dc-banner-title">🎯 Daily Challenge</div>'+
+      '<div class="dc-banner-timer">Resets at 4AM</div>'+
+    '</div>'+
+    '<div class="dc-banner-desc">'+dc.desc+'</div>'+
+    '<div class="dc-banner-reward">'+
+      '<span class="dc-banner-reward-chip">'+dc.reward+'</span>'+
+      '<span style="font-size:11px;color:var(--text3);">'+(G.dcProgress||0)+'/'+dc.target+' completed</span>'+
+    '</div>'+
+    '<div class="dc-banner-progress"><div class="dc-banner-fill" style="width:'+pct+'%;"></div></div>'+
+    (done?'<div class="dc-banner-done">✓ Challenge Complete! Reward claimed.</div>':'')+
+  '</div>';
+}
+
+
+// ════════════════════════════════════════════════
+// SUPABASE CLOUD SYNC
+// ════════════════════════════════════════════════
+
+var SB_URL = "https://eskucqbkhznrbpxegmgb.supabase.co";
+var SB_KEY = "sb_publishable_nNaYyFxruyCZl8NNkHJLvQ_EbhMQykL";
+
+var _syncTimer = null;
+var _lastSyncedData = null;
+
+function sbHeaders(){
+  return {
+    "Content-Type": "application/json",
+    "apikey": SB_KEY,
+    "Authorization": "Bearer " + SB_KEY,
+    "Prefer": "resolution=merge-duplicates"
+  };
+}
+
+// Hash password simply (not crypto, just obfuscation for basic protection)
+function hashPass(str){
+  var h=0;
+  for(var i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}
+  return "u_"+Math.abs(h).toString(36)+"_"+str.length;
+}
+
+function getSyncUserId(){
+  return G._syncUser||null;
+}
+
+async function syncSave(){
+  var uid=getSyncUserId();
+  if(!uid)return;
+  try{
+    G._syncStatus="syncing";
+    updateSyncIndicator();
+    var saveStr=JSON.stringify(buildSaveObj());
+    if(saveStr===_lastSyncedData){G._syncStatus="synced";updateSyncIndicator();return;}
+    var resp=await fetch(SB_URL+"/rest/v1/saves",{
+      method:"POST",
+      headers:sbHeaders(),
+      body:JSON.stringify({user_id:uid,save_data:saveStr,updated_at:new Date().toISOString()})
+    });
+    if(resp.ok){
+      _lastSyncedData=saveStr;
+      G._syncStatus="synced";
+    } else {
+      G._syncStatus="error";
+    }
+  } catch(e){
+    G._syncStatus="error";
+  }
+  updateSyncIndicator();
+}
+
+async function loadFromCloud(uid){
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/saves?user_id=eq."+uid+"&select=save_data",{
+      headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
+    });
+    if(!resp.ok)return null;
+    var data=await resp.json();
+    if(data&&data.length>0&&data[0].save_data){
+      return JSON.parse(data[0].save_data);
+    }
+    return null;
+  } catch(e){return null;}
+}
+
+function buildSaveObj(){
+  // Same fields as savePersist but as object
+  return {
+    gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,
+    totalXP:G.totalXP,skills:G.skills,quests:G.quests,
+    log:G.log,purchases:G.purchases,gratitudeEntries:G.gratitudeEntries,
+    iamEntries:G.iamEntries,dailyDone:G.dailyDone,avatarName:G.avatarName,
+    avatarClass:G.avatarClass,freeJournalEntries:G.freeJournalEntries,
+    streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
+    keys:G.keys,chests:G.chests,rareChests:G.rareChests,
+    legendaryChests:G.legendaryChests,inventory:G.inventory,
+    chestHistory:G.chestHistory,streakShield:G.streakShield,
+    boostActionsLeft:G.boostActionsLeft,boostHourExpiry:G.boostHourExpiry,
+    quickBoostTokens:G.quickBoostTokens,lastSpinDate:G.lastSpinDate,
+    spinHistory:G.spinHistory,customQuests:G.customQuests,
+    rotatingQuests:G.rotatingQuests,lastRotatingRefresh:G.lastRotatingRefresh,
+    questProgress:G.questProgress,unlockedClasses:G.unlockedClasses,
+    equippedAccessory:G.equippedAccessory,unlockedAccessories:G.unlockedAccessories,
+    gems:G.gems,rotatingSlots:G.rotatingSlots,ownedPets:G.ownedPets,
+    activePets:G.activePets,slotCooldowns:G.slotCooldowns,
+    actionCount:G.actionCount,totalChestsEarned:G.totalChestsEarned,
+    totalQuestsDone:G.totalQuestsDone,dailyChallenge:G.dailyChallenge,
+    dcProgress:G.dcProgress,dcClaimed:G.dcClaimed,lastDCKey:G.lastDCKey,
+    suddenEvent:G.suddenEvent,merchantActive:G.merchantActive
+  };
+}
+
+function scheduleSyncSave(){
+  if(_syncTimer)clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(syncSave, 3000); // debounce 3s after last save
+}
+
+function updateSyncIndicator(){
+  var el=document.getElementById("syncIndicator");
+  if(!el)return;
+  var icons={"idle":"☁️","syncing":"🔄","synced":"✓ Synced","error":"⚠ Sync error"};
+  var classes={"idle":"","syncing":"syncing","synced":"synced","error":"error"};
+  el.textContent=icons[G._syncStatus]||"☁️";
+  el.className="sync-indicator "+(classes[G._syncStatus]||"");
+}
+
+// ── Login / Register UI ──
+window.openSyncModal=function(){
+  var existing=document.getElementById("syncModal");
+  if(existing)existing.remove();
+  var uid=getSyncUserId();
+  var div=document.createElement("div");
+  div.id="syncModal";
+  div.className="sync-modal";
+  if(uid){
+    // Already logged in
+    div.innerHTML='<div class="sync-card">'+
+      '<div class="sync-logo">☁ SYNC</div>'+
+      '<div class="sync-sub">Cloud save active</div>'+
+      '<div style="font-size:13px;color:var(--success);margin-bottom:20px;">✓ Logged in as <strong style="color:#e8d5a0;">'+uid.split("_")[1]+'</strong></div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:20px;font-style:italic;">Your save syncs automatically across all devices.</div>'+
+      '<button class="sync-btn" onclick="forceSyncNow()">Sync Now</button>'+
+      '<button class="sync-btn-secondary" onclick="logoutSync()">Log Out</button>'+
+      '<button class="sync-btn-secondary" onclick="document.getElementById(&quot;syncModal&quot;).remove()">Close</button>'+
+    '</div>';
+  } else {
+    div.innerHTML='<div class="sync-card">'+
+      '<div class="sync-logo">☁ SYNC</div>'+
+      '<div class="sync-sub">Play on any device, same save</div>'+
+      '<input class="sync-input" id="syncUser" placeholder="Choose a username..." maxlength="20" />'+
+      '<input class="sync-input" id="syncPass" type="password" placeholder="Choose a password..." maxlength="30" />'+
+      '<button class="sync-btn" onclick="doSyncLogin()">Login / Register</button>'+
+      '<button class="sync-btn-secondary" onclick="document.getElementById(&quot;syncModal&quot;).remove()">Play offline</button>'+
+      '<div class="sync-status" id="syncMsg">Enter any username and password to create or access your cloud save.</div>'+
+    '</div>';
+  }
+  document.body.appendChild(div);
+};
+
+window.doSyncLogin=async function(){
+  var user=document.getElementById("syncUser").value.trim().toLowerCase();
+  var pass=document.getElementById("syncPass").value;
+  var msg=document.getElementById("syncMsg");
+  if(!user||user.length<2){msg.textContent="Username must be at least 2 characters.";msg.className="sync-status err";return;}
+  if(!pass||pass.length<4){msg.textContent="Password must be at least 4 characters.";msg.className="sync-status err";return;}
+  msg.textContent="Connecting...";msg.className="sync-status";
+  var uid=hashPass(user+":"+pass);
+  // Try to load existing save
+  var cloudSave=await loadFromCloud(uid);
+  if(cloudSave){
+    // Existing account — load cloud save
+    G._syncUser=uid;
+    // Merge cloud save into G
+    Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+    G._syncUser=uid;
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+    msg.textContent="✓ Logged in! Cloud save loaded.";
+    msg.className="sync-status ok";
+    setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
+  } else {
+    // New account — upload current save
+    G._syncUser=uid;
+    await syncSave();
+    msg.textContent="✓ Account created! Save synced.";
+    msg.className="sync-status ok";
+    setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
+  }
+};
+
+window.forceSyncNow=async function(){
+  _lastSyncedData=null; // force re-sync
+  await syncSave();
+  showToast("☁ Save synced to cloud!");
+  document.getElementById("syncModal").remove();
+};
+
+window.logoutSync=function(){
+  G._syncUser=null;
+  savePersist();
+  showToast("Logged out of cloud sync.");
+  document.getElementById("syncModal").remove();
+  render();
+};
+
 if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){});}
 checkStreakShield();
 refreshRotatingQuests();
 checkWeeklyPetKey();
 // Show onboarding for new players
+initDailyChallenge();
+startSuddenEventTimer();
+// Show sync modal after onboarding if not synced
+if(G.onboarded&&!G._syncUser){
+  setTimeout(function(){
+    // Only show once per session
+    if(!window._syncPrompted){window._syncPrompted=true;openSyncModal();}
+  },2000);
+}
 if(!G.onboarded){
   G._obStep=0;
   G._obClass=G.avatarClass||0;
