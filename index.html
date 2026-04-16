@@ -667,7 +667,7 @@ function loadSaved(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var p=JSO
 function savePersist(){
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify({
-      gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,
+      gold:G.gold,onboarded:G.onboarded,_syncUser:G._syncUser,_passHash:G._passHash,
       totalXP:G.totalXP,
       skills:G.skills,
       quests:G.quests,
@@ -744,6 +744,7 @@ var G={
   fjSearch:"",
   _drawerOpen:false,
   _syncUser: sv&&sv._syncUser||null,
+  _passHash: sv&&sv._passHash||null,
   _syncStatus: "idle",
   dailyChallenge: sv&&sv.dailyChallenge||null,
   dcProgress: sv&&sv.dcProgress||0,
@@ -3892,16 +3893,35 @@ function getSyncInputs(){
   return{user:user,pass:pass,msg:msg};
 }
 
+function validatePassword(pass){
+  if(pass.length<8)return"Password must be at least 8 characters.";
+  if(!/[A-Z]/.test(pass))return"Password must contain at least one uppercase letter.";
+  if(!/[a-z]/.test(pass))return"Password must contain at least one lowercase letter.";
+  if(!/[0-9]/.test(pass))return"Password must contain at least one number.";
+  if(!/[^A-Za-z0-9]/.test(pass))return"Password must contain at least one special character (!@#$%...).";
+  return null;
+}
+
+// user_id = hash of username only (for uniqueness lookup)
+// password hash stored inside save_data for verification
+function userHash(username){return "u_"+hashPass(username);}
+function passHash(pass){return "p_"+hashPass(pass);}
+
 window.doSyncRegister=async function(){
   var inp=getSyncInputs();
   if(!inp.user||inp.user.length<2){inp.msg.textContent="Username must be at least 2 characters.";inp.msg.className="sync-status err";return;}
-  if(!inp.pass||inp.pass.length<4){inp.msg.textContent="Password must be at least 4 characters.";inp.msg.className="sync-status err";return;}
-  inp.msg.textContent="Creating account...";inp.msg.className="sync-status";
-  var uid=hashPass(inp.user+":"+inp.pass);
-  // Check if account already exists
+  var passErr=validatePassword(inp.pass);
+  if(passErr){inp.msg.textContent=passErr;inp.msg.className="sync-status err";return;}
+  inp.msg.textContent="Checking username...";inp.msg.className="sync-status";
+  var uid=userHash(inp.user);
+  // Check if username already taken
   var existing=await loadFromCloud(uid);
-  if(existing){inp.msg.textContent="Username taken! Try a different one.";inp.msg.className="sync-status err";return;}
+  if(existing){
+    inp.msg.textContent="Username already taken! Choose a different one.";inp.msg.className="sync-status err";return;
+  }
+  // Create account — store password hash in save
   G._syncUser=uid;
+  G._passHash=passHash(inp.pass);
   await syncSave();
   inp.msg.textContent="✓ Account created! Save synced.";inp.msg.className="sync-status ok";
   setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
@@ -3910,20 +3930,24 @@ window.doSyncRegister=async function(){
 window.doSyncLoginOnly=async function(){
   var inp=getSyncInputs();
   if(!inp.user||inp.user.length<2){inp.msg.textContent="Enter your username.";inp.msg.className="sync-status err";return;}
-  if(!inp.pass||inp.pass.length<4){inp.msg.textContent="Enter your password.";inp.msg.className="sync-status err";return;}
+  if(!inp.pass){inp.msg.textContent="Enter your password.";inp.msg.className="sync-status err";return;}
   inp.msg.textContent="Logging in...";inp.msg.className="sync-status";
-  var uid=hashPass(inp.user+":"+inp.pass);
+  var uid=userHash(inp.user);
   var cloudSave=await loadFromCloud(uid);
-  if(cloudSave){
-    G._syncUser=uid;
-    Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
-    G._syncUser=uid;
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
-    inp.msg.textContent="✓ Logged in! Save loaded.";inp.msg.className="sync-status ok";
-    setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
-  } else {
-    inp.msg.textContent="No account found. Check username and password.";inp.msg.className="sync-status err";
+  if(!cloudSave){
+    inp.msg.textContent="Username not found. Check spelling or create an account.";inp.msg.className="sync-status err";return;
   }
+  // Verify password
+  if(cloudSave._passHash&&cloudSave._passHash!==passHash(inp.pass)){
+    inp.msg.textContent="Wrong password. Try again.";inp.msg.className="sync-status err";return;
+  }
+  // Load save
+  G._syncUser=uid;
+  Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+  G._syncUser=uid;
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+  inp.msg.textContent="✓ Logged in! Save loaded.";inp.msg.className="sync-status ok";
+  setTimeout(function(){document.getElementById("syncModal").remove();render();},1500);
 };
 
 window.doSyncLogin=window.doSyncLoginOnly;
