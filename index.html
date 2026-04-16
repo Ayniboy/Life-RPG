@@ -3362,6 +3362,32 @@ window.obDoRestore=async function(){
   }
 };
 
+window.checkPassStrength=function(){
+  var pass=document.getElementById("obSyncPass");
+  if(!pass)return;
+  var v=pass.value;
+  function set(id,ok,text){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.style.color=ok?"#2ab88a":"var(--text3)";
+    el.textContent=(ok?"✓ ":"✗ ")+text;
+  }
+  set("pc1",v.length>=8,"At least 8 characters");
+  set("pc2",/[A-Z]/.test(v),"One uppercase letter (A-Z)");
+  set("pc3",/[a-z]/.test(v),"One lowercase letter (a-z)");
+  set("pc4",/[0-9]/.test(v),"One number (0-9)");
+  set("pc5",/[^A-Za-z0-9]/.test(v),"One special character (!@#$%)");
+};
+
+function validatePassword(pass){
+  if(pass.length<8)return"Password must be at least 8 characters.";
+  if(!/[A-Z]/.test(pass))return"Add an uppercase letter (A-Z).";
+  if(!/[a-z]/.test(pass))return"Add a lowercase letter (a-z).";
+  if(!/[0-9]/.test(pass))return"Add a number (0-9).";
+  if(!/[^A-Za-z0-9]/.test(pass))return"Add a special character (!@#$%).";
+  return null;
+}
+
 window.obCreateAccount=async function(){
   var email=document.getElementById("obEmail").value.trim().toLowerCase();
   var pass=document.getElementById("obSyncPass").value;
