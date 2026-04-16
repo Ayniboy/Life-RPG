@@ -3397,18 +3397,17 @@ window.obCreateAccount=async function(){
   var msg=document.getElementById("obAccountMsg");
   if(msg)msg.textContent="Creating account..."; if(msg)msg.className="sync-status";
   var result=await sbSignUp(email,pass);
+  console.log("Signup result:", JSON.stringify(result));
   if(result.error){
     if(msg)msg.textContent=result.error.message||"Error creating account."; if(msg)msg.className="sync-status err"; return;
   }
-  if(result.user&&!result.session){
+  // Email confirmation required — user created but no session yet
+  if(result.user||result.id){
     G._syncEmail=email; savePersist();
-    if(msg)msg.textContent="Check your email to confirm your account!"; if(msg)msg.className="sync-status ok";
-    setTimeout(function(){G._obStep=5;renderOnboarding();},2500);
-  } else if(result.session){
-    _sbSession=result.session; localStorage.setItem("sb_session",JSON.stringify(result.session));
-    G._syncUser=result.session.user.id; G._syncEmail=email; savePersist();
-    if(msg)msg.textContent="Account created!"; if(msg)msg.className="sync-status ok";
-    setTimeout(function(){G._obStep=5;renderOnboarding();},1500);
+    if(msg)msg.textContent="✓ Check your email and click the confirmation link, then come back to log in!"; if(msg)msg.className="sync-status ok";
+  } else {
+    if(msg)msg.textContent="Something went wrong. Please try again."; if(msg)msg.className="sync-status err";
+    console.log("Unexpected result:", result);
   }
 };
 
