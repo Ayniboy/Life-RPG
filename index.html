@@ -1142,7 +1142,7 @@ function rLog(){
     '</div>'+
     '<div class="save-mgmt-note">Export your save before updating the app. Import it after to restore all progress.</div>';
   var rows=G.log.length===0?'<div class="empty">No deeds yet.</div>':'<div class="card" style="padding:4px 16px;">'+G.log.map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>';
-  return exportImport+'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">'+G.log.length+' deed'+(G.log.length!==1?"s":"")+" recorded.</p>"+rows+'<div style="margin-top:14px;text-align:center;"><button onclick="confirmReset()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:8px 18px;color:var(--text3);font-size:12px;cursor:pointer;font-family:\'Crimson Text\',serif;">Reset All Progress</button></div>';
+  return exportImport+'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">'+G.log.length+' deed'+(G.log.length!==1?"s":"")+" recorded.</p>"+rows+'<div style="margin-top:20px;text-align:center;padding:0 16px 8px;"><button onclick="confirmReset()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:16px;color:#e85d3a;font-size:14px;cursor:pointer;width:100%;border-color:#e85d3a66;border-radius:12px;font-family:\'Crimson Text\',serif;">⚠ Reset All Progress</button></div>';
 }
 
 function rTimer(){
