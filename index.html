@@ -3225,7 +3225,14 @@ function renderOnboarding(){
       '<div class="ob-title">Protect Your Progress</div>'+
       '<div class="ob-sub">Create an account so your progress is safely backed up. If you ever lose your phone, just log in to restore everything.</div>'+
       '<input class="ob-input" id="obEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
-      '<input class="ob-input" id="obSyncPass" type="password" placeholder="Password (8+ chars, A-z, 0-9, !@#...)..." maxlength="50" />'+
+      '<input class="ob-input" id="obSyncPass" type="password" placeholder="Password..." maxlength="50" oninput="checkPassStrength()" />'+
+      '<div id="passChecklist" style="text-align:left;margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;line-height:2;">'+
+        '<div id="pc1" style="color:var(--text3);">✗ At least 8 characters</div>'+
+        '<div id="pc2" style="color:var(--text3);">✗ One uppercase letter (A-Z)</div>'+
+        '<div id="pc3" style="color:var(--text3);">✗ One lowercase letter (a-z)</div>'+
+        '<div id="pc4" style="color:var(--text3);">✗ One number (0-9)</div>'+
+        '<div id="pc5" style="color:var(--text3);">✗ One special character (!@#$%)</div>'+
+      '</div>'+
       '<button class="ob-btn" onclick="obCreateAccount()">Create Account →</button>'+
       '<div id="obAccountMsg" class="sync-status" style="margin-top:8px;"></div>'+
     '</div>';
@@ -3356,14 +3363,27 @@ window.obDoRestore=async function(){
 };
 
 window.obCreateAccount=async function(){
-  var user=document.getElementById("obSyncUser").value.trim().toLowerCase();
+  var email=document.getElementById("obEmail").value.trim().toLowerCase();
   var pass=document.getElementById("obSyncPass").value;
-  if(!user||user.length<2){showToast("Username must be at least 2 characters.");return;}
+  if(!email||!email.includes("@")){showToast("Enter a valid email address.");return;}
   var passErr=validatePassword(pass);
   if(passErr){showToast(passErr);return;}
-  var uid=hashPass(user+":"+pass);
-  var existing=await loadFromCloud(uid);
-  if(existing){showToast("Username taken! Try a different one.");return;}
+  var msg=document.getElementById("obAccountMsg");
+  if(msg)msg.textContent="Creating account..."; if(msg)msg.className="sync-status";
+  var result=await sbSignUp(email,pass);
+  if(result.error){
+    if(msg)msg.textContent=result.error.message||"Error creating account."; if(msg)msg.className="sync-status err"; return;
+  }
+  if(result.user&&!result.session){
+    G._syncEmail=email; savePersist();
+    if(msg)msg.textContent="Check your email to confirm your account!"; if(msg)msg.className="sync-status ok";
+    setTimeout(function(){G._obStep=5;renderOnboarding();},2500);
+  } else if(result.session){
+    _sbSession=result.session; localStorage.setItem("sb_session",JSON.stringify(result.session));
+    G._syncUser=result.session.user.id; G._syncEmail=email; savePersist();
+    if(msg)msg.textContent="Account created!"; if(msg)msg.className="sync-status ok";
+    setTimeout(function(){G._obStep=5;renderOnboarding();},1500);
+  }
   G._syncUser=uid;
   G._obStep=5;
   renderOnboarding();
