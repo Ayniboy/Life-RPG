@@ -3338,11 +3338,11 @@ window.obDoForgot=async function(){
   var msg=document.getElementById("obForgotMsg");
   if(!email||!email.includes("@")){msg.textContent="Enter a valid email.";msg.className="sync-status err";return;}
   msg.textContent="Sending...";msg.className="sync-status";
-  var ok=await sbResetPassword(email);
-  if(ok){
+  var result=await sbResetPassword(email);
+  if(result.ok){
     msg.textContent="✓ Reset link sent! Check your email.";msg.className="sync-status ok";
   } else {
-    msg.textContent="Error sending reset email. Try again.";msg.className="sync-status err";
+    msg.textContent=result.error||"Error sending reset email. Try again.";msg.className="sync-status err";
   }
 };
 
@@ -3932,12 +3932,18 @@ async function sbSignIn(email, password){
 }
 
 async function sbResetPassword(email){
-  var resp = await fetch(SB_URL+"/auth/v1/recover", {
-    method:"POST",
-    headers:{"Content-Type":"application/json","apikey":SB_KEY},
-    body:JSON.stringify({email:email, redirect_to:"https://ayniboy.github.io/Life-RPG"})
-  });
-  return resp.ok;
+  try{
+    var resp = await fetch(SB_URL+"/auth/v1/recover", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SB_KEY},
+      body:JSON.stringify({email:email})
+    });
+    var data=await resp.json();
+    if(resp.ok)return{ok:true};
+    return{ok:false,error:data.error_description||data.msg||data.message||("Error "+resp.status)};
+  }catch(e){
+    return{ok:false,error:"Network error. Check your connection."};
+  }
 }
 
 async function sbSignOut(){
