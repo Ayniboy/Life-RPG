@@ -3344,6 +3344,11 @@ window.obDoRestore=async function(){
     msg.textContent=result.error.message||"Login failed. Check your email and password.";msg.className="sync-status err";
     return;
   }
+  if(result.error||result.error_code){
+    msg.textContent=result.error_description||result.msg||"Wrong email or password. Please try again.";
+    msg.className="sync-status err";
+    return;
+  }
   if(result.access_token){
     _sbSession=result;
     localStorage.setItem("sb_session",JSON.stringify(result));
@@ -3359,6 +3364,9 @@ window.obDoRestore=async function(){
     if(el)el.remove();
     render();
     showToast("Welcome back! Progress restored.");
+  } else {
+    msg.textContent="Wrong email or password. Please try again.";
+    msg.className="sync-status err";
   }
 };
 
