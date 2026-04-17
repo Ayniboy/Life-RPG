@@ -3422,9 +3422,10 @@ window.obCreateAccount=async function(){
   // Email confirmation required — user created but no session yet
   if(result.user||result.id){
     G._syncEmail=email; savePersist();
-    if(msg)msg.textContent="✓ Check your email and click the confirmation link, then come back to log in!"; if(msg)msg.className="sync-status ok";
+    if(msg){msg.textContent="✓ Account created! Check your email for a confirmation link.";msg.className="sync-status ok";}
+    setTimeout(function(){G._obStep=5;renderOnboarding();},2000);
   } else {
-    if(msg)msg.textContent="Something went wrong. Please try again."; if(msg)msg.className="sync-status err";
+    if(msg){msg.textContent="Something went wrong. Please try again.";msg.className="sync-status err";}
     console.log("Unexpected result:", result);
   }
 };
