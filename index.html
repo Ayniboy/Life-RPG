@@ -437,7 +437,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .ob-btn{background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:14px;padding:14px 40px;font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#1a1200;cursor:pointer;letter-spacing:.5px;transition:all .2s;margin-bottom:12px;}
   .ob-btn:active{transform:scale(.97);}
   .ob-skip{background:transparent;border:none;font-size:12px;color:var(--text3);cursor:pointer;font-family:"Cinzel",serif;letter-spacing:.3px;padding:8px;}
-  .ob-back{background:transparent;border:1px solid var(--border);border-radius:10px;padding:7px 14px;font-family:"Cinzel",serif;font-size:11px;color:var(--text2);cursor:pointer;letter-spacing:.3px;align-self:flex-start;margin-bottom:16px;}
+  .ob-back{background:transparent;border:1px solid var(--border);border-radius:10px;padding:7px 14px;font-family:"Cinzel",serif;font-size:11px;color:var(--text2);cursor:pointer;letter-spacing:.3px;align-self:flex-start;margin-bottom:20px;}
   .ob-class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:400px;margin-bottom:28px;}
   .ob-class-cell{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 8px;cursor:pointer;transition:all .2s;position:relative;}
   .ob-class-cell:active{transform:scale(.95);}
@@ -3169,7 +3169,7 @@ function renderOnboarding(){
   }
 
   if(step===0){
-    // Welcome screen
+    // Welcome screen — no back button needed
     el.innerHTML='<div class="ob-screen">'+
       '<div class="ob-logo">⚔ LIFE RPG ✦</div>'+
       '<div class="ob-tagline">Your real life. Gamified.</div>'+
@@ -3180,9 +3180,9 @@ function renderOnboarding(){
     '</div>';
   }
   else if(step===1){
-    // Name input
     var current=G.avatarName||"";
     el.innerHTML='<div class="ob-screen">'+
+      '<button class="ob-back" onclick="G._obStep=0;renderOnboarding()">← Back</button>'+
       '<div class="ob-progress">Step 1 of 4</div>'+
       '<div class="ob-title">Name Your Hero</div>'+
       '<div class="ob-sub">What shall you be called in the chronicles of this world?</div>'+
@@ -3193,7 +3193,6 @@ function renderOnboarding(){
     setTimeout(function(){var inp=document.getElementById("obNameInput");if(inp)inp.focus();},100);
   }
   else if(step===2){
-    // Class selection
     var classGrid=Object.keys(CLASS_BONUSES).map(function(id){
       var cls=CLASS_BONUSES[id];
       var isSel=G._obClass===parseInt(id);
@@ -3204,6 +3203,7 @@ function renderOnboarding(){
       '</div>';
     }).join("");
     el.innerHTML='<div class="ob-screen" style="justify-content:flex-start;padding-top:48px;overflow-y:auto;">'+
+      '<button class="ob-back" onclick="G._obStep=1;renderOnboarding()">← Back</button>'+
       '<div class="ob-progress">Step 2 of 4</div>'+
       '<div class="ob-title">Choose Your Class</div>'+
       '<div class="ob-sub">Your class shapes your journey. Each gives unique bonuses. You can evolve at Level 10.</div>'+
@@ -3213,11 +3213,11 @@ function renderOnboarding(){
     '</div>';
   }
   else if(step===3){
-    // Tour — swipeable cards
     var ts=G._obTourStep||0;
     var t=OB_TOUR[ts];
     var dots=OB_TOUR.map(function(_,i){return'<div class="ob-dot'+(i===ts?" active":"")+'"></div>';}).join("");
     el.innerHTML='<div class="ob-screen">'+
+      '<button class="ob-back" onclick="G._obStep=2;renderOnboarding()">← Back</button>'+
       '<div class="ob-progress">Step 3 of 4 — Quick Tour</div>'+
       '<div class="ob-dots">'+dots+'</div>'+
       '<div class="ob-tour-card">'+
@@ -3232,8 +3232,8 @@ function renderOnboarding(){
     '</div>';
   }
   else if(step===4){
-    // Account creation with email
     el.innerHTML='<div class="ob-screen">'+
+      '<button class="ob-back" onclick="G._obStep=3;G._obTourStep=0;renderOnboarding()">← Back</button>'+
       '<div class="ob-progress">Step 4 of 5</div>'+
       '<div style="font-size:40px;margin-bottom:12px;">☁</div>'+
       '<div class="ob-title">Protect Your Progress</div>'+
