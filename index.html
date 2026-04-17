@@ -555,6 +555,19 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .sync-indicator.syncing{color:#f4c842;}
   .sync-indicator.synced{color:var(--success);}
   .sync-indicator.error{color:var(--danger);}
+
+  /* ── Password Recovery Modal ── */
+  .recovery-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .recovery-card{background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;}
+  .recovery-logo{font-family:"Cinzel",serif;font-size:20px;color:#f4c842;margin-bottom:4px;letter-spacing:3px;}
+  .recovery-sub{font-size:12px;color:var(--text2);margin-bottom:20px;font-style:italic;}
+  .recovery-input{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:14px;color:#e8d5a0;width:100%;box-sizing:border-box;margin-bottom:10px;outline:none;font-family:"Cinzel",serif;}
+  .recovery-input:focus{border-color:#f4c842;}
+  .recovery-btn{background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:12px;padding:13px;font-family:"Cinzel",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;width:100%;margin-bottom:8px;letter-spacing:.5px;}
+  .recovery-btn:active{transform:scale(.97);}
+  .recovery-status{font-size:11px;margin-top:6px;font-style:italic;}
+  .recovery-status.ok{color:var(--success);}
+  .recovery-status.err{color:var(--danger);}
 </style>
 </head>
 <body>
@@ -3340,12 +3353,8 @@ window.obDoRestore=async function(){
   if(!email||!pass){msg.textContent="Enter your email and password.";msg.className="sync-status err";return;}
   msg.textContent="Logging in...";msg.className="sync-status";
   var result=await sbSignIn(email,pass);
-  if(result.error){
-    msg.textContent=result.error.message||"Login failed. Check your email and password.";msg.className="sync-status err";
-    return;
-  }
   if(result.error||result.error_code){
-    msg.textContent=result.error_description||result.msg||"Wrong email or password. Please try again.";
+    msg.textContent=result.error_description||result.error&&result.error.message||result.msg||"Wrong email or password. Please try again.";
     msg.className="sync-status err";
     return;
   }
@@ -4058,28 +4067,135 @@ window.doSignOut=async function(){
   render();
 };
 
+// ════════════════════════════════════════════════
+// HANDLE AUTH REDIRECT (email confirm + password reset)
+// ════════════════════════════════════════════════
+async function handleAuthRedirect(){
+  var hash=window.location.hash;
+  if(!hash||hash.indexOf("access_token")===-1)return false;
+  // Parse hash params
+  var params={};
+  hash.replace(/^#/,"").split("&").forEach(function(p){
+    var kv=p.split("=");params[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||"");
+  });
+  var type=params["type"];
+  var accessToken=params["access_token"];
+  var refreshToken=params["refresh_token"];
+  if(!accessToken)return false;
+  // Clear hash from URL without triggering reload
+  history.replaceState(null,"",window.location.pathname);
+
+  if(type==="recovery"){
+    // Show set-new-password screen
+    showPasswordRecoveryModal(accessToken);
+    return true;
+  }
+
+  // type === "signup" or "magiclink" — auto login
+  var fakeSession={access_token:accessToken,refresh_token:refreshToken,user:{id:params["user_id"]||""}};
+  // Refresh to get full session with user object
+  try{
+    var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SB_KEY},
+      body:JSON.stringify({refresh_token:refreshToken})
+    });
+    if(resp.ok){
+      var data=await resp.json();
+      if(data.access_token){
+        _sbSession=data;
+        localStorage.setItem("sb_session",JSON.stringify(data));
+        var cloudSave=await loadSaveFromCloud();
+        if(cloudSave){Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});}
+        G._syncUser=data.user.id;
+        G._syncEmail=data.user.email||"";
+        G.onboarded=true;
+        savePersist();
+        showToast("✓ Email confirmed! You are now logged in.");
+        return true;
+      }
+    }
+  }catch(e){}
+  return false;
+}
+
+function showPasswordRecoveryModal(accessToken){
+  var div=document.createElement("div");
+  div.id="recoveryModal";
+  div.className="recovery-overlay";
+  div.innerHTML=
+    '<div class="recovery-card">'+
+      '<div class="recovery-logo">🔑 NEW PASSWORD</div>'+
+      '<div class="recovery-sub">Enter your new password below.</div>'+
+      '<input class="recovery-input" id="recPass1" type="password" placeholder="New password..." maxlength="50" />'+
+      '<input class="recovery-input" id="recPass2" type="password" placeholder="Confirm password..." maxlength="50" />'+
+      '<button class="recovery-btn" onclick="doPasswordRecovery(\''+accessToken+'\')">Set New Password</button>'+
+      '<div id="recMsg" class="recovery-status"></div>'+
+    '</div>';
+  document.body.appendChild(div);
+}
+
+window.doPasswordRecovery=async function(accessToken){
+  var p1=document.getElementById("recPass1").value;
+  var p2=document.getElementById("recPass2").value;
+  var msg=document.getElementById("recMsg");
+  if(!p1||p1!==p2){msg.textContent="Passwords do not match.";msg.className="recovery-status err";return;}
+  var err=validatePassword(p1);
+  if(err){msg.textContent=err;msg.className="recovery-status err";return;}
+  msg.textContent="Updating...";msg.className="recovery-status";
+  try{
+    var resp=await fetch(SB_URL+"/auth/v1/user",{
+      method:"PUT",
+      headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+accessToken},
+      body:JSON.stringify({password:p1})
+    });
+    var data=await resp.json();
+    if(resp.ok&&data.id){
+      msg.textContent="✓ Password updated! You can now log in.";msg.className="recovery-status ok";
+      setTimeout(function(){
+        var el=document.getElementById("recoveryModal");
+        if(el)el.remove();
+        // Show login screen
+        if(!G.onboarded){
+          G._obStep=0;
+          renderOnboarding();
+          setTimeout(function(){obRestoreAccount();},100);
+        }
+      },2000);
+    } else {
+      msg.textContent=(data.message||data.msg||"Error updating password. Try again.");
+      msg.className="recovery-status err";
+    }
+  }catch(e){
+    msg.textContent="Network error. Please try again.";
+    msg.className="recovery-status err";
+  }
+};
+
 if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){});}
 checkStreakShield();
 refreshRotatingQuests();
 checkWeeklyPetKey();
-// Try to restore Supabase session silently
-tryRestoreSession().then(function(restored){
-  if(restored&&_sbSession){
-    G._syncUser=_sbSession.user.id;
-    savePersist();
+// Handle email confirmation and password reset links first
+handleAuthRedirect().then(function(wasRedirect){
+  // Try to restore Supabase session silently
+  tryRestoreSession().then(function(restored){
+    if(restored&&_sbSession){
+      G._syncUser=_sbSession.user.id;
+      savePersist();
+    }
+  });
+  initDailyChallenge();
+  startSuddenEventTimer();
+  // Show onboarding only if not a recovery redirect
+  if(!G.onboarded&&!wasRedirect){
+    G._obStep=0;
+    G._obClass=G.avatarClass||0;
+    setTimeout(function(){renderOnboarding();},300);
   }
+  G._lastTotalLv=totalLv();
+  render();
 });
-// Show onboarding for new players
-initDailyChallenge();
-startSuddenEventTimer();
-// Cloud sync handled during onboarding
-if(!G.onboarded){
-  G._obStep=0;
-  G._obClass=G.avatarClass||0;
-  setTimeout(function(){renderOnboarding();},300);
-}
-G._lastTotalLv=totalLv();
-render();
 // Draw spin wheel if on spin tab
 if(G.tab==="spin"){
   requestAnimationFrame(function(){
