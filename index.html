@@ -569,7 +569,12 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .sync-indicator.synced{color:var(--success);}
   .sync-indicator.error{color:var(--danger);}
 
-  /* ── Password Recovery Modal ── */
+  /* ── Floating XP Pop ── */
+  .xp-pop{position:fixed;pointer-events:none;z-index:9000;display:flex;flex-direction:column;align-items:center;gap:2px;animation:xpPopFloat .9s ease-out forwards;}
+  .xp-pop-xp{font-family:"Cinzel",serif;font-size:18px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.8);}
+  .xp-pop-gold{font-family:"Cinzel",serif;font-size:13px;color:#f4c842;text-shadow:0 2px 8px rgba(0,0,0,.8);}
+  @keyframes xpPopFloat{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-48px) scale(1.1);}100%{opacity:0;transform:translateY(-80px) scale(.9);}}
+</style>
   .recovery-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;}
   .recovery-card{background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;}
   .recovery-logo{font-family:"Cinzel",serif;font-size:20px;color:#f4c842;margin-bottom:4px;letter-spacing:3px;}
@@ -929,7 +934,7 @@ function rActions(){
   var items=filtered.map(function(a){
     var sk=skById(a.skill);var dt=!a.repeatable&&doneToday(a.id);
     var rtag=a.repeatable?'<span style="font-size:10px;color:var(--success);">repeatable</span>':dt?'<span style="font-size:10px;color:var(--text3);">done today</span>':"";
-    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\')"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags"><span style="font-size:11px;color:'+(sk?sk.color:"#fff")+';">'+(sk?sk.name:"")+'</span><span style="font-size:10px;color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.8px;">'+a.rarity+'</span>'+rtag+'</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
+    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags"><span style="font-size:11px;color:'+(sk?sk.color:"#fff")+';">'+(sk?sk.name:"")+'</span><span style="font-size:10px;color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.8px;">'+a.rarity+'</span>'+rtag+'</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
   }).join("");
   return'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">Tap a deed to log it. Repeatable actions can be logged multiple times a day.</p><div class="filter-row">'+fBtns+'</div>'+items;
 }
@@ -1289,8 +1294,16 @@ document.getElementById("app").innerHTML=
   });
 }
 
-// Avatar modal
-function openAvModal(){
+function showXPPop(x,y,xp,gold,color){
+  var el=document.createElement("div");
+  el.className="xp-pop";
+  el.style.left=(x-30)+"px";
+  el.style.top=(y-20)+"px";
+  el.innerHTML='<div class="xp-pop-xp" style="color:'+color+';">+'+xp+' XP</div>'+
+    (gold?'<div class="xp-pop-gold">+'+gold+'g</div>':'');
+  document.body.appendChild(el);
+  setTimeout(function(){el.remove();},950);
+}
   var tl=totalLv();var rc=ringColor(tl);
   var tier=tl>=20?5:tl>=12?4:tl>=8?3:tl>=5?2:tl>=3?1:0;
   var tnames=["Initiate","Apprentice","Journeyman","Veteran","Champion","Legendary"];
@@ -1390,7 +1403,7 @@ window.setTab=function(tOrEl){var t=typeof tOrEl==="string"?tOrEl:tOrEl.dataset.
 };
 window.setFilter=function(f){G.filter=f;render();};
 window.setJournalTab=function(t){G.journalTab=t;render();};
-window.doAction=function(id){
+window.doAction=function(id,evt){
   var a=acById(id);if(!a)return;
   if(!a.repeatable&&doneToday(id)){showToast("Already done today! Resets at 4AM.");return;}
   if(!a.repeatable)markDone(id);
@@ -1415,6 +1428,11 @@ window.doAction=function(id){
     pending.forEach(function(item){showLvlUp(item.skill,item.level);});
     var newTL=totalLv();
     if(newTL>G._lastTotalLv){G._lastTotalLv=newTL;showTotalLvUp(newTL);}
+  }
+  // Show floating XP pop for repeatable actions
+  if(a.repeatable&&evt){
+    var sk=skById(a.skill);
+    showXPPop(evt.clientX,evt.clientY,petBonus.xp,petBonus.gold,sk?sk.color:"#f4c842");
   }
   // If quest completed, closeQCPopup will handle level ups
 };
