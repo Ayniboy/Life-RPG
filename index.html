@@ -4191,13 +4191,30 @@ function showPasswordRecoveryModal(accessToken){
     '<div class="recovery-card">'+
       '<div class="recovery-logo">🔑 NEW PASSWORD</div>'+
       '<div class="recovery-sub">Enter your new password below.</div>'+
-      '<input class="recovery-input" id="recPass1" type="password" placeholder="New password..." maxlength="50" />'+
+      '<input class="recovery-input" id="recPass1" type="password" placeholder="New password..." maxlength="50" oninput="recCheckPass()" />'+
       '<input class="recovery-input" id="recPass2" type="password" placeholder="Confirm password..." maxlength="50" />'+
+      '<div id="recChecklist" style="text-align:left;margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;line-height:2;">'+
+        '<div id="rpc1" style="color:var(--text3);">✗ At least 8 characters</div>'+
+        '<div id="rpc2" style="color:var(--text3);">✗ One uppercase letter (A-Z)</div>'+
+        '<div id="rpc3" style="color:var(--text3);">✗ One lowercase letter (a-z)</div>'+
+        '<div id="rpc4" style="color:var(--text3);">✗ One number (0-9)</div>'+
+        '<div id="rpc5" style="color:var(--text3);">✗ One special character (!@#$%)</div>'+
+      '</div>'+
       '<button class="recovery-btn" onclick="doPasswordRecovery(\''+accessToken+'\')">Set New Password</button>'+
       '<div id="recMsg" class="recovery-status"></div>'+
     '</div>';
   document.body.appendChild(div);
 }
+
+window.recCheckPass=function(){
+  var v=document.getElementById("recPass1").value;
+  function set(id,ok,text){var el=document.getElementById(id);if(!el)return;el.style.color=ok?"#2ab88a":"var(--text3)";el.textContent=(ok?"✓ ":"✗ ")+text;}
+  set("rpc1",v.length>=8,"At least 8 characters");
+  set("rpc2",/[A-Z]/.test(v),"One uppercase letter (A-Z)");
+  set("rpc3",/[a-z]/.test(v),"One lowercase letter (a-z)");
+  set("rpc4",/[0-9]/.test(v),"One number (0-9)");
+  set("rpc5",/[^A-Za-z0-9]/.test(v),"One special character (!@#$%)");
+};
 
 window.doPasswordRecovery=async function(accessToken){
   var p1=document.getElementById("recPass1").value;
