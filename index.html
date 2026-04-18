@@ -730,6 +730,7 @@ function savePersist(){
       lastRotatingRefresh:G.lastRotatingRefresh,
       questProgress:G.questProgress,
     }));
+    if(_sbSession)scheduleSyncSave();
   }catch(e){}
 }
 
