@@ -3278,7 +3278,7 @@ function renderOnboarding(){
       '<div class="ob-title">Protect Your Progress</div>'+
       '<div class="ob-sub">Create an account so your progress is safely backed up. If you ever lose your phone, just log in to restore everything.</div>'+
       '<input class="ob-input" id="obEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
-      '<input class="ob-input" id="obSyncPass" type="password" placeholder="Password..." maxlength="50" oninput="checkPassStrength()" />'+
+      '<input class="ob-input" id="obSyncPass" type="password" autocapitalize="none" autocorrect="off" placeholder="Password..." maxlength="50" oninput="checkPassStrength()" />'+
       '<div id="passChecklist" style="text-align:left;margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;line-height:2;">'+
         '<div id="pc1" style="color:var(--text3);">✗ At least 8 characters</div>'+
         '<div id="pc2" style="color:var(--text3);">✗ One uppercase letter (A-Z)</div>'+
@@ -3368,7 +3368,7 @@ window.obRestoreAccount=function(){
     '<div class="ob-title">Welcome Back</div>'+
     '<div class="ob-sub">Enter your email and password to restore all your progress.</div>'+
     '<input class="ob-input" id="obRestoreEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
-    '<input class="ob-input" id="obRestorePass" type="password" placeholder="Password..." maxlength="50" />'+
+    '<input class="ob-input" id="obRestorePass" type="password" autocapitalize="none" autocorrect="off" placeholder="Password..." maxlength="50" />'+
     '<button class="ob-btn" onclick="obDoRestore()">Restore My Progress</button>'+
     '<button class="ob-skip" onclick="obForgotPassword()">Forgot password?</button>'+
     '<div id="obRestoreMsg" class="sync-status" style="margin-top:8px;"></div>'+
@@ -4203,8 +4203,8 @@ function showPasswordRecoveryModal(accessToken){
     '<div class="recovery-card">'+
       '<div class="recovery-logo">🔑 NEW PASSWORD</div>'+
       '<div class="recovery-sub">Enter your new password below.</div>'+
-      '<input class="recovery-input" id="recPass1" type="password" placeholder="New password..." maxlength="50" oninput="recCheckPass()" />'+
-      '<input class="recovery-input" id="recPass2" type="password" placeholder="Confirm password..." maxlength="50" />'+
+      '<input class="recovery-input" id="recPass1" type="password" autocapitalize="none" autocorrect="off" placeholder="New password..." maxlength="50" oninput="recCheckPass()" />'+
+      '<input class="recovery-input" id="recPass2" type="password" autocapitalize="none" autocorrect="off" placeholder="Confirm password..." maxlength="50" />'+
       '<div id="recChecklist" style="text-align:left;margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;line-height:2;">'+
         '<div id="rpc1" style="color:var(--text3);">✗ At least 8 characters</div>'+
         '<div id="rpc2" style="color:var(--text3);">✗ One uppercase letter (A-Z)</div>'+
