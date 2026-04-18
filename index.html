@@ -3994,7 +3994,7 @@ async function sbResetPassword(email){
     var resp = await fetch(SB_URL+"/auth/v1/recover", {
       method:"POST",
       headers:{"Content-Type":"application/json","apikey":SB_KEY},
-      body:JSON.stringify({email:email})
+      body:JSON.stringify({email:email, redirect_to:"https://ayniboy.github.io/Life-RPG/"})
     });
     var data=await resp.json();
     if(resp.ok)return{ok:true};
