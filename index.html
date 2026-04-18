@@ -445,6 +445,18 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .ob-class-icon{font-size:28px;margin-bottom:6px;}
   .ob-class-name{font-family:"Cinzel",serif;font-size:11px;color:#e8d5a0;margin-bottom:4px;}
   .ob-class-bonus{font-size:9px;color:var(--text2);font-style:italic;line-height:1.3;}
+  /* Carousel */
+  .ob-carousel{display:flex;align-items:center;gap:16px;width:100%;max-width:340px;margin-bottom:28px;}
+  .ob-carousel-arrow{background:transparent;border:1px solid var(--border2);border-radius:50%;width:44px;height:44px;flex-shrink:0;font-size:20px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+  .ob-carousel-arrow:active{transform:scale(.9);border-color:#f4c842;color:#f4c842;}
+  .ob-carousel-card{flex:1;background:var(--bg2);border:2px solid #f4c842;border-radius:20px;padding:28px 20px;text-align:center;box-shadow:0 0 20px rgba(244,200,66,.15);}
+  .ob-carousel-icon{font-size:52px;margin-bottom:12px;}
+  .ob-carousel-name{font-family:"Cinzel",serif;font-size:20px;color:#e8d5a0;margin-bottom:8px;letter-spacing:1px;}
+  .ob-carousel-bonus{font-size:13px;color:#2ab88a;font-style:italic;margin-bottom:6px;}
+  .ob-carousel-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+  .ob-carousel-dots{display:flex;gap:6px;justify-content:center;margin-bottom:24px;}
+  .ob-carousel-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all .2s;}
+  .ob-carousel-dot.active{background:#f4c842;width:16px;border-radius:3px;}
   .ob-tour-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px 20px;max-width:320px;width:100%;margin-bottom:28px;}
   .ob-tour-icon{font-size:40px;margin-bottom:12px;}
   .ob-tour-name{font-family:"Cinzel",serif;font-size:16px;color:#e8d5a0;margin-bottom:8px;}
@@ -3193,22 +3205,27 @@ function renderOnboarding(){
     setTimeout(function(){var inp=document.getElementById("obNameInput");if(inp)inp.focus();},100);
   }
   else if(step===2){
-    var classGrid=Object.keys(CLASS_BONUSES).map(function(id){
-      var cls=CLASS_BONUSES[id];
-      var isSel=G._obClass===parseInt(id);
-      return'<div class="ob-class-cell'+(isSel?" selected":"")+'" onclick="obSelectClass('+id+')">'+
-        '<div class="ob-class-icon">'+cls.icon+'</div>'+
-        '<div class="ob-class-name">'+cls.name+'</div>'+
-        '<div class="ob-class-bonus">'+cls.bonus+'</div>'+
-      '</div>';
-    }).join("");
-    el.innerHTML='<div class="ob-screen" style="justify-content:flex-start;padding-top:48px;overflow-y:auto;">'+
+    var classKeys=Object.keys(CLASS_BONUSES);
+    var ci=G._obClassIdx||0;
+    var cls=CLASS_BONUSES[classKeys[ci]];
+    var dots=classKeys.map(function(_,i){return'<div class="ob-carousel-dot'+(i===ci?" active":"")+'"></div>';}).join("");
+    el.innerHTML='<div class="ob-screen">'+
       '<button class="ob-back" onclick="G._obStep=1;renderOnboarding()">← Back</button>'+
       '<div class="ob-progress">Step 2 of 4</div>'+
       '<div class="ob-title">Choose Your Class</div>'+
       '<div class="ob-sub">Your class shapes your journey. Each gives unique bonuses. You can evolve at Level 10.</div>'+
-      '<div class="ob-class-grid">'+classGrid+'</div>'+
-      '<button class="ob-btn" onclick="obConfirmClass()">Confirm Class →</button>'+
+      '<div class="ob-carousel">'+
+        '<button class="ob-carousel-arrow" onclick="obClassPrev()">‹</button>'+
+        '<div class="ob-carousel-card">'+
+          '<div class="ob-carousel-icon">'+cls.icon+'</div>'+
+          '<div class="ob-carousel-name">'+cls.name+'</div>'+
+          '<div class="ob-carousel-bonus">'+cls.bonus+'</div>'+
+          '<div class="ob-carousel-desc">'+cls.desc+'</div>'+
+        '</div>'+
+        '<button class="ob-carousel-arrow" onclick="obClassNext()">›</button>'+
+      '</div>'+
+      '<div class="ob-carousel-dots">'+dots+'</div>'+
+      '<button class="ob-btn" onclick="obConfirmClass()">Choose '+cls.name+' →</button>'+
       '<button class="ob-skip" onclick="obSkip()">Skip</button>'+
     '</div>';
   }
@@ -3292,8 +3309,24 @@ window.obSelectClass=function(id){
   renderOnboarding();
 };
 
+window.obClassNext=function(){
+  var keys=Object.keys(CLASS_BONUSES);
+  G._obClassIdx=((G._obClassIdx||0)+1)%keys.length;
+  G._obClass=parseInt(keys[G._obClassIdx]);
+  renderOnboarding();
+};
+
+window.obClassPrev=function(){
+  var keys=Object.keys(CLASS_BONUSES);
+  G._obClassIdx=((G._obClassIdx||0)-1+keys.length)%keys.length;
+  G._obClass=parseInt(keys[G._obClassIdx]);
+  renderOnboarding();
+};
+
 window.obConfirmClass=function(){
-  G.avatarClass=G._obClass||0;
+  var keys=Object.keys(CLASS_BONUSES);
+  G.avatarClass=parseInt(keys[G._obClassIdx||0]);
+  G._obClass=G.avatarClass;
   G.unlockedClasses=G.unlockedClasses||[0,1,2,3,4,5];
   G._obStep=3;
   renderOnboarding();
@@ -3416,8 +3449,9 @@ window.obCreateAccount=async function(){
   if(msg)msg.textContent="Creating account..."; if(msg)msg.className="sync-status";
   var result=await sbSignUp(email,pass);
   console.log("Signup result:", JSON.stringify(result));
-  if(result.error){
-    if(msg)msg.textContent=result.error.message||"Error creating account."; if(msg)msg.className="sync-status err"; return;
+  if(result.error||result.code){
+    var errMsg=result.error&&result.error.message||result.msg||result.message||"Error creating account.";
+    if(msg){msg.textContent=errMsg;msg.className="sync-status err";} return;
   }
   // Email confirmation required — user created but no session yet
   if(result.user||result.id){
