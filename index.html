@@ -4237,9 +4237,24 @@ window.doPasswordRecovery=async function(accessToken){
   if(err){msg.textContent=err;msg.className="recovery-status err";return;}
   msg.textContent="Updating...";msg.className="recovery-status";
   try{
+    // If not a JWT (no dots), it's a token_hash — verify it first to get a real session
+    var realToken=accessToken;
+    if(accessToken.split(".").length!==3){
+      var vresp=await fetch(SB_URL+"/auth/v1/verify",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","apikey":SB_KEY},
+        body:JSON.stringify({token_hash:accessToken,type:"recovery"})
+      });
+      var vdata=await vresp.json();
+      if(!vresp.ok||!vdata.access_token){
+        msg.textContent=vdata.error_description||vdata.msg||"Invalid or expired link. Request a new one.";
+        msg.className="recovery-status err";return;
+      }
+      realToken=vdata.access_token;
+    }
     var resp=await fetch(SB_URL+"/auth/v1/user",{
       method:"PUT",
-      headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+accessToken},
+      headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+realToken},
       body:JSON.stringify({password:p1})
     });
     var data=await resp.json();
@@ -4248,12 +4263,7 @@ window.doPasswordRecovery=async function(accessToken){
       setTimeout(function(){
         var el=document.getElementById("recoveryModal");
         if(el)el.remove();
-        // Show login screen
-        if(!G.onboarded){
-          G._obStep=0;
-          renderOnboarding();
-          setTimeout(function(){obRestoreAccount();},100);
-        }
+        if(!G.onboarded){G._obStep=0;renderOnboarding();setTimeout(function(){obRestoreAccount();},100);}
       },2000);
     } else {
       msg.textContent=(data.message||data.msg||"Error updating password. Try again.");
