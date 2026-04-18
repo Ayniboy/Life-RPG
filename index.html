@@ -628,9 +628,9 @@ var QUICK_ACTIONS=[
   {id:"cold_plunge",   label:"Cold Plunge / Ice Bath",  desc:"Full cold immersion — not just a shower. Ice bath, cold lake, or extended cold water. Minimum 3 minutes.",         xp:40,gold:12,skill:"serenity",domain:"Spiritual",rarity:"uncommon",repeatable:false},
 ];
 var SHOP=[
-  {id:"class_necro",  name:"Necromancer",    icon:"🧟", cost:300, desc:"Unlock the Necromancer class.", type:"class", classId:6},
-  {id:"class_samurai",name:"Samurai",         icon:"⚔️", cost:300, desc:"Unlock the Samurai class.",    type:"class", classId:7},
-  {id:"class_druid",  name:"Druid",           icon:"🌿", cost:300, desc:"Unlock the Druid class.",      type:"class", classId:8},
+  {id:"class_necro",  name:"Alchemist",    icon:"⚗️", cost:300, desc:"Unlock the Alchemist class.", type:"class", classId:6},
+  {id:"class_samurai",name:"Samurai",       icon:"🗡️", cost:300, desc:"Unlock the Samurai class.",   type:"class", classId:7},
+  {id:"class_druid",  name:"Sage",          icon:"🌿", cost:300, desc:"Unlock the Sage class.",       type:"class", classId:8},
   {id:"acc_crown",    name:"Crown Accessory", icon:"👑", cost:400, desc:"Equip a crown on your avatar.", type:"accessory", accId:"crown"},
   {id:"acc_crystal",  name:"Crystal Aura",    icon:"💎", cost:300, desc:"A shimmering crystal aura.",   type:"accessory", accId:"crystal"},
   {id:"boost3",   name:"Quick Boost",      icon:"⚡", cost:150, desc:"2x XP on your next 3 actions. Activate immediately.", type:"boost3"},
@@ -646,7 +646,7 @@ var SHOP=[
   {id:"pet_orb",  name:"Spirit Orb",        icon:"🔮",  cost:220, gems:3, desc:"Every 5th action gives a free Common chest.", type:"pet", petId:"orb"},
 ];
 var TITLES=[[1,"Initiate"],[3,"Apprentice"],[5,"Journeyman"],[8,"Veteran"],[12,"Champion"],[20,"Legendary"]];
-var AVATAR_CLASSES=[{id:0,name:"Knight"},{id:1,name:"Mage"},{id:2,name:"Ranger"},{id:3,name:"Rogue"},{id:4,name:"Paladin"},{id:5,name:"Shaman"},{id:6,name:"Necromancer",cost:300},{id:7,name:"Samurai",cost:300},{id:8,name:"Druid",cost:300}];
+var AVATAR_CLASSES=[{id:0,name:"Warrior"},{id:1,name:"Scholar"},{id:2,name:"Hustler"},{id:3,name:"Merchant"},{id:4,name:"Champion"},{id:5,name:"Monk"},{id:6,name:"Alchemist",cost:300},{id:7,name:"Samurai",cost:300},{id:8,name:"Sage",cost:300}];
 var SPRITES=[
 // 0: Knight
 ["................","......hhhh......","....hssssssh....","....hseessh.....","....hssssssh....","....hsssssh.....","...taaaaaaaaat..","..taaaaaaaaaaaat","..taadaaaadaat..","..taaaaaaaaaaat.","...taataaataaat.","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
@@ -3130,15 +3130,15 @@ function rPets(){
 
 
 var CLASS_BONUSES = {
-  0: {name:"Knight",    icon:"⚔️",  bonus:"+10% Health XP",           desc:"Built for physical mastery."},
-  1: {name:"Mage",      icon:"🧙",  bonus:"+10% Learning XP",          desc:"Knowledge is your power."},
-  2: {name:"Ranger",    icon:"🏹",  bonus:"+10% Productivity XP",      desc:"Swift, focused, relentless."},
-  3: {name:"Rogue",     icon:"🗡️",  bonus:"+10% Gold per action",      desc:"Wealth flows to the cunning."},
-  4: {name:"Paladin",   icon:"✨",  bonus:"+10% XP on streak days",    desc:"Consistency is your weapon."},
-  5: {name:"Shaman",    icon:"🌿",  bonus:"+10% Spiritual XP",         desc:"The inner world shapes all."},
-  6: {name:"Necromancer",icon:"🧟", bonus:"+1💎 per chest opened",     desc:"Power from the hidden realm."},
-  7: {name:"Samurai",   icon:"⚔️",  bonus:"+15% XP at 7+ day streak",  desc:"Discipline above all else."},
-  8: {name:"Druid",     icon:"🌿",  bonus:"+10% Spiritual+Learning XP",desc:"Nature and wisdom entwined."},
+  0: {name:"Warrior",    icon:"⚔️",  bonus:"+10% Health XP",           desc:"Built for physical mastery."},
+  1: {name:"Scholar",    icon:"📚",  bonus:"+10% Learning XP",          desc:"Knowledge is your power."},
+  2: {name:"Hustler",    icon:"🎯",  bonus:"+10% Productivity XP",      desc:"Swift, focused, relentless."},
+  3: {name:"Merchant",   icon:"💰",  bonus:"+10% Gold per action",      desc:"Wealth flows to the cunning."},
+  4: {name:"Champion",   icon:"✨",  bonus:"+10% XP on streak days",    desc:"Consistency is your weapon."},
+  5: {name:"Monk",       icon:"🧘",  bonus:"+10% Spiritual XP",         desc:"The inner world shapes all."},
+  6: {name:"Alchemist",  icon:"⚗️",  bonus:"+1💎 per chest opened",     desc:"Power from the hidden realm."},
+  7: {name:"Samurai",    icon:"🗡️",  bonus:"+15% XP at 7+ day streak",  desc:"Discipline above all else."},
+  8: {name:"Sage",       icon:"🌿",  bonus:"+10% Spiritual+Learning XP",desc:"Nature and wisdom entwined."},
 };
 
 function applyClassBonus(xp, gold, domain, streakDays){
