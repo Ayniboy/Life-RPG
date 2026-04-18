@@ -4135,29 +4135,41 @@ window.doSignOut=async function(){
 // HANDLE AUTH REDIRECT (email confirm + password reset)
 // ════════════════════════════════════════════════
 async function handleAuthRedirect(){
+  // Check both hash (#) and query string (?) for tokens
   var hash=window.location.hash;
-  if(!hash||hash.indexOf("access_token")===-1)return false;
-  // Parse hash params
+  var search=window.location.search;
+  var raw=(hash||"").replace(/^#/,"")+"&"+(search||"").replace(/^\?/,"");
+  if(raw.indexOf("access_token")===-1&&raw.indexOf("token_hash")===-1&&raw.indexOf("type")===-1)return false;
+  // Parse all params
   var params={};
-  hash.replace(/^#/,"").split("&").forEach(function(p){
-    var kv=p.split("=");params[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||"");
+  raw.split("&").forEach(function(p){
+    var kv=p.split("=");if(kv[0])params[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||"");
   });
   var type=params["type"];
   var accessToken=params["access_token"];
   var refreshToken=params["refresh_token"];
-  if(!accessToken)return false;
-  // Clear hash from URL without triggering reload
+  var tokenHash=params["token_hash"];
+  // Clear URL without triggering reload
   history.replaceState(null,"",window.location.pathname);
 
   if(type==="recovery"){
-    // Show set-new-password screen
-    showPasswordRecoveryModal(accessToken);
-    return true;
+    // Use access_token if present, otherwise use token_hash to get a session
+    if(!accessToken&&tokenHash){
+      try{
+        var vresp=await fetch(SB_URL+"/auth/v1/verify",{
+          method:"POST",
+          headers:{"Content-Type":"application/json","apikey":SB_KEY},
+          body:JSON.stringify({token_hash:tokenHash,type:"recovery"})
+        });
+        if(vresp.ok){var vdata=await vresp.json();accessToken=vdata.access_token;}
+      }catch(e){}
+    }
+    if(accessToken){showPasswordRecoveryModal(accessToken);return true;}
+    return false;
   }
 
+  if(!accessToken)return false;
   // type === "signup" or "magiclink" — auto login
-  var fakeSession={access_token:accessToken,refresh_token:refreshToken,user:{id:params["user_id"]||""}};
-  // Refresh to get full session with user object
   try{
     var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
       method:"POST",
