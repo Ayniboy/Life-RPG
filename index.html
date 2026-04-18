@@ -1305,6 +1305,9 @@ function showXPPop(x,y,xp,gold,color){
   document.body.appendChild(el);
   setTimeout(function(){el.remove();},950);
 }
+
+// Avatar modal
+function openAvModal(){
   var tl=totalLv();var rc=ringColor(tl);
   var tier=tl>=20?5:tl>=12?4:tl>=8?3:tl>=5?2:tl>=3?1:0;
   var tnames=["Initiate","Apprentice","Journeyman","Veteran","Champion","Legendary"];
