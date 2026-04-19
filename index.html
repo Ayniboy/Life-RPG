@@ -1181,7 +1181,7 @@ function rLog(){
       '<div style="font-size:11px;color:var(--text3);font-style:italic;">'+(syncActive?(G._syncEmail||'Logged in'):'Log in to back up your progress')+'</div></div>'+
     '</div>'+
     (syncActive
-      ?'<button onclick="doSignOut()" style="background:rgba(232,93,58,.15);border:1px solid #e85d3a88;border-radius:8px;padding:6px 12px;color:#e85d3a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;letter-spacing:.3px;">Sign Out</button>'
+      ?'<div style="display:flex;gap:6px;"><button onclick="forceSyncTest()" style="background:transparent;border:1px solid #2ab88a66;border-radius:8px;padding:6px 12px;color:#2ab88a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;">Force Sync</button><button onclick="doSignOut()" style="background:rgba(232,93,58,.15);border:1px solid #e85d3a88;border-radius:8px;padding:6px 12px;color:#e85d3a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;letter-spacing:.3px;">Sign Out</button></div>'
       :'<button onclick="showLoginFromLog()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:8px;padding:6px 14px;color:#1a1200;font-size:11px;font-family:\"Cinzel\",serif;cursor:pointer;font-weight:700;letter-spacing:.3px;">Log In</button>'
     )+
   '</div>';
@@ -3282,7 +3282,7 @@ function renderOnboarding(){
       '<div class="ob-title">Protect Your Progress</div>'+
       '<div class="ob-sub">Create an account so your progress is safely backed up. If you ever lose your phone, just log in to restore everything.</div>'+
       '<input class="ob-input" id="obEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
-      '<input class="ob-input" id="obSyncPass" type="password" autocapitalize="none" autocorrect="off" placeholder="Password..." maxlength="50" oninput="checkPassStrength()" />'+
+      '<input class="ob-input" id="obSyncPass" type="password" autocapitalize="none" autocorrect="off" autocomplete="new-password" spellcheck="false" placeholder="Password..." maxlength="50" oninput="checkPassStrength()" />'+
       '<div id="passChecklist" style="text-align:left;margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;line-height:2;">'+
         '<div id="pc1" style="color:var(--text3);">✗ At least 8 characters</div>'+
         '<div id="pc2" style="color:var(--text3);">✗ One uppercase letter (A-Z)</div>'+
@@ -3372,7 +3372,7 @@ window.obRestoreAccount=function(){
     '<div class="ob-title">Welcome Back</div>'+
     '<div class="ob-sub">Enter your email and password to restore all your progress.</div>'+
     '<input class="ob-input" id="obRestoreEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
-    '<input class="ob-input" id="obRestorePass" type="password" autocapitalize="none" autocorrect="off" placeholder="Password..." maxlength="50" />'+
+    '<input class="ob-input" id="obRestorePass" type="password" autocapitalize="none" autocorrect="off" autocomplete="current-password" spellcheck="false" placeholder="Password..." maxlength="50" />'+
     '<button class="ob-btn" onclick="obDoRestore()">Restore My Progress</button>'+
     '<button class="ob-skip" onclick="obForgotPassword()">Forgot password?</button>'+
     '<div id="obRestoreMsg" class="sync-status" style="margin-top:8px;"></div>'+
@@ -4038,9 +4038,17 @@ async function syncSave(){
       headers:sbAuthHeaders(),
       body:JSON.stringify({user_id:uid,save_data:saveStr,updated_at:new Date().toISOString()})
     });
-    if(resp.ok){_lastSyncedData=saveStr;G._syncStatus="synced";}
-    else{G._syncStatus="error";}
-  }catch(e){G._syncStatus="error";}
+    if(resp.ok){
+      _lastSyncedData=saveStr;
+      G._syncStatus="synced";
+      showToast("☁ Synced to cloud");
+    } else {
+      var errData=await resp.json().catch(function(){return{};});
+      G._syncStatus="error";
+      showToast("⚠ Sync failed: "+(errData.message||errData.hint||resp.status));
+      console.log("Sync error:",resp.status,errData);
+    }
+  }catch(e){G._syncStatus="error";showToast("⚠ Sync error: "+e.message);}
 }
 
 async function loadSaveFromCloud(){
@@ -4128,6 +4136,12 @@ window.logoutSync=function(){
 };
 
 
+window.forceSyncTest=async function(){
+  showToast("Syncing...");
+  _lastSyncedData=null;
+  await syncSave();
+};
+
 window.showLoginFromLog=function(){
   var el=document.getElementById("ob-container");
   if(!el){var div=document.createElement("div");div.id="ob-container";document.body.appendChild(div);el=div;}
@@ -4213,8 +4227,8 @@ function showPasswordRecoveryModal(accessToken){
     '<div class="recovery-card">'+
       '<div class="recovery-logo">🔑 NEW PASSWORD</div>'+
       '<div class="recovery-sub">Enter your new password below.</div>'+
-      '<input class="recovery-input" id="recPass1" type="password" autocapitalize="none" autocorrect="off" placeholder="New password..." maxlength="50" oninput="recCheckPass()" />'+
-      '<input class="recovery-input" id="recPass2" type="password" autocapitalize="none" autocorrect="off" placeholder="Confirm password..." maxlength="50" />'+
+      '<input class="recovery-input" id="recPass1" type="password" autocapitalize="none" autocorrect="off" autocomplete="new-password" spellcheck="false" placeholder="New password..." maxlength="50" oninput="recCheckPass()" />'+
+      '<input class="recovery-input" id="recPass2" type="password" autocapitalize="none" autocorrect="off" autocomplete="new-password" spellcheck="false" placeholder="Confirm password..." maxlength="50" />'+
       '<div id="recChecklist" style="text-align:left;margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;line-height:2;">'+
         '<div id="rpc1" style="color:var(--text3);">✗ At least 8 characters</div>'+
         '<div id="rpc2" style="color:var(--text3);">✗ One uppercase letter (A-Z)</div>'+
