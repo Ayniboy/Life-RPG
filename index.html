@@ -784,6 +784,7 @@ var G={
   dcProgress: sv&&sv.dcProgress||0,
   dcClaimed: sv&&sv.dcClaimed||false,
   lastDCKey: sv&&sv.lastDCKey||null,
+  dcOptions: sv&&sv.dcOptions||null,
   suddenEvent: sv&&sv.suddenEvent||null,
   merchantActive: sv&&sv.merchantActive||null,
   _showMerchant: false,
@@ -3748,17 +3749,61 @@ function getDCKey(){return getDayKey();}
 
 function initDailyChallenge(){
   var dk=getDCKey();
-  if(G.lastDCKey===dk)return; // Already set for today
-  // Pick new challenge
-  var idx=Math.floor(Math.random()*DC_POOL.length);
-  G.dailyChallenge=DC_POOL[idx];
+  if(G.lastDCKey===dk){
+    // Same day — if player hasn't picked yet, show picker again
+    if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){
+      setTimeout(showDCPicker,800);
+    }
+    return;
+  }
+  // New day — generate 3 fresh options
+  var shuffled=DC_POOL.slice().sort(function(){return Math.random()-.5;});
+  G.dcOptions=shuffled.slice(0,3);
+  G.dailyChallenge=null;
   G.dcProgress=0;
   G.dcClaimed=false;
   G.lastDCKey=dk;
   savePersist();
-  // Show popup
-  setTimeout(showDCPopup, 800);
+  setTimeout(showDCPicker,800);
 }
+
+function showDCPicker(){
+  var options=G.dcOptions||[];
+  if(!options.length)return;
+  var existing=document.getElementById("dcPicker");
+  if(existing)existing.remove();
+  var div=document.createElement("div");
+  div.id="dcPicker";
+  div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;";
+  var cards=options.map(function(dc,i){
+    return'<div onclick="pickDailyChallenge('+i+')" style="background:linear-gradient(135deg,#0f1a2a,#07090f);border:1px solid #8b6fe844;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor=\'#8b6fe8\'" onmouseout="this.style.borderColor=\'#8b6fe844\'">'+
+      '<div style="font-size:13px;color:#e8d5a0;margin-bottom:6px;line-height:1.4;">'+dc.desc+'</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;">'+
+        '<span style="background:rgba(244,200,66,.1);border:1px solid rgba(244,200,66,.3);border-radius:8px;padding:3px 10px;font-size:11px;color:#f4c842;font-family:\"Cinzel\",serif;">'+dc.reward+'</span>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+  div.innerHTML='<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:24px 20px;max-width:360px;width:100%;">'+
+    '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#8b6fe8;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Daily Challenge</div>'+
+    '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#e8d5a0;margin-bottom:4px;">Choose Your Quest</div>'+
+    '<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:16px;">Pick one challenge for today. Choose wisely.</div>'+
+    cards+
+  '</div>';
+  document.body.appendChild(div);
+}
+
+window.pickDailyChallenge=function(idx){
+  var options=G.dcOptions||[];
+  if(!options[idx])return;
+  G.dailyChallenge=options[idx];
+  G.dcOptions=null;
+  G.dcProgress=0;
+  savePersist();
+  var el=document.getElementById("dcPicker");
+  if(el)el.remove();
+  showToast("🎯 Challenge accepted!");
+  render();
+};
 
 function showDCPopup(){
   var dc=G.dailyChallenge;
@@ -3968,6 +4013,16 @@ window.closeMerchant=function(){
 
 // Daily Challenge banner in rDashboard
 function renderDCBanner(){
+  // If options available but not yet chosen
+  if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){
+    return'<div class="dc-banner" style="cursor:pointer;" onclick="showDCPicker()">'+
+      '<div class="dc-banner-top">'+
+        '<div class="dc-banner-title">🎯 Daily Challenge</div>'+
+        '<div class="dc-banner-timer">Resets at 4AM</div>'+
+      '</div>'+
+      '<div class="dc-banner-desc" style="color:#f4c842;">Tap to choose your challenge for today →</div>'+
+    '</div>';
+  }
   var dc=G.dailyChallenge;
   if(!dc)return"";
   var pct=Math.min(100,Math.round(((G.dcProgress||0)/dc.target)*100));
@@ -4115,7 +4170,7 @@ function buildSaveObj(){
     activePets:G.activePets,slotCooldowns:G.slotCooldowns,
     actionCount:G.actionCount,totalChestsEarned:G.totalChestsEarned,
     totalQuestsDone:G.totalQuestsDone,dailyChallenge:G.dailyChallenge,
-    dcProgress:G.dcProgress,dcClaimed:G.dcClaimed,lastDCKey:G.lastDCKey,
+    dcProgress:G.dcProgress,dcClaimed:G.dcClaimed,lastDCKey:G.lastDCKey,dcOptions:G.dcOptions,
     suddenEvent:G.suddenEvent,merchantActive:G.merchantActive
   };
 }
