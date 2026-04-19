@@ -4422,23 +4422,27 @@ refreshRotatingQuests();
 checkWeeklyPetKey();
 // Handle email confirmation and password reset links first
 handleAuthRedirect().then(function(wasRedirect){
-  // Try to restore Supabase session silently
-  tryRestoreSession().then(function(restored){
+  // Try to restore Supabase session and cloud save BEFORE rendering
+  tryRestoreSession().then(async function(restored){
     if(restored&&_sbSession){
       G._syncUser=_sbSession.user.id;
+      // Load cloud save and merge into G before first render
+      var cloudSave=await loadSaveFromCloud();
+      if(cloudSave){
+        Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+      }
       savePersist();
     }
+    initDailyChallenge();
+    startSuddenEventTimer();
+    if(!G.onboarded&&!wasRedirect){
+      G._obStep=0;
+      G._obClass=G.avatarClass||0;
+      setTimeout(function(){renderOnboarding();},300);
+    }
+    G._lastTotalLv=totalLv();
+    render();
   });
-  initDailyChallenge();
-  startSuddenEventTimer();
-  // Show onboarding only if not a recovery redirect
-  if(!G.onboarded&&!wasRedirect){
-    G._obStep=0;
-    G._obClass=G.avatarClass||0;
-    setTimeout(function(){renderOnboarding();},300);
-  }
-  G._lastTotalLv=totalLv();
-  render();
 });
 // Draw spin wheel if on spin tab
 if(G.tab==="spin"){
