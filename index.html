@@ -4303,18 +4303,19 @@ async function handleAuthRedirect(){
   // Clear URL without triggering reload
   history.replaceState(null,"",window.location.pathname);
 
+  if(!accessToken&&tokenHash){
+    // Verify token_hash to get a real session (works for both signup and recovery)
+    try{
+      var vresp=await fetch(SB_URL+"/auth/v1/verify",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","apikey":SB_KEY},
+        body:JSON.stringify({token_hash:tokenHash,type:type==="recovery"?"recovery":"signup"})
+      });
+      if(vresp.ok){var vdata=await vresp.json();if(vdata.access_token){accessToken=vdata.access_token;refreshToken=vdata.refresh_token;}}
+    }catch(e){}
+  }
+
   if(type==="recovery"){
-    // Use access_token if present, otherwise use token_hash to get a session
-    if(!accessToken&&tokenHash){
-      try{
-        var vresp=await fetch(SB_URL+"/auth/v1/verify",{
-          method:"POST",
-          headers:{"Content-Type":"application/json","apikey":SB_KEY},
-          body:JSON.stringify({token_hash:tokenHash,type:"recovery"})
-        });
-        if(vresp.ok){var vdata=await vresp.json();accessToken=vdata.access_token;}
-      }catch(e){}
-    }
     if(accessToken){showPasswordRecoveryModal(accessToken);return true;}
     return false;
   }
