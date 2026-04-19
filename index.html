@@ -3296,6 +3296,34 @@ function renderOnboarding(){
     '</div>';
   }
   else if(step===5){
+    // Add to home screen instructions
+    el.innerHTML='<div class="ob-screen">'+
+      '<button class="ob-back" onclick="G._obStep=4;renderOnboarding()">← Back</button>'+
+      '<div class="ob-progress">Step 5 of 6</div>'+
+      '<div style="font-size:48px;margin-bottom:12px;">📱</div>'+
+      '<div class="ob-title">Play Like a Native App</div>'+
+      '<div class="ob-sub">Add Life RPG to your home screen for the best experience — no browser bar, full screen, just the game.</div>'+
+      '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:16px 20px;margin-bottom:12px;max-width:320px;width:100%;text-align:left;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:11px;color:#f4c842;letter-spacing:1px;margin-bottom:10px;">🍎 iPhone / iPad (Safari)</div>'+
+        '<div style="font-size:13px;color:var(--text2);line-height:1.8;">'+
+          '1. Tap the <strong style="color:#e8d5a0;">Share</strong> button (box with arrow up)<br>'+
+          '2. Scroll down and tap <strong style="color:#e8d5a0;">Add to Home Screen</strong><br>'+
+          '3. Tap <strong style="color:#e8d5a0;">Add</strong>'+
+        '</div>'+
+      '</div>'+
+      '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:16px 20px;margin-bottom:24px;max-width:320px;width:100%;text-align:left;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:11px;color:#4a8fff;letter-spacing:1px;margin-bottom:10px;">🤖 Android (Chrome)</div>'+
+        '<div style="font-size:13px;color:var(--text2);line-height:1.8;">'+
+          '1. Tap the <strong style="color:#e8d5a0;">⋮ menu</strong> (top right)<br>'+
+          '2. Tap <strong style="color:#e8d5a0;">Add to Home Screen</strong><br>'+
+          '3. Tap <strong style="color:#e8d5a0;">Add</strong>'+
+        '</div>'+
+      '</div>'+
+      '<button class="ob-btn" onclick="obNext()">Got it →</button>'+
+      '<button class="ob-skip" onclick="obFinish()">Skip</button>'+
+    '</div>';
+  }
+  else if(step===6){
     // Final — first quest
     var cls=CLASS_BONUSES[G._obClass||0];
     el.innerHTML='<div class="ob-screen">'+
