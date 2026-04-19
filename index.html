@@ -3473,18 +3473,29 @@ window.obDoRestore=async function(){
   if(result.access_token){
     _sbSession=result;
     localStorage.setItem("sb_session",JSON.stringify(result));
+    msg.textContent="Loading your progress...";msg.className="sync-status";
     var cloudSave=await loadSaveFromCloud();
     if(cloudSave){
       Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+      G._syncUser=result.user.id;
+      G._syncEmail=email;
+      G.onboarded=true;
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+      var el=document.getElementById("ob-container");
+      if(el)el.remove();
+      render();
+      showToast("✓ Progress restored! Welcome back.");
+    } else {
+      // No cloud save found — still log them in but warn
+      G._syncUser=result.user.id;
+      G._syncEmail=email;
+      G.onboarded=true;
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+      var el=document.getElementById("ob-container");
+      if(el)el.remove();
+      render();
+      showToast("⚠ Logged in but no cloud save found. Play on your main device first.");
     }
-    G._syncUser=result.user.id;
-    G._syncEmail=email;
-    G.onboarded=true;
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
-    var el=document.getElementById("ob-container");
-    if(el)el.remove();
-    render();
-    showToast("Welcome back! Progress restored.");
   } else {
     msg.textContent="Wrong email or password. Please try again.";
     msg.className="sync-status err";
