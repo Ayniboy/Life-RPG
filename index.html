@@ -3483,10 +3483,17 @@ window.obDoRestore=async function(){
       G._syncEmail=email;
       G.onboarded=true;
       _manualLoginDone=true;
+      // Remove any stale daily challenge picker
+      var stale=document.getElementById("dcPicker");
+      if(stale)stale.remove();
       localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
       var el=document.getElementById("ob-container");
       if(el)el.remove();
       render();
+      // Show DC picker after render if needed
+      if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){
+        setTimeout(showDCPicker,600);
+      }
       showToast("✓ Progress restored! Welcome back.");
     } else {
       // No cloud save found — still log them in but warn
@@ -4436,6 +4443,9 @@ handleAuthRedirect().then(function(wasRedirect){
         Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
         console.log("After merge - gold:", G.gold, "totalXP:", G.totalXP, "avatarName:", G.avatarName);
         showToast("☁ Cloud save found: "+G.gold+"g, XP:"+G.totalXP);
+        // Remove stale DC picker if cloud save has different state
+        var stale=document.getElementById("dcPicker");
+        if(stale)stale.remove();
       } else {
         showToast("⚠ No cloud save found for this account");
       }
