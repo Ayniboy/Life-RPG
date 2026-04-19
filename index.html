@@ -4434,24 +4434,15 @@ checkWeeklyPetKey();
 handleAuthRedirect().then(function(wasRedirect){
   // Try to restore Supabase session and cloud save BEFORE rendering
   tryRestoreSession().then(async function(restored){
-    console.log("Session restored:", restored, "_sbSession:", !!_sbSession);
     if(restored&&_sbSession&&!_manualLoginDone){
       G._syncUser=_sbSession.user.id;
       var cloudSave=await loadSaveFromCloud();
-      console.log("Cloud save loaded:", cloudSave?JSON.stringify(cloudSave).slice(0,200):"null");
       if(cloudSave){
         Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
-        console.log("After merge - gold:", G.gold, "totalXP:", G.totalXP, "avatarName:", G.avatarName);
-        showToast("☁ Cloud save found: "+G.gold+"g, XP:"+G.totalXP);
-        // Remove stale DC picker if cloud save has different state
         var stale=document.getElementById("dcPicker");
         if(stale)stale.remove();
-      } else {
-        showToast("⚠ No cloud save found for this account");
       }
       savePersist();
-    } else {
-      showToast("No saved session found");
     }
     initDailyChallenge();
     startSuddenEventTimer();
