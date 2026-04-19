@@ -4321,27 +4321,49 @@ async function handleAuthRedirect(){
   }
 
   if(!accessToken)return false;
-  // type === "signup" or "magiclink" — auto login
+  // type === "signup" or "magiclink" — auto login with access token
   try{
-    var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","apikey":SB_KEY},
-      body:JSON.stringify({refresh_token:refreshToken})
-    });
-    if(resp.ok){
-      var data=await resp.json();
-      if(data.access_token){
-        _sbSession=data;
-        localStorage.setItem("sb_session",JSON.stringify(data));
-        var cloudSave=await loadSaveFromCloud();
-        if(cloudSave){Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});}
-        G._syncUser=data.user.id;
-        G._syncEmail=data.user.email||"";
-        G.onboarded=true;
-        savePersist();
-        showToast("✓ Email confirmed! You are now logged in.");
-        return true;
+    // Try refresh flow first if we have a refresh token
+    if(refreshToken){
+      var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","apikey":SB_KEY},
+        body:JSON.stringify({refresh_token:refreshToken})
+      });
+      if(resp.ok){
+        var data=await resp.json();
+        if(data.access_token){
+          _sbSession=data;
+          localStorage.setItem("sb_session",JSON.stringify(data));
+          var cloudSave=await loadSaveFromCloud();
+          if(cloudSave){Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});}
+          G._syncUser=data.user.id;
+          G._syncEmail=data.user.email||"";
+          G.onboarded=true;
+          savePersist();
+          showToast("✓ Email confirmed! You are now logged in.");
+          return true;
+        }
       }
+    }
+    // Fall back to using access token directly
+    _sbSession={access_token:accessToken,refresh_token:refreshToken||""};
+    // Get user info
+    var uresp=await fetch(SB_URL+"/auth/v1/user",{
+      headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+accessToken}
+    });
+    if(uresp.ok){
+      var udata=await uresp.json();
+      _sbSession.user=udata;
+      localStorage.setItem("sb_session",JSON.stringify(_sbSession));
+      var cloudSave=await loadSaveFromCloud();
+      if(cloudSave){Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});}
+      G._syncUser=udata.id;
+      G._syncEmail=udata.email||"";
+      G.onboarded=true;
+      savePersist();
+      showToast("✓ Email confirmed! You are now logged in.");
+      return true;
     }
   }catch(e){}
   return false;
