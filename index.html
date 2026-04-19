@@ -11,11 +11,33 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Life RPG">
 <meta name="theme-color" content="#07090f">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="format-detection" content="telephone=no">
 <title>Life RPG</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
+/* ── Cross-browser compatibility ── */
+*{-webkit-box-sizing:border-box;box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+input,button,textarea,select{-webkit-appearance:none;-moz-appearance:none;appearance:none;font-family:inherit;}
+button{touch-action:manipulation;cursor:pointer;border:none;background:none;}
+img{-webkit-user-drag:none;user-drag:none;}
+/* Prevent iOS text size adjust */
+html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;text-size-adjust:100%;}
+/* Firefox scrollbar */
+*{scrollbar-width:thin;scrollbar-color:var(--border2) var(--bg);}
+/* Smooth scrolling everywhere */
+html{scroll-behavior:smooth;}
+/* Fix iOS momentum scrolling */
+.content,.drawer,.av-modal{-webkit-overflow-scrolling:touch;}
+/* Prevent double-tap zoom on buttons */
+button,a{touch-action:manipulation;}
+/* Fix Firefox focus outline */
+button:focus,input:focus,textarea:focus{outline:none;}
+/* Fix iOS input zoom — keep font-size at 16px minimum */
+input,textarea,select{font-size:16px;}
+
 :root{--bg:#07090f;--bg2:#0d1220;--bg3:#111827;--border:#1e2a3a;--border2:#2a3a50;--text:#c8d4e8;--text2:#6a8aaa;--text3:#3a5570;--gold:#f4c842;--gold-bg:#1a1608;--gold-border:#3a2e08;--health:#e85d3a;--productivity:#4a8fff;--learning:#2ab88a;--mindset:#c456a0;--strength:#e85d3a;--endurance:#e8923a;--focus:#4a8fff;--discipline:#8b6fe8;--wisdom:#2ab88a;--creativity:#5ab83a;--mindset-sk:#c456a0;--serenity:#7ab4ea;--spiritual:#1a3a5a;--legendary:#f4c842;--uncommon:#4a8fff;--common:#6a8aaa;--success:#2ab88a;--danger:#e85d3a;--journal-g:#f4c842;--journal-i:#c456a0;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;}
@@ -3776,12 +3798,12 @@ function showDCPicker(){
   div.id="dcPicker";
   div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;";
   var cards=options.map(function(dc,i){
-    return'<div onclick="pickDailyChallenge('+i+')" style="background:linear-gradient(135deg,#0f1a2a,#07090f);border:1px solid #8b6fe844;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor=\'#8b6fe8\'" onmouseout="this.style.borderColor=\'#8b6fe844\'">'+
+    return'<button onclick="pickDailyChallenge('+i+')" style="background:linear-gradient(135deg,#0f1a2a,#07090f);border:1px solid #8b6fe844;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;width:100%;text-align:left;-webkit-tap-highlight-color:rgba(139,111,232,.2);">'+
       '<div style="font-size:13px;color:#e8d5a0;margin-bottom:6px;line-height:1.4;">'+dc.desc+'</div>'+
       '<div style="display:flex;align-items:center;gap:8px;">'+
         '<span style="background:rgba(244,200,66,.1);border:1px solid rgba(244,200,66,.3);border-radius:8px;padding:3px 10px;font-size:11px;color:#f4c842;font-family:\"Cinzel\",serif;">'+dc.reward+'</span>'+
       '</div>'+
-    '</div>';
+    '</button>';
   }).join("");
   div.innerHTML='<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:24px 20px;max-width:360px;width:100%;">'+
     '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#8b6fe8;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Daily Challenge</div>'+
