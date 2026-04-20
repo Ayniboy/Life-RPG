@@ -1044,7 +1044,12 @@ function rActions(){
     var sk=skById(a.skill);var dt=!a.repeatable&&doneToday(a.id);
     var rtag=a.repeatable?'<span style="font-size:10px;color:var(--success);">repeatable</span>':dt?'<span style="font-size:10px;color:var(--text3);">done today</span>':"";
     var domainColor=DOMAIN_COLORS[a.domain]||"var(--text2)";
-    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags"><span style="font-size:11px;color:'+(sk?sk.color:"#fff")+';">'+(sk?sk.name:"")+'</span><span style="font-size:10px;color:'+domainColor+';opacity:.7;">'+a.domain+'</span><span style="font-size:10px;color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.8px;">'+a.rarity+'</span>'+rtag+'</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
+    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags">'+
+      (sk?'<span style="font-size:10px;color:'+(sk.color)+';background:'+sk.color+'18;border:1px solid '+sk.color+'44;border-radius:20px;padding:2px 8px;">'+sk.name+'</span>':'')+
+      '<span style="font-size:10px;color:'+domainColor+';background:'+domainColor+'18;border:1px solid '+domainColor+'44;border-radius:20px;padding:2px 8px;">'+a.domain+'</span>'+
+      '<span style="font-size:10px;color:'+RARITY_COLORS[a.rarity]+';background:'+RARITY_COLORS[a.rarity]+'18;border:1px solid '+RARITY_COLORS[a.rarity]+'44;border-radius:20px;padding:2px 8px;text-transform:uppercase;letter-spacing:.5px;">'+a.rarity+'</span>'+
+      rtag+
+    '</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
   }).join("");
   return'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">Tap a deed to log it. Repeatable actions can be logged multiple times a day.</p><div class="filter-row">'+fBtns+'</div>'+items;
 }
