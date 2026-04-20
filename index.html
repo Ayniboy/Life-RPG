@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Life RPG v2.3 - Auth Fix -->
+<!-- Life RPG v2.4 - Save Version 23 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -796,6 +796,9 @@ var G={
   freeJournalEntries:sv&&sv.freeJournalEntries||[],
   streakDays:sv&&sv.streakDays||0,
   lastStreakDate:sv&&sv.lastStreakDate||null,
+  loginStreakDays:sv&&sv.loginStreakDays||0,
+  lastLoginStreakDate:sv&&sv.lastLoginStreakDate||null,
+  saveVersion:23,
   fjSearch:"",
   _drawerOpen:false,
   _syncUser: sv&&sv._syncUser||null,
@@ -925,6 +928,86 @@ function checkStreakShield(){
     showToast("Streak Shield used! Your "+G.streakDays+"-day streak is safe.");
     savePersist();
   }
+}
+
+// ── Daily Login Streak ──────────────────────────────
+var LOGIN_STREAK_REWARDS=[
+  {day:3,  gold:50,  gems:0, chest:null,      label:"3-Day Warrior"},
+  {day:7,  gold:100, gems:1, chest:"common",  label:"One Week Legend"},
+  {day:14, gold:200, gems:2, chest:"rare",    label:"Fortnight Champion"},
+  {day:30, gold:500, gems:3, chest:"legendary",label:"Monthly Master"},
+  {day:60, gold:1000,gems:5, chest:"legendary",label:"60-Day Titan"},
+  {day:100,gold:2000,gems:10,chest:"legendary",label:"Century Warrior"},
+];
+
+function checkLoginStreak(){
+  var dk=getDayKey();
+  if(G.lastLoginStreakDate===dk)return; // already shown today
+  var prev=new Date();prev.setDate(prev.getDate()-1);prev.setHours(prev.getHours()-4);
+  var pk=prev.toISOString().slice(0,10);
+  // Update login streak
+  if(G.lastLoginStreakDate===pk){
+    G.loginStreakDays=(G.loginStreakDays||0)+1;
+  } else if(!G.lastLoginStreakDate){
+    G.loginStreakDays=1;
+  } else {
+    G.loginStreakDays=1; // reset
+  }
+  G.lastLoginStreakDate=dk;
+  // Check for milestone reward
+  var reward=LOGIN_STREAK_REWARDS.filter(function(r){return r.day===G.loginStreakDays;})[0]||null;
+  if(reward){
+    G.gold=(G.gold||0)+reward.gold;
+    if(reward.gems)G.gems=(G.gems||0)+reward.gems;
+    if(reward.chest==="common")G.chests=(G.chests||0)+1;
+    else if(reward.chest==="rare")G.rareChests=(G.rareChests||0)+1;
+    else if(reward.chest==="legendary")G.legendaryChests=(G.legendaryChests||0)+1;
+    if(reward.chest)G.totalChestsEarned=(G.totalChestsEarned||0)+1;
+  }
+  savePersist();
+  setTimeout(function(){showLoginStreakPopup(G.loginStreakDays,reward);},1200);
+}
+
+function showLoginStreakPopup(days,reward){
+  var existing=document.getElementById("loginStreakPopup");
+  if(existing)existing.remove();
+  var isDay1=days===1;
+  var fc=flameColor(days);
+  var msg=isDay1?"Your legend begins today. Make it count.":
+    days===2?"Two days strong. Keep the fire burning.":
+    days===3?"Three days in. You're building something real.":
+    days===7?"One full week. Most people quit by now. You didn't.":
+    days===14?"Two weeks of discipline. This is who you are now.":
+    days===30?"30 days. You've changed. The streak is proof.":
+    days===60?"60 days. Legendary consistency.":
+    days===100?"100 DAYS. You are the 1%.":
+    "Day "+days+". Keep going. The compound effect is real.";
+  var rewardHTML="";
+  if(reward){
+    rewardHTML='<div style="background:rgba(244,200,66,.08);border:1px solid rgba(244,200,66,.3);border-radius:12px;padding:12px 16px;margin:16px 0;text-align:left;">'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#f4c842;letter-spacing:1.5px;margin-bottom:8px;">🏆 MILESTONE REWARD</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:14px;color:#e8d5a0;margin-bottom:6px;">'+reward.label+'</div>'+
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;">'+
+        (reward.gold?'<span style="font-size:12px;color:#f4c842;">+'+reward.gold+'g</span>':'')+
+        (reward.gems?'<span style="font-size:12px;color:#7ab4ea;">+'+reward.gems+'💎</span>':'')+
+        (reward.chest?'<span style="font-size:12px;color:'+(reward.chest==="legendary"?"#f4c842":reward.chest==="rare"?"#4a8fff":"#c87a3a")+';">+1 '+reward.chest.charAt(0).toUpperCase()+reward.chest.slice(1)+' Chest</span>':'')+
+      '</div>'+
+    '</div>';
+  }
+  var div=document.createElement("div");
+  div.id="loginStreakPopup";
+  div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;";
+  div.innerHTML=
+    '<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid '+(reward?"#f4c84255":fc+"55")+';border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 40px '+(reward?"rgba(244,200,66,.15)":fc+"22")+';">'+
+      '<div style="font-size:52px;margin-bottom:8px;">'+(isDay1?"⚔️":"🔥")+'</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Login Streak</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:42px;font-weight:700;color:'+fc+';line-height:1;margin-bottom:4px;text-shadow:0 0 20px '+fc+'66;">'+days+'</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:#e8d5a0;margin-bottom:8px;">'+(days===1?"Day One":"Day"+(days===1?"":'s'))+'</div>'+
+      '<div style="font-size:13px;color:var(--text2);font-style:italic;margin-bottom:4px;line-height:1.5;">'+msg+'</div>'+
+      rewardHTML+
+      '<button onclick="document.getElementById(\'loginStreakPopup\').remove()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:12px;padding:13px 40px;font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;letter-spacing:.5px;margin-top:8px;">Let\'s Go ⚔</button>'+
+    '</div>';
+  document.body.appendChild(div);
 }
 
 function updateStreak(){
@@ -4200,6 +4283,8 @@ function buildSaveObj(){
     iamEntries:G.iamEntries,dailyDone:G.dailyDone,avatarName:G.avatarName,
     avatarClass:G.avatarClass,freeJournalEntries:G.freeJournalEntries,
     streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
+    loginStreakDays:G.loginStreakDays,lastLoginStreakDate:G.lastLoginStreakDate,
+    saveVersion:23,
     keys:G.keys,chests:G.chests,rareChests:G.rareChests,
     legendaryChests:G.legendaryChests,inventory:G.inventory,
     chestHistory:G.chestHistory,streakShield:G.streakShield,
@@ -4323,6 +4408,7 @@ async function handleAuthRedirect(){
   if(!accessToken)return false;
   // type === "signup" or "magiclink" — auto login with access token
   try{
+    showToast("Confirming... token found");
     // Try refresh flow first if we have a refresh token
     if(refreshToken){
       var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
@@ -4347,11 +4433,13 @@ async function handleAuthRedirect(){
       }
     }
     // Fall back to using access token directly
+    showToast("Trying direct token...");
     _sbSession={access_token:accessToken,refresh_token:refreshToken||""};
     // Get user info
     var uresp=await fetch(SB_URL+"/auth/v1/user",{
       headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+accessToken}
     });
+    showToast("User fetch: "+uresp.status);
     if(uresp.ok){
       var udata=await uresp.json();
       _sbSession.user=udata;
@@ -4365,7 +4453,7 @@ async function handleAuthRedirect(){
       showToast("✓ Email confirmed! You are now logged in.");
       return true;
     }
-  }catch(e){}
+  }catch(e){showToast("Error: "+e.message);}
   return false;
 }
 
@@ -4470,6 +4558,7 @@ handleAuthRedirect().then(async function(wasRedirect){
     }
   }
   initDailyChallenge();
+  checkLoginStreak();
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
     G._obStep=0;
