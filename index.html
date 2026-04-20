@@ -3328,7 +3328,7 @@ function renderOnboarding(){
     var current=G.avatarName||"";
     el.innerHTML='<div class="ob-screen">'+
       '<button class="ob-back" onclick="G._obStep=0;renderOnboarding()">← Back</button>'+
-      '<div class="ob-progress">Step 1 of 4</div>'+
+      '<div class="ob-progress">Step 1 of 6</div>'+
       '<div class="ob-title">Name Your Hero</div>'+
       '<div class="ob-sub">What shall you be called in the chronicles of this world?</div>'+
       '<input class="ob-input" id="obNameInput" type="text" placeholder="Enter your name..." maxlength="16" value="'+current+'" />'+
@@ -3344,7 +3344,7 @@ function renderOnboarding(){
     var dots=classKeys.map(function(_,i){return'<div class="ob-carousel-dot'+(i===ci?" active":"")+'"></div>';}).join("");
     el.innerHTML='<div class="ob-screen">'+
       '<button class="ob-back" onclick="G._obStep=1;renderOnboarding()">← Back</button>'+
-      '<div class="ob-progress">Step 2 of 4</div>'+
+      '<div class="ob-progress">Step 2 of 6</div>'+
       '<div class="ob-title">Choose Your Class</div>'+
       '<div class="ob-sub">Your class shapes your journey. Each gives unique bonuses. You can evolve at Level 10.</div>'+
       '<div class="ob-carousel">'+
@@ -3368,7 +3368,7 @@ function renderOnboarding(){
     var dots=OB_TOUR.map(function(_,i){return'<div class="ob-dot'+(i===ts?" active":"")+'"></div>';}).join("");
     el.innerHTML='<div class="ob-screen">'+
       '<button class="ob-back" onclick="G._obStep=2;renderOnboarding()">← Back</button>'+
-      '<div class="ob-progress">Step 3 of 4 — Quick Tour</div>'+
+      '<div class="ob-progress">Step 3 of 6 — Quick Tour</div>'+
       '<div class="ob-dots">'+dots+'</div>'+
       '<div class="ob-tour-card">'+
         '<div class="ob-tour-icon">'+t.icon+'</div>'+
