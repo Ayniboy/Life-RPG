@@ -3318,7 +3318,7 @@ function renderOnboarding(){
     el.innerHTML='<div class="ob-screen">'+
       '<div class="ob-logo">⚔ LIFE RPG ✦</div>'+
       '<div class="ob-tagline">Your real life. Gamified.</div>'+
-      '<div class="ob-title">Welcome, Warrior</div>'+
+      '<div class="ob-title">Welcome, Player</div>'+
       '<div class="ob-sub">Turn your daily habits into an epic adventure. Every action you take in real life earns XP, Gold and rewards.</div>'+
       '<button class="ob-btn" onclick="obNext()">Begin Your Journey</button>'+
       '<button class="ob-skip" onclick="obRestoreAccount()">Already have an account? Log in</button>'+
@@ -3638,8 +3638,8 @@ window.obCreateAccount=async function(){
   // Email confirmation required — user created but no session yet
   if(result.user||result.id){
     G._syncEmail=email; savePersist();
-    if(msg){msg.textContent="✓ Account created! Check your email for a confirmation link.";msg.className="sync-status ok";}
-    setTimeout(function(){G._obStep=5;renderOnboarding();},2000);
+    if(msg){msg.textContent="✓ Account created!";msg.className="sync-status ok";}
+    setTimeout(function(){G._obStep=5;renderOnboarding();},1500);
   } else {
     if(msg){msg.textContent="Something went wrong. Please try again.";msg.className="sync-status err";}
     console.log("Unexpected result:", result);
