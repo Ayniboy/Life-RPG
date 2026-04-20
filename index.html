@@ -915,6 +915,59 @@ function earnXP(skillId,amount,label,eg){
   updateStreak();savePersist();render();
 }
 
+// ════════════════════════════════════════════════
+// WHAT'S NEW / PATCH NOTES
+// ════════════════════════════════════════════════
+var CURRENT_VERSION=23;
+var PATCH_NOTES=[
+  {version:23, title:"Big Update!", patches:[
+    "🔥 Daily login streak with milestone rewards (3, 7, 14, 30, 60, 100 days)",
+    "⚔️ Class lock — your chosen class is locked for 7 days to make it meaningful",
+    "☁ Smart save merge — no more lost progress when logging in on a new device",
+    "⚠️ Login reminder — alerts you if you're playing without an account",
+    "🎯 Daily challenge picker — choose from 3 options each day",
+    "💊 Action tag pills — skill, domain and rarity now shown as colored badges",
+    "🎰 Spin wheel now shows immediately when opening the tab",
+    "🌍 Cross-browser fixes — better support for Safari, Brave and Firefox",
+  ]},
+];
+
+function checkWhatsNew(){
+  var seenVersion=parseInt(localStorage.getItem("lifeRPG_seenVersion")||"0");
+  if(seenVersion>=CURRENT_VERSION)return;
+  var notes=PATCH_NOTES.filter(function(p){return p.version>seenVersion;});
+  if(!notes.length)return;
+  localStorage.setItem("lifeRPG_seenVersion",String(CURRENT_VERSION));
+  setTimeout(function(){showWhatsNew(notes);},1500);
+}
+
+function showWhatsNew(notes){
+  var existing=document.getElementById("whatsNewPopup");
+  if(existing)existing.remove();
+  var allPatches=[];
+  notes.forEach(function(n){n.patches.forEach(function(p){allPatches.push(p);});});
+  var patchHTML=allPatches.map(function(p){
+    return'<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">'+
+      '<div style="font-size:14px;flex-shrink:0;">'+p.split(" ")[0]+'</div>'+
+      '<div style="font-size:12px;color:var(--text2);line-height:1.5;">'+p.split(" ").slice(1).join(" ")+'</div>'+
+    '</div>';
+  }).join("");
+  var div=document.createElement("div");
+  div.id="whatsNewPopup";
+  div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9500;display:flex;align-items:center;justify-content:center;padding:20px;";
+  div.innerHTML=
+    '<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid #f4c84255;border-radius:20px;padding:24px 20px;max-width:380px;width:100%;max-height:85vh;overflow-y:auto;">'+
+      '<div style="text-align:center;margin-bottom:16px;">'+
+        '<div style="font-size:36px;margin-bottom:8px;">🚀</div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#f4c842;margin-bottom:4px;">What\'s New</div>'+
+        '<div style="font-size:11px;color:var(--text3);">v'+CURRENT_VERSION+' — Life RPG</div>'+
+      '</div>'+
+      '<div style="margin-bottom:16px;">'+patchHTML+'</div>'+
+      '<button onclick="document.getElementById(\'whatsNewPopup\').remove()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:12px;padding:13px;font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;width:100%;letter-spacing:.5px;">Let\'s Go! ⚔</button>'+
+    '</div>';
+  document.body.appendChild(div);
+}
+
 function checkStreakShield(){
   // Called on load - if streak was broken but shield available, save it
   var dk=getDayKey();
@@ -4704,6 +4757,7 @@ handleAuthRedirect().then(async function(wasRedirect){
   initDailyChallenge();
   checkLoginStreak();
   checkLoginNag();
+  checkWhatsNew();
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
     G._obStep=0;
