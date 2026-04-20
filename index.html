@@ -1121,13 +1121,13 @@ function rQuests(){
   var standard=G.quests||[];
 
   // ── Custom quest form ──
-  var cqUnlocked = totalLv() >= 5;
+  var cqUnlocked = totalLv() >= 7;
   if(!cqUnlocked){
     var formHTML = '<div class="cq-form" style="text-align:center;padding:20px 16px;">'+
       '<div style="font-size:36px;margin-bottom:12px;">🔒</div>'+
       '<div style="font-family:\"Cinzel\",serif;font-size:14px;color:#e8d5a0;margin-bottom:8px;">Custom Quests Locked</div>'+
-      '<div style="font-size:12px;color:var(--text2);font-style:italic;line-height:1.6;">Reach <span style="color:#f4c842;font-weight:600;">Total Level 5</span> to unlock the ability to create your own quests. Keep grinding!</div>'+
-      '<div style="margin-top:12px;font-size:11px;color:var(--text3);">Current level: '+totalLv()+' / 5</div>'+
+      '<div style="font-size:12px;color:var(--text2);font-style:italic;line-height:1.6;">Reach <span style="color:#f4c842;font-weight:600;">Total Level 7</span> to unlock the ability to create your own quests. Keep grinding!</div>'+
+      '<div style="margin-top:12px;font-size:11px;color:var(--text3);">Current level: '+totalLv()+' / 7</div>'+
     '</div>';
   } else {
   var actionOptions=QUICK_ACTIONS.map(function(a){return'<option value="'+a.id+'">'+a.label+'</option>';}).join("");
@@ -2113,7 +2113,7 @@ function rSpin(){
   if(G.spinResult){
     resultHTML='<div class="spin-result"><div class="spin-result-icon">'+G.spinResult.icon+'</div><div class="spin-result-name" style="color:'+G.spinResult.color+';">'+G.spinResult.label+'</div><div class="spin-result-desc">'+G.spinResult.desc+'</div></div>';
   }
-  return(
+  var html=(
     '<div class="spin-wrapper">'+
       '<div class="spin-outer">'+
         '<div class="spin-pointer"></div>'+
@@ -2127,6 +2127,11 @@ function rSpin(){
       histHTML+
     '</div>'
   );
+  setTimeout(function(){
+    var canvas=document.getElementById("spinCanvas");
+    if(canvas)drawWheel(canvas,spinAngle);
+  },50);
+  return html;
 }
 
 window.doSpin=function(){
