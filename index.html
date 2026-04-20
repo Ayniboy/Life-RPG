@@ -1284,11 +1284,11 @@ function rLog(){
   var exportImport='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid '+(syncActive?'#2ab88a44':'var(--border)')+';border-radius:12px;padding:12px 14px;">'+
     '<div style="display:flex;align-items:center;gap:8px;">'+
       '<div style="font-size:20px;">☁</div>'+
-      '<div><div style="font-family:\"Cinzel\",serif;font-size:12px;color:'+(syncActive?'#2ab88a':'#e8d5a0')+'">'+(syncActive?'Cloud Sync Active':'Not Synced')+'</div>'+
+      '<div><div style="font-family:\"Cinzel\",serif;font-size:12px;color:'+(syncActive?'#2ab88a':'#e8d5a0')+'">'+(syncActive?'Cloud Backup Active':'No Account Yet')+'</div>'+
       '<div style="font-size:11px;color:var(--text3);font-style:italic;">'+(syncActive?(G._syncEmail||'Logged in'):'Log in to back up your progress')+'</div></div>'+
     '</div>'+
     (syncActive
-      ?'<div style="display:flex;gap:6px;"><button onclick="forceSyncTest()" style="background:transparent;border:1px solid #2ab88a66;border-radius:8px;padding:6px 12px;color:#2ab88a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;">Force Sync</button><button onclick="doSignOut()" style="background:rgba(232,93,58,.15);border:1px solid #e85d3a88;border-radius:8px;padding:6px 12px;color:#e85d3a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;letter-spacing:.3px;">Sign Out</button></div>'
+      ?'<div style="display:flex;gap:6px;"><button onclick="forceSyncTest()" style="background:transparent;border:1px solid #2ab88a66;border-radius:8px;padding:6px 12px;color:#2ab88a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;">Sync Now</button><button onclick="doSignOut()" style="background:rgba(232,93,58,.15);border:1px solid #e85d3a88;border-radius:8px;padding:6px 12px;color:#e85d3a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;letter-spacing:.3px;">Sign Out</button></div>'
       :'<button onclick="showLoginFromLog()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:8px;padding:6px 14px;color:#1a1200;font-size:11px;font-family:\"Cinzel\",serif;cursor:pointer;font-weight:700;letter-spacing:.3px;">Log In</button>'
     )+
   '</div>';
@@ -3384,7 +3384,7 @@ function renderOnboarding(){
   else if(step===4){
     el.innerHTML='<div class="ob-screen">'+
       '<button class="ob-back" onclick="G._obStep=3;G._obTourStep=0;renderOnboarding()">← Back</button>'+
-      '<div class="ob-progress">Step 4 of 5</div>'+
+      '<div class="ob-progress">Step 4 of 6</div>'+
       '<div style="font-size:40px;margin-bottom:12px;">☁</div>'+
       '<div class="ob-title">Protect Your Progress</div>'+
       '<div class="ob-sub">Create an account so your progress is safely backed up. If you ever lose your phone, just log in to restore everything.</div>'+
@@ -3844,11 +3844,11 @@ var DC_POOL = [
   {id:"dc_prod2",    desc:"Complete 2 Productivity actions today",    type:"domain",  domain:"Productivity",target:2,  xp:70,  gold:20, gems:1, reward:"+70 XP + 1💎"},
   {id:"dc_learn2",   desc:"Complete 2 Learning actions today",        type:"domain",  domain:"Learning",    target:2,  xp:70,  gold:20, gems:1, reward:"+70 XP + 1💎"},
   {id:"dc_any5",     desc:"Log any 5 actions today",                  type:"count",   target:5,             xp:100, gold:30, gems:2, reward:"Legendary Chest", chest:"legendary"},
-  {id:"dc_streak",   desc:"Log at least 3 actions to protect streak", type:"count",   target:3,             xp:60,  gold:20, gems:0, reward:"+60 XP + Shield", shield:true},
-  {id:"dc_cold",     desc:"Take a cold shower or plunge today",       type:"action",  action:"cold_shower", target:1, xp:90,  gold:30, gems:1, reward:"Rare Chest", chest:"rare"},
-  {id:"dc_meditate", desc:"Meditate for 10 minutes today",            type:"action",  action:"meditate",    target:1, xp:60,  gold:20, gems:1, reward:"+60 XP + 1💎"},
-  {id:"dc_workout",  desc:"Complete a workout today",                  type:"action",  action:"workout",     target:1, xp:70,  gold:25, gems:1, reward:"+70 XP + 1💎"},
-  {id:"dc_read",     desc:"Read for at least 20 minutes today",       type:"action",  action:"read20",      target:1, xp:65,  gold:20, gems:1, reward:"+65 XP + 1💎"},
+  {id:"dc_streak",   desc:"Log 3 actions today and earn a Streak Shield as bonus reward", type:"count", target:3, xp:60, gold:20, gems:0, reward:"+60 XP + Shield", shield:true},
+  {id:"dc_cold",     desc:"Take a cold shower or cold plunge today",  type:"action",  action:"cold_shower", target:1, xp:90,  gold:30, gems:1, reward:"Rare Chest", chest:"rare"},
+  {id:"dc_meditate", desc:"Complete a meditation session today",      type:"action",  action:"meditate",    target:1, xp:60,  gold:20, gems:1, reward:"+60 XP + 1💎"},
+  {id:"dc_workout",  desc:"Complete a workout session today",         type:"action",  action:"workout",     target:1, xp:70,  gold:25, gems:1, reward:"+70 XP + 1💎"},
+  {id:"dc_read",     desc:"Read for at least 30 minutes today",       type:"action",  action:"read30",      target:1, xp:65,  gold:20, gems:1, reward:"+65 XP + 1💎"},
 ];
 
 // ── Sudden Events Pool ──
@@ -3911,8 +3911,8 @@ function showDCPicker(){
   }).join("");
   div.innerHTML='<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:24px 20px;max-width:360px;width:100%;">'+
     '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#8b6fe8;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Daily Challenge</div>'+
-    '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#e8d5a0;margin-bottom:4px;">Choose Your Quest</div>'+
-    '<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:16px;">Pick one challenge for today. Choose wisely.</div>'+
+    '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#e8d5a0;margin-bottom:4px;">Choose Your Challenge</div>'+
+    '<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:16px;">Pick one optional challenge for today. Complete it to earn the reward.</div>'+
     cards+
   '</div>';
   document.body.appendChild(div);
