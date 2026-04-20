@@ -793,6 +793,7 @@ var G={
   dailyDone:sv&&sv.dailyDone||{},
   avatarName:sv&&sv.avatarName||"",
   avatarClass:sv&&sv.avatarClass!=null?sv.avatarClass:0,
+  lastClassChange:sv&&sv.lastClassChange||null,
   freeJournalEntries:sv&&sv.freeJournalEntries||[],
   streakDays:sv&&sv.streakDays||0,
   lastStreakDate:sv&&sv.lastStreakDate||null,
@@ -1417,12 +1418,20 @@ function showXPPop(x,y,xp,gold,color){
   setTimeout(function(){el.remove();},950);
 }
 
-// Avatar modal
 function openAvModal(){
   var tl=totalLv();var rc=ringColor(tl);
   var tier=tl>=20?5:tl>=12?4:tl>=8?3:tl>=5?2:tl>=3?1:0;
   var tnames=["Initiate","Apprentice","Journeyman","Veteran","Champion","Legendary"];
   var nlvs=[3,5,8,12,20,999];
+  // Class lock status
+  var classLocked=false;var daysLeft=0;
+  if(G.lastClassChange){
+    daysLeft=7-Math.floor((Date.now()-G.lastClassChange)/(1000*60*60*24));
+    if(daysLeft>0)classLocked=true;
+  }
+  var lockStatusHTML=classLocked
+    ?'<div style="background:rgba(232,93,58,.1);border:1px solid rgba(232,93,58,.3);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#e85d3a;font-family:\"Cinzel\",serif;text-align:center;">🔒 Class locked for '+daysLeft+' more day'+(daysLeft===1?"":"s")+'</div>'
+    :(G.lastClassChange?'<div style="background:rgba(42,184,138,.1);border:1px solid rgba(42,184,138,.3);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#2ab88a;font-family:\"Cinzel\",serif;text-align:center;">✓ Class change available</div>':'');
   var cells=AVATAR_CLASSES.map(function(cls){
     var isSel=cls.id===G.avatarClass;
     var isUnlocked=isClassUnlocked(cls.id);
@@ -1450,6 +1459,7 @@ function openAvModal(){
       '<div class="av-modal-title">Choose Your Character</div>'+
       '<div class="av-modal-sub">'+tnames[tier]+' · Lv.'+tl+(tier<5?" · Next form at Lv."+nlvs[tier]:" · Max tier!")+'</div>'+
       '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:88px;border-radius:10px;overflow:hidden;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;"></div></div>'+
+      lockStatusHTML+
       '<div class="av-class-grid">'+cells+'</div>'+
       '<div class="cosm-title">Accessories</div>'+
       '<div class="cosm-acc-grid">'+accCells+'</div>'+
@@ -1469,7 +1479,17 @@ function openAvModal(){
 }
 window.selAvClass=function(id){
   if(!isClassUnlocked(id)){buyClass(id);return;}
+  if(id===G.avatarClass)return; // already equipped
+  // Check 7-day lock
+  if(G.lastClassChange){
+    var daysSince=Math.floor((Date.now()-G.lastClassChange)/(1000*60*60*24));
+    if(daysSince<7){
+      showToast("Class locked for "+(7-daysSince)+" more day"+(7-daysSince===1?"":"s")+". A warrior commits to their path.");
+      return;
+    }
+  }
   G.avatarClass=id;
+  G.lastClassChange=Date.now();
   savePersist();
   // Update visual selection
   document.querySelectorAll(".cosm-cell").forEach(function(c){
@@ -2796,9 +2816,16 @@ window.buyClass=function(classId){
   G.gold-=cls.cost;
   if(!G.unlockedClasses)G.unlockedClasses=[0,1,2,3,4,5];
   G.unlockedClasses.push(classId);
-  G.avatarClass=classId; // auto-equip purchased class
+  // Only auto-equip if not locked
+  var canSwitch=!G.lastClassChange||Math.floor((Date.now()-G.lastClassChange)/(1000*60*60*24))>=7;
+  if(canSwitch){
+    G.avatarClass=classId;
+    G.lastClassChange=Date.now();
+    showToast("Unlocked & equipped: "+cls.name+"!");
+  } else {
+    showToast("Unlocked: "+cls.name+"! Equip it after your 7-day lock expires.");
+  }
   savePersist();
-  showToast("Unlocked & equipped: "+cls.name+"!");
   render();
   setTimeout(function(){openAvModal();},150);
 };
@@ -3501,12 +3528,13 @@ window.obTourNext=function(){
 window.obRestoreAccount=function(){
   var el=document.getElementById("ob-container");
   if(!el)return;
+  var savedEmail=G._syncEmail||"";
   el.innerHTML='<div class="ob-screen">'+
     '<button class="ob-back" onclick="G._obStep=0;renderOnboarding()">← Back</button>'+
     '<div class="ob-logo">↩ RESTORE</div>'+
     '<div class="ob-title">Welcome Back</div>'+
     '<div class="ob-sub">Enter your email and password to restore all your progress.</div>'+
-    '<input class="ob-input" id="obRestoreEmail" type="email" placeholder="Your email address..." maxlength="100" />'+
+    '<input class="ob-input" id="obRestoreEmail" type="email" placeholder="Your email address..." maxlength="100" value="'+savedEmail+'" />'+
     '<input class="ob-input" id="obRestorePass" type="password" autocapitalize="none" autocorrect="off" autocomplete="current-password" spellcheck="false" placeholder="Password..." maxlength="50" />'+
     '<button class="ob-btn" onclick="obDoRestore()">Restore My Progress</button>'+
     '<button class="ob-skip" onclick="obForgotPassword()">Forgot password?</button>'+
@@ -3543,6 +3571,27 @@ window.obDoForgot=async function(){
 
 var _manualLoginDone=false;
 
+// Smart merge — keep whichever save has more progress
+function smartMerge(localG, cloudSave){
+  if(!cloudSave)return localG;
+  var localXP=localG.totalXP||0;
+  var cloudXP=cloudSave.totalXP||0;
+  var localGold=localG.gold||0;
+  var cloudGold=cloudSave.gold||0;
+  // If local has significantly more progress, ask player which to keep
+  var localScore=localXP+localGold;
+  var cloudScore=cloudXP+cloudGold;
+  if(localScore>cloudScore+100){
+    // Local is ahead — return local data merged with cloud auth fields
+    var merged=Object.assign({},localG);
+    merged._syncUser=cloudSave._syncUser||localG._syncUser;
+    merged._syncEmail=cloudSave._syncEmail||localG._syncEmail;
+    return{data:merged,usedLocal:true,localXP:localXP,cloudXP:cloudXP};
+  }
+  // Cloud wins or roughly equal
+  return{data:cloudSave,usedLocal:false,localXP:localXP,cloudXP:cloudXP};
+}
+
 window.obDoRestore=async function(){
   var email=document.getElementById("obRestoreEmail").value.trim().toLowerCase();
   var pass=document.getElementById("obRestorePass").value;
@@ -3561,23 +3610,27 @@ window.obDoRestore=async function(){
     msg.textContent="Loading your progress...";msg.className="sync-status";
     var cloudSave=await loadSaveFromCloud();
     if(cloudSave){
-      Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+      var merge=smartMerge(G,cloudSave);
+      if(merge.usedLocal&&merge.cloudXP>0){
+        // Local is ahead of cloud — ask player which to keep
+        var el2=document.getElementById("ob-container");
+        if(el2)el2.remove();
+        showMergeConflict(merge,result,email);
+        return;
+      }
+      Object.keys(merge.data).forEach(function(k){G[k]=merge.data[k];});
       G._syncUser=result.user.id;
       G._syncEmail=email;
       G.onboarded=true;
       _manualLoginDone=true;
-      // Remove any stale daily challenge picker
       var stale=document.getElementById("dcPicker");
       if(stale)stale.remove();
       localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
       var el=document.getElementById("ob-container");
       if(el)el.remove();
       render();
-      // Show DC picker after render if needed
-      if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){
-        setTimeout(showDCPicker,600);
-      }
-      showToast("✓ Progress restored! Welcome back.");
+      if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){setTimeout(showDCPicker,600);}
+      showToast(merge.usedLocal?"✓ Logged in! Your local progress is ahead — keeping it.":"✓ Progress restored! Welcome back.");
     } else {
       // No cloud save found — still log them in but warn
       G._syncUser=result.user.id;
@@ -3594,6 +3647,85 @@ window.obDoRestore=async function(){
     msg.className="sync-status err";
   }
 };
+
+function showMergeConflict(merge, sessionResult, email){
+  var div=document.createElement("div");
+  div.id="mergeConflict";
+  div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;";
+  div.innerHTML=
+    '<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid #f4c84255;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;">'+
+      '<div style="font-size:40px;margin-bottom:12px;">⚔️</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:16px;color:#f4c842;margin-bottom:8px;">Save Conflict</div>'+
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;">Your local progress is ahead of your cloud save.<br><br>'+
+        '<span style="color:#e8d5a0;">Local:</span> '+merge.localXP+' XP<br>'+
+        '<span style="color:#e8d5a0;">Cloud:</span> '+merge.cloudXP+' XP</div>'+
+      '<button onclick="useMergeLocal()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:12px;padding:13px;font-family:\"Cinzel\",serif;font-size:12px;font-weight:700;color:#1a1200;cursor:pointer;width:100%;margin-bottom:10px;">Keep Local Progress</button>'+
+      '<button onclick="useMergeCloud()" style="background:transparent;border:1px solid var(--border2);border-radius:12px;padding:11px;font-family:\"Cinzel\",serif;font-size:12px;color:var(--text2);cursor:pointer;width:100%;">Use Cloud Save</button>'+
+    '</div>';
+  document.body.appendChild(div);
+  div._sessionResult=sessionResult;
+  div._email=email;
+  div._merge=merge;
+}
+
+window.useMergeLocal=function(){
+  var div=document.getElementById("mergeConflict");
+  if(!div)return;
+  var merge=div._merge;var sessionResult=div._sessionResult;var email=div._email;
+  div.remove();
+  Object.keys(merge.data).forEach(function(k){G[k]=merge.data[k];});
+  G._syncUser=sessionResult.user.id;G._syncEmail=email;G.onboarded=true;_manualLoginDone=true;
+  _sbSession=sessionResult;localStorage.setItem("sb_session",JSON.stringify(sessionResult));
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+  _lastSyncedData=null;syncSave();
+  render();showToast("✓ Local progress kept and synced to cloud!");
+};
+
+window.useMergeCloud=function(){
+  var div=document.getElementById("mergeConflict");
+  if(!div)return;
+  var sessionResult=div._sessionResult;var email=div._email;
+  div.remove();
+  loadSaveFromCloud().then(function(cloudSave){
+    if(cloudSave)Object.keys(cloudSave).forEach(function(k){G[k]=cloudSave[k];});
+    G._syncUser=sessionResult.user.id;G._syncEmail=email;G.onboarded=true;_manualLoginDone=true;
+    _sbSession=sessionResult;localStorage.setItem("sb_session",JSON.stringify(sessionResult));
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(buildSaveObj()));
+    render();showToast("✓ Cloud save restored!");
+  });
+};
+
+function checkLoginNag(){
+  if(_sbSession||G._syncUser)return;
+  if(!G.onboarded)return;
+  var nagKey="lifeRPG_lastNag";
+  var lastNag=localStorage.getItem(nagKey);
+  var dk=getDayKey();
+  if(lastNag===dk)return;
+  if((G.totalXP||0)<50&&(G.gold||0)<20)return;
+  localStorage.setItem(nagKey,dk);
+  setTimeout(showLoginNag,3000);
+}
+
+function showLoginNag(){
+  if(_sbSession||G._syncUser)return;
+  var existing=document.getElementById("loginNag");
+  if(existing)return;
+  var div=document.createElement("div");
+  div.id="loginNag";
+  div.style.cssText="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:linear-gradient(135deg,#1a0a2a,#0f0518);border:1px solid #8b6fe855;border-radius:16px;padding:16px;z-index:8000;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:slideDown .4s cubic-bezier(.34,1.1,.64,1);";
+  div.innerHTML=
+    '<button onclick="document.getElementById(\'loginNag\').remove()" style="position:absolute;top:10px;right:12px;background:transparent;border:none;color:var(--text3);font-size:16px;cursor:pointer;">✕</button>'+
+    '<div style="display:flex;align-items:center;gap:12px;">'+
+      '<div style="font-size:32px;">☁</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:#e8d5a0;margin-bottom:4px;">Your progress is at risk!</div>'+
+        '<div style="font-size:12px;color:var(--text2);line-height:1.5;">Playing without an account. If you clear your browser, all progress is lost forever.</div>'+
+      '</div>'+
+    '</div>'+
+    '<button onclick="showLoginFromLog();document.getElementById(\'loginNag\').remove();" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:10px;padding:10px;font-family:\"Cinzel\",serif;font-size:12px;font-weight:700;color:#1a1200;cursor:pointer;width:100%;margin-top:12px;letter-spacing:.5px;">Create Free Account →</button>';
+  document.body.appendChild(div);
+}
 
 window.checkPassStrength=function(){
   var pass=document.getElementById("obSyncPass");
@@ -3649,6 +3781,7 @@ window.obCreateAccount=async function(){
 window.obFinish=function(){
   G.onboarded=true;
   G.avatarClass=G._obClass||G.avatarClass||0;
+  G.lastClassChange=Date.now(); // start 7-day lock from onboarding choice
   var el=document.getElementById("ob-container");
   if(el)el.remove();
   savePersist();
@@ -4281,7 +4414,7 @@ function buildSaveObj(){
     totalXP:G.totalXP,skills:G.skills,quests:G.quests,
     log:G.log,purchases:G.purchases,gratitudeEntries:G.gratitudeEntries,
     iamEntries:G.iamEntries,dailyDone:G.dailyDone,avatarName:G.avatarName,
-    avatarClass:G.avatarClass,freeJournalEntries:G.freeJournalEntries,
+    avatarClass:G.avatarClass,lastClassChange:G.lastClassChange,freeJournalEntries:G.freeJournalEntries,
     streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
     loginStreakDays:G.loginStreakDays,lastLoginStreakDate:G.lastLoginStreakDate,
     saveVersion:23,
@@ -4559,11 +4692,18 @@ handleAuthRedirect().then(async function(wasRedirect){
   }
   initDailyChallenge();
   checkLoginStreak();
+  checkLoginNag();
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
     G._obStep=0;
     G._obClass=G.avatarClass||0;
-    setTimeout(function(){renderOnboarding();},300);
+    setTimeout(function(){
+      renderOnboarding();
+      // If player has logged in before, go straight to login screen
+      if(G._syncEmail){
+        setTimeout(function(){obRestoreAccount();},100);
+      }
+    },300);
   }
   G._lastTotalLv=totalLv();
   render();
