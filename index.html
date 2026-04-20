@@ -118,6 +118,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimso
 .action-label{font-size:14px;color:var(--text);margin-bottom:3px;}
 .action-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:7px;font-style:italic;}
 .action-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.action-tag-pill{font-size:10px;border-radius:20px;padding:2px 9px;border:1px solid currentColor;opacity:.85;}
 .action-xp{font-size:14px;font-family:"Cinzel",serif;font-weight:600;}
 .action-gold{font-size:12px;color:var(--gold);margin-top:2px;}
 .quest-item{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:12px;padding:14px 15px;margin-bottom:9px;}
@@ -1045,9 +1046,9 @@ function rActions(){
     var rtag=a.repeatable?'<span style="font-size:10px;color:var(--success);">repeatable</span>':dt?'<span style="font-size:10px;color:var(--text3);">done today</span>':"";
     var domainColor=DOMAIN_COLORS[a.domain]||"var(--text2)";
     return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags">'+
-      (sk?'<span style="font-size:10px;color:'+(sk.color)+';background:'+sk.color+'18;border:1px solid '+sk.color+'44;border-radius:20px;padding:2px 8px;">'+sk.name+'</span>':'')+
-      '<span style="font-size:10px;color:'+domainColor+';background:'+domainColor+'18;border:1px solid '+domainColor+'44;border-radius:20px;padding:2px 8px;">'+a.domain+'</span>'+
-      '<span style="font-size:10px;color:'+RARITY_COLORS[a.rarity]+';background:'+RARITY_COLORS[a.rarity]+'18;border:1px solid '+RARITY_COLORS[a.rarity]+'44;border-radius:20px;padding:2px 8px;text-transform:uppercase;letter-spacing:.5px;">'+a.rarity+'</span>'+
+      (sk?'<span class="action-tag-pill" style="color:'+(sk.color)+';">'+sk.name+'</span>':'')+
+      '<span class="action-tag-pill" style="color:'+domainColor+';">'+a.domain+'</span>'+
+      '<span class="action-tag-pill" style="color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.5px;">'+a.rarity+'</span>'+
       rtag+
     '</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
   }).join("");
