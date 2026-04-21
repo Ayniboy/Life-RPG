@@ -58,7 +58,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimso
 .header-sub{font-size:11px;color:var(--text2);letter-spacing:.5px;margin-top:2px;}
 .gold-pill{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:20px;padding:5px 12px;font-family:"Cinzel",serif;font-size:13px;font-weight:600;color:var(--gold);white-space:nowrap;}
 .av-wrap{text-align:center;cursor:pointer;flex-shrink:0;min-width:0;}
-.av-img{width:40px;height:40px;border-radius:8px;overflow:hidden;border:2px solid #2a3a55;}
+.av-img{width:40px;height:40px;border-radius:8px;overflow:visible;border:2px solid #2a3a55;position:relative;}
 .av-name{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);margin-top:2px;white-space:nowrap;}
 .tl-box{background:linear-gradient(135deg,#1a1f30,#0f1420);border:1px solid #2a3a55;border-radius:12px;padding:5px 11px;text-align:center;min-width:62px;}
 .tl-num{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;line-height:1;}
@@ -497,7 +497,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .hero-card-top{display:flex;align-items:center;gap:16px;padding:20px;position:relative;}
   .hero-card-info{display:flex;flex-direction:column;flex:1;min-width:0;}
   .hero-av-wrap{display:inline-block;position:relative;flex-shrink:0;}
-  .hero-av-img{width:90px;height:90px;border-radius:14px;overflow:hidden;}
+  .hero-av-img{width:90px;height:90px;border-radius:14px;overflow:visible;position:relative;}
   .hero-av-ring{position:absolute;inset:-3px;border-radius:19px;border:2px solid transparent;}
   .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:20px;}
   .hero-name{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;margin-bottom:6px;letter-spacing:1px;}
@@ -683,49 +683,361 @@ var SHOP=[
 ];
 var TITLES=[[1,"Initiate"],[3,"Apprentice"],[5,"Journeyman"],[8,"Veteran"],[12,"Champion"],[20,"Legendary"]];
 var AVATAR_CLASSES=[{id:0,name:"Warrior"},{id:1,name:"Scholar"},{id:2,name:"Hustler"},{id:3,name:"Merchant"},{id:4,name:"Champion"},{id:5,name:"Monk"},{id:6,name:"Alchemist",cost:300},{id:7,name:"Samurai",cost:300},{id:8,name:"Sage",cost:300}];
-var SPRITES=[
-// 0: Knight
-["................","......hhhh......","....hssssssh....","....hseessh.....","....hssssssh....","....hsssssh.....","...taaaaaaaaat..","..taaaaaaaaaaaat","..taadaaaadaat..","..taaaaaaaaaaat.","...taataaataaat.","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
-// 1: Mage
-[".....hhhhhh.....","....htthhhhh....","....hssssssh....","....hseessh.....","....hssssssh....","....hsssssh.....","..taaaaaaaaat...","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","..taataataat.t..","..aaa.aa.aaa.t..","..aaa.aa.aaa.t..","..tat.aa.tat....","...aa.aa.aa.....","...tt.tt.tt....."],
-// 2: Ranger
-["....aaaaaaaa....","...aaaaaaaaaa...","...aasssssaaa...","...aaseesaaaa...","...aasssssaaa...","....ahssshah....","...taaaaaaaaat..","..taaaaaaaaat...","..taadaaadaat...","..taaaaaaaat....","...taataat......","...aa.aaa.aa....","...aa.aaa.aa....","...tt.aaa.tt....","......aaa.......","......ttt......."],
-// 3: Rogue
-[".....aaaaa......","....ahhhhhha....","...ahssssssha...","...ahseessha....","...ahssssssha...","....ahssshah....","..aaaaaaaaaaaaa.","..aaaaaaaaaaaat.","..atadaaadaata..","..aaaaaaaaaaaat.","...atataaatata..","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
-// 4: Paladin
-["....tthhhhtt....","....thhhhhht....","....hsssssssh...","....hseesssh....","....hsssssssh...","....tssssst.....","..ttaaaaaaaatt..","..ttaaaaaaaaatt.","..tadaaaaaadaat.","..ttaaaaaaaaatt.","..ttattaattattt.","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
-// 5: Shaman
-["...t.hhhhh.t....","....hhhhhhhh....","....hsssssh.....","....hseesh......","....hsssssh.....","....hsssssh.....","..t.aaaaaaaaat..","..taaaaaaaaaat..","..tataadaadatat.","..taaaaaaaaaat..","..t.tat.tat.t...","....aaa.aaa.....","....aaa.aaa.....","....tat.tat.....","....aa..aa......","....tt..tt......"],
-// 6: Necromancer (robed, hooded)
-[".....hhhhhh.....","....hhddddh.....","....hdssssdh....","....hdseesdh....","....hdssssdh....","....hddddddh....","...taaaaaaaaat..","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","..taataataat....","...aaa.aa.aaa...","...aaa.aa.aaa...","....aa.aa.aa....","....tt.aa.tt....","......tt........"],
-// 7: Samurai (armored, topknot)
-["....aahhhhaa....","...aahhhhhha....","...ahssssssha...","...ahseessha....","...ahssssssha...","...aahhhhhha....","..taaaaaaaaat...","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","...taataataat...","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","...aa..aa..aa...","...tt..tt..tt..."],
-// 8: Druid (hooded, nature)
-["....aaaaaaaa....","...aahhhhhaa....","...ahsssssah....","...ahseesah.....","...ahsssssah....","...aahhhhhaa....","..taaaaaaaaat...","..taaaaaaaaaat..","..taadaaadaat...","..taaaaaaaaaat..","...taataataat...","...aaa.aa.aaa...","...aaa.aa.aaa...","...tat.aa.tat...","....aa.aa.aa....","....tt.tt.tt...."]
-];
-var CLASS_PALETTES=[[{sk:"#f5c89a",ha:"#5a3a1a",ar:"#7a8a9a",tr:"#aabaca",ey:"#3a3a5a",sh:"#4a5a6a"},{sk:"#f5c89a",ha:"#3a2010",ar:"#8a5a30",tr:"#c4944a",ey:"#3a5a3a",sh:"#5a3a1a"},{sk:"#f5c89a",ha:"#1a1a3a",ar:"#3a5a9a",tr:"#7ab4ea",ey:"#1a3a7a",sh:"#1a3a6a"},{sk:"#f5c89a",ha:"#0a1a0a",ar:"#2a6a3a",tr:"#5ab87a",ey:"#1a5a2a",sh:"#1a4a2a"},{sk:"#f5c89a",ha:"#1a0a0a",ar:"#8a1a1a",tr:"#f4c842",ey:"#8a1a1a",sh:"#5a0a0a"},{sk:"#f9dab0",ha:"#0a0a1a",ar:"#4a1a8a",tr:"#f4c842",ey:"#c456a0",sh:"#2a0a5a"}],[{sk:"#f5c89a",ha:"#1a0a2a",ar:"#5a3a7a",tr:"#9a6aba",ey:"#5a3a9a",sh:"#3a1a5a"},{sk:"#f5c89a",ha:"#0a0a1a",ar:"#3a1a6a",tr:"#7a5ab8",ey:"#4a2a8a",sh:"#2a0a4a"},{sk:"#f2c080",ha:"#0a0a0a",ar:"#6a2a9a",tr:"#c07ae8",ey:"#6a2a9a",sh:"#4a0a7a"},{sk:"#f2c080",ha:"#f4c842",ar:"#2a0a5a",tr:"#c456a0",ey:"#c456a0",sh:"#1a0a3a"},{sk:"#f9dab0",ha:"#f4c842",ar:"#1a0a3a",tr:"#f4c842",ey:"#f4c842",sh:"#0a0a1a"},{sk:"#fff0d0",ha:"#ffffff",ar:"#0a0a2a",tr:"#c8b4ff",ey:"#ffffff",sh:"#0a0020"}],[{sk:"#d4a574",ha:"#3a2a10",ar:"#4a6a3a",tr:"#7a9a5a",ey:"#3a5a2a",sh:"#2a4a1a"},{sk:"#d4a574",ha:"#2a1a08",ar:"#3a5a2a",tr:"#6a8a4a",ey:"#2a4a1a",sh:"#1a3a0a"},{sk:"#c8965a",ha:"#1a0a0a",ar:"#2a4a1a",tr:"#5ab84a",ey:"#1a4a0a",sh:"#0a2a0a"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#1a3a0a",tr:"#4ae84a",ey:"#0a3a0a",sh:"#082008"},{sk:"#f5c89a",ha:"#0a0a0a",ar:"#0a2a0a",tr:"#f4c842",ey:"#2ab88a",sh:"#041004"},{sk:"#f9dab0",ha:"#2ab88a",ar:"#041804",tr:"#f4c842",ey:"#4ae84a",sh:"#020802"}],[{sk:"#c8965a",ha:"#0a0a0a",ar:"#2a2a2a",tr:"#5a5a5a",ey:"#8a2a2a",sh:"#1a1a1a"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#1a1a2a",tr:"#4a4a6a",ey:"#6a1a1a",sh:"#0a0a1a"},{sk:"#b8845a",ha:"#0a0a0a",ar:"#0a0a1a",tr:"#3a3a8a",ey:"#8a1a8a",sh:"#050508"},{sk:"#b8845a",ha:"#0a0a0a",ar:"#1a0a2a",tr:"#6a1a8a",ey:"#c456a0",sh:"#0a0010"},{sk:"#f5c89a",ha:"#0a0a0a",ar:"#0a0a0a",tr:"#f4c842",ey:"#e85d3a",sh:"#050505"},{sk:"#f9dab0",ha:"#1a1a1a",ar:"#050505",tr:"#f4c842",ey:"#ff2a2a",sh:"#020202"}],[{sk:"#f5c89a",ha:"#8a6a3a",ar:"#9a9a9a",tr:"#c8c8c8",ey:"#3a5a9a",sh:"#6a6a6a"},{sk:"#f5c89a",ha:"#7a5a2a",ar:"#c8c8c8",tr:"#f0f0f0",ey:"#2a4a8a",sh:"#8a8a8a"},{sk:"#f5c89a",ha:"#5a3a1a",ar:"#d8c870",tr:"#f4e8a0",ey:"#1a3a6a",sh:"#a89838"},{sk:"#f9dab0",ha:"#c4944a",ar:"#f4c842",tr:"#ffffff",ey:"#1a2a5a",sh:"#c4a430"},{sk:"#f9dab0",ha:"#f4c842",ar:"#ffffff",tr:"#f4c842",ey:"#4a8fff",sh:"#e0e0e0"},{sk:"#fff8e8",ha:"#ffffff",ar:"#ffffff",tr:"#f4c842",ey:"#7ab4ea",sh:"#f0f0f0"}],[{sk:"#b8845a",ha:"#3a1a0a",ar:"#6a4a2a",tr:"#c87a3a",ey:"#4a3a1a",sh:"#3a2a10"},{sk:"#b8845a",ha:"#2a0a0a",ar:"#8a3a0a",tr:"#e87a1a",ey:"#6a2a0a",sh:"#4a1a00"},{sk:"#c8965a",ha:"#0a1a0a",ar:"#1a5a1a",tr:"#4ae81a",ey:"#0a5a0a",sh:"#083008"},{sk:"#c8965a",ha:"#0a0a1a",ar:"#1a1a6a",tr:"#4a4aff",ey:"#0a0a8a",sh:"#080840"},{sk:"#f5c89a",ha:"#0a0a0a",ar:"#0a0a2a",tr:"#4a8fff",ey:"#4a8fff",sh:"#050510"},{sk:"#f9dab0",ha:"#4a8fff",ar:"#050510",tr:"#f4c842",ey:"#ffffff",sh:"#020208"}],
-// Necromancer — 6 tiers
-[{sk:"#c8b4a0",ha:"#1a0a2a",ar:"#2a1a3a",tr:"#6a3a8a",ey:"#8a2aaa",sh:"#1a0a1a"},{sk:"#c8b4a0",ha:"#0a0a1a",ar:"#3a1a5a",tr:"#8a4ab8",ey:"#aa2ae8",sh:"#0a0014"},{sk:"#d4c0ac",ha:"#0a0a0a",ar:"#1a0a3a",tr:"#aa6ae8",ey:"#c456a0",sh:"#0a0008"},{sk:"#d4c0ac",ha:"#2a0a4a",ar:"#0a0a1a",tr:"#c87ae8",ey:"#e84ae8",sh:"#050005"},{sk:"#e8d4c0",ha:"#4a0a6a",ar:"#050508",tr:"#f4c842",ey:"#f42aff",sh:"#020002"},{sk:"#fff8f0",ha:"#6a0a8a",ar:"#020202",tr:"#f4c842",ey:"#ffffff",sh:"#010001"}],
-// Samurai — 6 tiers
-[{sk:"#d4a574",ha:"#1a0a0a",ar:"#3a0a0a",tr:"#8a2a0a",ey:"#6a1a0a",sh:"#1a0808"},{sk:"#d4a574",ha:"#0a0a0a",ar:"#5a0a0a",tr:"#aa3a0a",ey:"#8a1a0a",sh:"#2a0404"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#7a0a0a",tr:"#c84a0a",ey:"#aa1a0a",sh:"#3a0202"},{sk:"#c8965a",ha:"#0a0a0a",ar:"#9a0a0a",tr:"#f4c842",ey:"#c81a0a",sh:"#4a0000"},{sk:"#f5c89a",ha:"#1a0a0a",ar:"#aa0a0a",tr:"#f4c842",ey:"#e81a0a",sh:"#050000"},{sk:"#fff0d8",ha:"#f4c842",ar:"#0a0000",tr:"#f4c842",ey:"#ff2a0a",sh:"#020000"}],
-// Druid — 6 tiers
-[{sk:"#b8845a",ha:"#1a1a08",ar:"#2a4a0a",tr:"#6a8a2a",ey:"#2a4a0a",sh:"#0a1a04"},{sk:"#b8845a",ha:"#0a0a04",ar:"#1a3a08",tr:"#4a6a1a",ey:"#1a3a08",sh:"#081408"},{sk:"#c8965a",ha:"#0a1a04",ar:"#0a2a04",tr:"#3a5a0a",ey:"#0a2a08",sh:"#041008"},{sk:"#c8965a",ha:"#1a3a08",ar:"#0a1a04",tr:"#5a8a1a",ey:"#0a3a0a",sh:"#020804"},{sk:"#d4a870",ha:"#2ab88a",ar:"#041004",tr:"#f4c842",ey:"#2a8a2a",sh:"#020402"},{sk:"#f0d4a0",ha:"#4ae84a",ar:"#020802",tr:"#f4c842",ey:"#4aff4a",sh:"#010201"}]
-];
+// ── CSS Character System ──────────────────────────────
+// Replaces pixel art with CSS illustrated characters
+// Each class has unique armor, markings and animations
+
+var CHAR_CSS=`
+.ch{position:relative;overflow:visible;display:inline-block;}
+.ch *{position:absolute;box-sizing:border-box;}
+.ch .sh{bottom:-6px;left:50%;transform:translateX(-50%);border-radius:50%;background:rgba(0,0,0,.4);}
+/* Animations */
+@keyframes rune-glow{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes lava-flow{0%,100%{opacity:.5;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
+@keyframes arcane-pulse{0%,100%{opacity:.25}50%{opacity:.85}}
+@keyframes fire-eye{0%,100%{box-shadow:0 0 3px #ff440066}50%{box-shadow:0 0 10px #ff4400,0 0 20px #f4c84244}}
+@keyframes flame-rise{0%{opacity:.9;transform:scaleY(1) translateY(0)}50%{opacity:1;transform:scaleY(1.3) translateY(-3px)}100%{opacity:0;transform:scaleY(.5) translateY(-10px)}}
+@keyframes orb-float{0%,100%{transform:translateY(0) scale(1);opacity:.8}50%{transform:translateY(-5px) scale(1.15);opacity:1}}
+@keyframes leaf-drift{0%{transform:rotate(0deg) translateY(0);opacity:.8}100%{transform:rotate(180deg) translateY(-20px);opacity:0}}
+@keyframes coin-float{0%,100%{transform:translateY(0) rotate(0deg);opacity:.7}50%{transform:translateY(-8px) rotate(180deg);opacity:1}}
+@keyframes chain-swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes energy-pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
+@keyframes halo{from{transform:rotateX(70deg) rotate(0deg)}to{transform:rotateX(70deg) rotate(360deg)}}
+@keyframes smoke-rise{0%{opacity:.5;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-16px) scale(1.5)}}
+@keyframes blossom{0%,100%{transform:translateY(0) rotate(0deg);opacity:.7}50%{transform:translateY(-6px) rotate(90deg);opacity:1}}
+`;
+
+// Inject CSS once
+if(!document.getElementById('ch-css')){var _s=document.createElement('style');_s.id='ch-css';_s.textContent=CHAR_CSS;document.head.appendChild(_s);}
+
+function getSkinOverride(){
+  if(typeof G==="undefined"||!G.equippedSkin||G.equippedSkin==="default")return null;
+  var skin=SKINS.filter(function(s){return s.id===G.equippedSkin;})[0];
+  return skin||null;
+}
 
 function drawSVG(classId,level,px){
-  var tier=level>=20?5:level>=12?4:level>=8?3:level>=5?2:level>=3?1:0;
-  var p=CLASS_PALETTES[classId][tier];
-  // Override with equipped skin if any
-  if(typeof G!=="undefined"&&G.equippedSkin&&G.equippedSkin!=="default"){
-    var skin=SKINS.filter(function(s){return s.id===G.equippedSkin;})[0];
-    if(skin&&skin.palette)p=skin.palette;
-  }
-  var map={s:p.sk,h:p.ha,a:p.ar,t:p.tr,e:p.ey,d:p.sh};
-  var sprite=SPRITES[classId];var sc=px/16;
-  var out='<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" shape-rendering="crispEdges"><rect width="'+px+'" height="'+px+'" fill="#0d1220"/>';
-  for(var y=0;y<16;y++){var row=sprite[y];for(var x=0;x<16;x++){var ch=row[x];var col=map[ch];if(!col)continue;var rx=Math.round(x*sc),ry=Math.round(y*sc),rw=Math.ceil((x+1)*sc)-rx,rh=Math.ceil((y+1)*sc)-ry;out+='<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" fill="'+col+'"/>';}}
-  return out+'</svg>';
+  var skin=getSkinOverride();
+  var sc=px/80; // base design is 80px
+  var w=px,h=px;
+  var html='<div class="ch" style="width:'+w+'px;height:'+h+'px;background:#0d1220;border-radius:'+(px>50?'14px':'8px')+';overflow:hidden;">';
+  html+=buildChar(classId,level,px,skin);
+  html+='</div>';
+  return html;
 }
+
+function buildChar(classId,level,px,skin){
+  var sc=px/80;
+  function p(x,y,w,h,col,r,extra){
+    r=r||0;extra=extra||'';
+    return '<div style="left:'+Math.round(x*sc)+'px;bottom:'+Math.round(y*sc)+'px;width:'+Math.round(w*sc)+'px;height:'+Math.round(h*sc)+'px;background:'+col+';border-radius:'+Math.round(r*sc)+'px;'+extra+'"></div>';
+  }
+  function pb(x,y,w,h,col,r,extra){ return '<div style="position:absolute;left:'+Math.round(x*sc)+'px;bottom:'+Math.round(y*sc)+'px;width:'+Math.round(w*sc)+'px;height:'+Math.round(h*sc)+'px;background:'+col+';border-radius:'+Math.round(r*sc)+'px;'+(extra||'')+'"></div>';}
+  function brd(x,y,w,h,col,r,extra){ return '<div style="position:absolute;left:'+Math.round(x*sc)+'px;bottom:'+Math.round(y*sc)+'px;width:'+Math.round(w*sc)+'px;height:'+Math.round(h*sc)+'px;border:'+Math.ceil(1.5*sc)+'px solid '+col+';border-radius:'+Math.round(r*sc)+'px;'+(extra||'')+'"></div>';}
+
+  // Skin colors
+  var skinCol="#c8965a";
+  if(skin&&skin.palette){skinCol=skin.palette.sk||skinCol;}
+
+  var out='';
+
+  if(classId===0){ // WARRIOR — plate armor with runes
+    var ac=skin?skin.palette.ar:"#4a5a6a";
+    var ac2=skin?skin.palette.tr:"#3a4a5a";
+    var ec=skin?skin.palette.ey:"#4a8fff";
+    out+=pb(26,0,12,30,ac2,4); // leg L
+    out+=pb(42,0,12,30,ac2,4); // leg R
+    out+=pb(24,0,14,8,"#1a2a3a",3); // boot L
+    out+=pb(42,0,14,8,"#1a2a3a",3); // boot R
+    out+=pb(14,26,52,40,ac,6); // body
+    out+=pb(18,36,44,24,ac,5); // chest plate
+    out+=brd(26,40,28,14,ec+'55',3,'animation:rune-glow 3s ease-in-out infinite;'); // chest rune
+    out+=brd(18,40,8,8,ec+'44',8,'animation:rune-glow 3s ease-in-out infinite .5s;'); // rune dot L
+    out+=brd(54,40,8,8,ec+'44',8,'animation:rune-glow 3s ease-in-out infinite 1s;'); // rune dot R
+    out+=pb(4,30,10,28,ac2,5); // arm L
+    out+=pb(66,30,10,28,ac2,5); // arm R
+    out+=pb(3,48,12,4,ec+'55',2,'animation:rune-glow 3s ease-in-out infinite .3s;'); // band L
+    out+=pb(65,48,12,4,ec+'55',2,'animation:rune-glow 3s ease-in-out infinite .3s;'); // band R
+    out+=pb(2,54,14,12,ac,5); // pauldron L
+    out+=pb(64,54,14,12,ac,5); // pauldron R
+    out+=brd(4,56,12,8,ec+'44',2,'animation:rune-glow 3s ease-in-out infinite .8s;'); // pauldron rune L
+    out+=brd(64,56,12,8,ec+'44',2,'animation:rune-glow 3s ease-in-out infinite .8s;'); // pauldron rune R
+    out+=pb(30,64,20,8,skinCol,3); // neck
+    out+=pb(18,70,44,32,skinCol,8); // head
+    out+=pb(16,88,48,18,"#2a3a4a",6); // helmet
+    out+=pb(20,84,40,10,"#1a2a3a",2); // visor
+    out+=pb(22,96,10,4,ec+'aa',2,'box-shadow:0 0 '+Math.ceil(5*sc)+'px '+ec+'88;animation:rune-glow 2s ease-in-out infinite;'); // eye L
+    out+=pb(48,96,10,4,ec+'aa',2,'box-shadow:0 0 '+Math.ceil(5*sc)+'px '+ec+'88;animation:rune-glow 2s ease-in-out infinite;'); // eye R
+    out+=pb(22,94,36,3,ec+'44',1,'animation:rune-glow 3s ease-in-out infinite .2s;'); // helmet stripe
+    // sword
+    if(px>=60){out+=pb(72,14,4,52,"#aabaca",2)+'<div style="position:absolute;left:'+Math.round(68*sc)+'px;bottom:'+Math.round(14*sc)+'px;width:'+Math.round(12*sc)+'px;height:'+Math.round(4*sc)+'px;background:#c8a830;border-radius:2px;"></div>';}
+  }
+
+  else if(classId===1){ // SCHOLAR — academic robes with ink tattoos
+    var rc="#5a4a7a",rc2="#4a3a6a",ec="#c8a0e8";
+    if(skin){rc=skin.palette.ar||rc;rc2=skin.palette.sh||rc2;ec=skin.palette.ey||ec;}
+    out+=pb(24,0,14,34,rc,4); // robe leg L
+    out+=pb(42,0,14,34,rc,4); // robe leg R
+    out+=pb(14,28,52,40,rc,6); // body
+    out+=pb(16,42,48,20,rc2,4); // robe front
+    // ink script tattoos
+    out+=brd(20,44,14,10,ec+'44',2,'animation:arcane-pulse 3s ease-in-out infinite;');
+    out+=brd(46,44,14,10,ec+'33',2,'animation:arcane-pulse 3s ease-in-out infinite .6s;');
+    out+=pb(37,36,6,24,rc2,1); // center fold
+    out+=pb(2,32,12,30,rc,5); // sleeve L
+    out+=pb(66,32,12,30,rc,5); // sleeve R
+    out+=pb(2,32,12,4,ec+'44',1,'animation:arcane-pulse 3s ease-in-out infinite;'); // cuff L
+    out+=pb(66,32,12,4,ec+'44',1,'animation:arcane-pulse 3s ease-in-out infinite;'); // cuff R
+    out+=pb(28,66,24,8,skinCol,3); // neck
+    out+=pb(18,72,44,34,skinCol,8); // head
+    out+=pb(16,94,48,16,"#3a2a4a",5); // hair/hat base
+    out+=pb(14,102,52,10,"#2a1a3a",3); // hat brim
+    out+=pb(30,110,20,18,"#3a2a4a",4); // hat top
+    // glasses
+    out+=brd(22,86,14,10,ec+'88',3,'animation:arcane-pulse 4s ease-in-out infinite;');
+    out+=brd(44,86,14,10,ec+'88',3,'animation:arcane-pulse 4s ease-in-out infinite .5s;');
+    out+=pb(36,90,8,2,ec+'66',0);
+    out+=pb(26,90,4,6,skinCol,8); // eye L
+    out+=pb(50,90,4,6,skinCol,8); // eye R
+    // floating book pages
+    if(px>=60){
+      out+='<div style="position:absolute;left:'+Math.round(68*sc)+'px;bottom:'+Math.round(40*sc)+'px;width:'+Math.round(10*sc)+'px;height:'+Math.round(13*sc)+'px;background:#fff8e0;border-radius:1px;animation:leaf-drift 3s ease-in-out infinite;opacity:.6;transform-origin:center bottom;"></div>';
+      out+='<div style="position:absolute;left:'+Math.round(-8*sc)+'px;bottom:'+Math.round(50*sc)+'px;width:'+Math.round(10*sc)+'px;height:'+Math.round(13*sc)+'px;background:#f0e8d0;border-radius:1px;animation:leaf-drift 3s ease-in-out infinite .8s;opacity:.5;transform-origin:center bottom;"></div>';
+    }
+  }
+
+  else if(classId===2){ // HUSTLER — tracksuit with speed lines
+    var tc="#1a3a6a",tc2="#2a5a9a",ec="#4a8fff";
+    if(skin){tc=skin.palette.sh||tc;tc2=skin.palette.ar||tc2;ec=skin.palette.ey||ec;}
+    out+=pb(26,0,12,32,tc2,4); // leg L
+    out+=pb(42,0,12,32,tc2,4); // leg R
+    out+=pb(24,0,14,6,"#0a1a3a",3); // shoe L
+    out+=pb(42,0,14,6,"#0a1a3a",3); // shoe R
+    // stripe on legs
+    out+=pb(28,4,4,24,ec+'55',0);
+    out+=pb(48,4,4,24,ec+'55',0);
+    out+=pb(14,28,52,40,tc,5); // jacket
+    out+=pb(16,50,48,10,tc2,0); // jacket stripe
+    out+=pb(37,28,6,40,"#0a2a5a",0); // zip line
+    out+=pb(2,32,12,30,tc,4); // arm L
+    out+=pb(66,32,12,30,tc,4); // arm R
+    out+=pb(2,44,12,6,tc2,0); // arm stripe L
+    out+=pb(66,44,12,6,tc2,0); // arm stripe R
+    out+=pb(28,66,24,8,skinCol,3); // neck
+    out+=pb(18,72,44,32,skinCol,8); // head
+    out+=pb(16,90,48,18,tc,5); // cap
+    out+=pb(12,92,56,6,"#0a1a3a",2); // cap brim
+    out+=pb(26,88,6,6,ec,8,'box-shadow:0 0 '+Math.ceil(4*sc)+'px '+ec+';'); // eye L
+    out+=pb(48,88,6,6,ec,8,'box-shadow:0 0 '+Math.ceil(4*sc)+'px '+ec+';'); // eye R
+    // speed lines
+    if(px>=60){
+      out+='<div style="position:absolute;left:'+Math.round(-14*sc)+'px;bottom:'+Math.round(35*sc)+'px;width:'+Math.round(10*sc)+'px;height:'+Math.round(2*sc)+'px;background:'+ec+'66;border-radius:1px;animation:energy-pulse 1s ease-in-out infinite;"></div>';
+      out+='<div style="position:absolute;left:'+Math.round(-12*sc)+'px;bottom:'+Math.round(42*sc)+'px;width:'+Math.round(8*sc)+'px;height:'+Math.round(2*sc)+'px;background:'+ec+'44;border-radius:1px;animation:energy-pulse 1s ease-in-out infinite .2s;"></div>';
+    }
+  }
+
+  else if(classId===3){ // MERCHANT — rich coat with gold coins
+    var mc="#8a5a1a",mc2="#c87a2a",ec="#f4c842";
+    if(skin){mc=skin.palette.sh||mc;mc2=skin.palette.ar||mc2;ec=skin.palette.ey||ec;}
+    out+=pb(26,0,12,32,mc,4); // leg L
+    out+=pb(42,0,12,32,mc,4); // leg R
+    out+=pb(24,0,14,8,"#3a1a00",3); // boot L
+    out+=pb(42,0,14,8,"#3a1a00",3); // boot R
+    out+=pb(12,28,56,44,mc2,6); // coat
+    out+=pb(14,30,8,42,mc,0); // lapel L
+    out+=pb(58,30,8,42,mc,0); // lapel R
+    // gold buttons
+    out+=pb(37,38,6,6,ec,8);
+    out+=pb(37,50,6,6,ec,8);
+    out+=pb(37,62,6,6,ec,8);
+    // coin symbols on coat
+    out+=brd(20,46,10,10,ec+'55',8,'animation:arcane-pulse 2s ease-in-out infinite;');
+    out+=brd(50,46,10,10,ec+'44',8,'animation:arcane-pulse 2s ease-in-out infinite .5s;');
+    out+=pb(2,34,12,32,mc2,5); // arm L
+    out+=pb(66,34,12,32,mc2,5); // arm R
+    // gold trim on sleeves
+    out+=pb(2,34,12,4,ec+'66',2);
+    out+=pb(66,34,12,4,ec+'66',2);
+    out+=pb(28,68,24,8,skinCol,3); // neck
+    out+=pb(18,74,44,30,skinCol,8); // head
+    out+=pb(16,92,48,16,mc,5); // hat
+    out+=pb(12,94,56,6,"#3a1a00",2); // hat brim
+    out+=pb(36,96,8,12,mc,1,'border-top:0;'); // hat band
+    out+=pb(26,88,6,6,ec,8,'box-shadow:0 0 '+Math.ceil(4*sc)+'px '+ec+'88;'); // eye L
+    out+=pb(48,88,6,6,ec,8,'box-shadow:0 0 '+Math.ceil(4*sc)+'px '+ec+'88;'); // eye R
+    // floating coins
+    if(px>=60){
+      out+='<div style="position:absolute;left:'+Math.round(70*sc)+'px;bottom:'+Math.round(50*sc)+'px;width:'+Math.round(8*sc)+'px;height:'+Math.round(8*sc)+'px;background:'+ec+';border-radius:50%;animation:coin-float 2s ease-in-out infinite;box-shadow:0 0 '+Math.ceil(4*sc)+'px '+ec+'88;"></div>';
+      out+='<div style="position:absolute;left:'+Math.round(-10*sc)+'px;bottom:'+Math.round(44*sc)+'px;width:'+Math.round(8*sc)+'px;height:'+Math.round(8*sc)+'px;background:'+ec+';border-radius:50%;animation:coin-float 2s ease-in-out infinite .7s;box-shadow:0 0 '+Math.ceil(4*sc)+'px '+ec+'88;"></div>';
+    }
+  }
+
+  else if(classId===4){ // CHAMPION — heavy knight armor with laurels
+    var cc="#c8a830",cc2="#8a7020",ec="#f4c842";
+    if(skin){cc=skin.palette.ar||cc;cc2=skin.palette.sh||cc2;ec=skin.palette.ey||ec;}
+    out+=pb(24,0,14,34,cc2,4); // leg L
+    out+=pb(42,0,14,34,cc2,4); // leg R
+    out+=pb(22,0,16,8,"#3a2800",3); // boot L
+    out+=pb(42,0,16,8,"#3a2800",3); // boot R
+    // leg engravings
+    out+=pb(26,8,10,2,ec+'44',0);out+=pb(26,14,10,2,ec+'33',0);
+    out+=pb(44,8,10,2,ec+'44',0);out+=pb(44,14,10,2,ec+'33',0);
+    out+=pb(12,28,56,44,cc,6); // body
+    out+=pb(14,42,52,24,cc2,4); // chest
+    // star burst on chest
+    out+=brd(32,46,16,16,ec+'66',8,'animation:energy-pulse 2s ease-in-out infinite;');
+    out+=pb(39,42,2,24,ec+'44',0,'animation:energy-pulse 2s ease-in-out infinite;');
+    out+=pb(28,52,24,4,ec+'44',0,'animation:energy-pulse 2s ease-in-out infinite .3s;');
+    out+=pb(0,32,14,34,cc,6); // arm L
+    out+=pb(66,32,14,34,cc,6); // arm R
+    // laurel marks on shoulders
+    out+=brd(0,52,14,10,ec+'55',3,'animation:rune-glow 2s ease-in-out infinite;');
+    out+=brd(66,52,14,10,ec+'55',3,'animation:rune-glow 2s ease-in-out infinite .4s;');
+    out+=pb(28,68,24,8,skinCol,3); // neck
+    out+=pb(16,74,48,34,skinCol,8); // head
+    out+=pb(14,94,52,20,cc,6); // full helmet
+    out+=pb(18,90,44,14,cc2,3); // visor
+    out+=pb(22,94,14,6,ec+'aa',2,'box-shadow:0 0 '+Math.ceil(5*sc)+'px '+ec+'88;animation:energy-pulse 1.5s ease-in-out infinite;'); // eye L
+    out+=pb(44,94,14,6,ec+'aa',2,'box-shadow:0 0 '+Math.ceil(5*sc)+'px '+ec+'88;animation:energy-pulse 1.5s ease-in-out infinite .3s;'); // eye R
+    // crown/plume on helmet
+    out+=pb(36,110,8,12,ec,2,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+';');
+  }
+
+  else if(classId===5){ // MONK — flowing robes with zen circles
+    var mkc="#3a2a5a",mkc2="#2a1a4a",ec="#8b6fe8";
+    if(skin){mkc=skin.palette.ar||mkc;mkc2=skin.palette.sh||mkc2;ec=skin.palette.ey||ec;}
+    out+=pb(20,0,18,38,mkc,3); // robe L
+    out+=pb(42,0,18,38,mkc,3); // robe R
+    out+=pb(18,0,44,38,mkc,4); // robe front
+    out+=pb(20,0,40,4,"#f4c842",0); // sash
+    out+=pb(16,0,6,4,mkc2,0,'border-radius:2px 0 0 2px;'); // sash end L
+    out+=pb(58,0,6,4,mkc2,0,'border-radius:0 2px 2px 0;'); // sash end R
+    out+=pb(20,28,40,16,mkc2,2); // robe overlap
+    // zen circle on chest
+    out+=brd(30,36,20,20,ec+'66',10,'animation:arcane-pulse 3s ease-in-out infinite;');
+    out+=brd(34,40,12,12,ec+'44',6,'animation:arcane-pulse 3s ease-in-out infinite .5s;');
+    out+=pb(4,32,12,36,mkc,4); // sleeve L
+    out+=pb(64,32,12,36,mkc,4); // sleeve R
+    out+=pb(6,32,10,4,"#f4c842",1); // cuff L
+    out+=pb(64,32,10,4,"#f4c842",1); // cuff R
+    // glowing orb in hand
+    out+=pb(5,38,10,10,ec,5,'box-shadow:0 0 '+Math.ceil(8*sc)+'px '+ec+';animation:orb-float 2s ease-in-out infinite;');
+    out+=pb(28,66,24,8,skinCol,3); // neck
+    out+=pb(18,72,44,34,skinCol,9); // head
+    out+=pb(14,96,52,12,mkc2,5); // hood shadow
+    out+=pb(12,98,56,18,mkc2,10); // hood
+    out+=pb(24,86,8,6,ec,8,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+';animation:arcane-pulse 2s ease-in-out infinite;'); // eye L
+    out+=pb(48,86,8,6,ec,8,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+';animation:arcane-pulse 2s ease-in-out infinite .5s;'); // eye R
+    out+=pb(28,74,24,10,"#1a0a2a",6); // beard
+  }
+
+  else if(classId===6){ // ALCHEMIST — dark hooded cloak with vial symbols
+    var alc="#1a1a2a",alc2="#2a1a3a",ec="#2ab88a";
+    if(skin){alc=skin.palette.sh||alc;alc2=skin.palette.ar||alc2;ec=skin.palette.ey||ec;}
+    out+=pb(22,0,14,36,alc2,3); // robe L
+    out+=pb(44,0,14,36,alc2,3); // robe R
+    out+=pb(14,28,52,44,alc2,6); // cloak body
+    out+=pb(16,28,6,44,alc,0); // shadow L
+    out+=pb(58,28,6,44,alc,0); // shadow R
+    // vial symbol on chest
+    out+=pb(36,38,8,16,"#0a3a2a",2);
+    out+=pb(37,50,6,4,ec+'88',1,'animation:smoke-rise 2s ease-in-out infinite;'); // green glow in vial
+    out+=brd(34,36,12,20,ec+'55',2,'animation:arcane-pulse 2s ease-in-out infinite;');
+    // dripping
+    out+=pb(39,32,2,8,ec+'66',1,'animation:lava-flow 2s ease-in-out infinite;');
+    out+=pb(42,34,2,6,ec+'44',1,'animation:lava-flow 2s ease-in-out infinite .4s;');
+    out+=pb(2,34,14,34,alc2,5); // arm L
+    out+=pb(64,34,14,34,alc2,5); // arm R
+    // green drips on sleeves
+    out+=pb(4,40,2,10,ec+'55',1,'animation:lava-flow 1.8s ease-in-out infinite;');
+    out+=pb(74,44,2,8,ec+'44',1,'animation:lava-flow 1.8s ease-in-out infinite .5s;');
+    out+=pb(28,68,24,8,skinCol,3); // neck
+    out+=pb(18,74,44,32,skinCol,8); // head
+    out+=pb(12,98,56,22,alc,10); // deep hood
+    out+=pb(14,96,52,14,alc2,8); // hood inner
+    out+=pb(24,88,10,7,ec,8,'box-shadow:0 0 '+Math.ceil(7*sc)+'px '+ec+';animation:arcane-pulse 2s ease-in-out infinite;'); // eye L
+    out+=pb(46,88,10,7,ec,8,'box-shadow:0 0 '+Math.ceil(7*sc)+'px '+ec+';animation:arcane-pulse 2s ease-in-out infinite .4s;'); // eye R
+    // smoke
+    if(px>=60){
+      out+='<div style="position:absolute;left:'+Math.round(36*sc)+'px;bottom:'+Math.round(54*sc)+'px;width:'+Math.round(8*sc)+'px;height:'+Math.round(8*sc)+'px;background:'+ec+'44;border-radius:50%;animation:smoke-rise 2s ease-in-out infinite;"></div>';
+      out+='<div style="position:absolute;left:'+Math.round(32*sc)+'px;bottom:'+Math.round(58*sc)+'px;width:'+Math.round(6*sc)+'px;height:'+Math.round(6*sc)+'px;background:'+ec+'33;border-radius:50%;animation:smoke-rise 2s ease-in-out infinite .5s;"></div>';
+    }
+  }
+
+  else if(classId===7){ // SAMURAI — lamellar armor with kanji marks
+    var sc2="#8a0a0a",sc3="#c81a00",ec="#ff2a0a";
+    if(skin){sc2=skin.palette.sh||sc2;sc3=skin.palette.ar||sc3;ec=skin.palette.ey||ec;}
+    out+=pb(24,0,14,34,sc2,2); // leg L
+    out+=pb(42,0,14,34,sc2,2); // leg R
+    // lamellar plates on legs
+    out+=pb(24,6,14,4,sc3,0);out+=pb(24,14,14,4,sc3,0);out+=pb(24,22,14,4,sc3,0);
+    out+=pb(42,6,14,4,sc3,0);out+=pb(42,14,14,4,sc3,0);out+=pb(42,22,14,4,sc3,0);
+    out+=pb(22,0,16,6,"#1a0000",2); // sandal L
+    out+=pb(42,0,16,6,"#1a0000",2); // sandal R
+    out+=pb(12,28,56,44,sc2,4); // do (chest armor)
+    // lamellar strips on body
+    out+=pb(14,32,52,5,sc3,0);out+=pb(14,40,52,5,sc3,0);out+=pb(14,48,52,5,sc3,0);out+=pb(14,56,52,5,sc3,0);
+    // kamon (family crest) on chest
+    out+=brd(34,44,12,12,ec+'77',6,'animation:energy-pulse 2s ease-in-out infinite;');
+    out+=pb(39,42,2,16,ec+'44',0);out+=pb(32,48,16,2,ec+'44',0);
+    out+=pb(0,30,14,36,sc2,3); // arm L (ote)
+    out+=pb(66,30,14,36,sc2,3); // arm R
+    out+=pb(0,30,14,5,sc3,0);out+=pb(0,38,14,5,sc3,0);out+=pb(0,46,14,5,sc3,0);
+    out+=pb(66,30,14,5,sc3,0);out+=pb(66,38,14,5,sc3,0);out+=pb(66,46,14,5,sc3,0);
+    out+=pb(28,68,24,8,skinCol,3); // neck
+    out+=pb(18,74,44,32,skinCol,8); // head
+    out+=pb(14,96,52,18,sc2,4); // kabuto (helmet)
+    out+=pb(18,92,44,12,"#3a0000",2); // menpo (face guard)
+    // topknot
+    out+=pb(34,112,12,10,skinCol,4);
+    out+=pb(32,116,16,8,"#1a0000",3);
+    out+=pb(24,94,10,6,ec,8,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+'88;animation:fire-eye 1.5s ease-in-out infinite;'); // eye L
+    out+=pb(46,94,10,6,ec,8,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+'88;animation:fire-eye 1.5s ease-in-out infinite;'); // eye R
+    // blossom petals
+    if(px>=60){
+      out+='<div style="position:absolute;left:'+Math.round(70*sc)+'px;bottom:'+Math.round(70*sc)+'px;width:'+Math.round(8*sc)+'px;height:'+Math.round(8*sc)+'px;background:#f4a0c0;border-radius:50% 0;animation:blossom 3s ease-in-out infinite;opacity:.7;"></div>';
+      out+='<div style="position:absolute;left:'+Math.round(-10*sc)+'px;bottom:'+Math.round(60*sc)+'px;width:'+Math.round(6*sc)+'px;height:'+Math.round(6*sc)+'px;background:#f4b0c8;border-radius:50% 0;animation:blossom 3s ease-in-out infinite .8s;opacity:.6;"></div>';
+    }
+  }
+
+  else if(classId===8){ // SAGE — nature robes with leaf patterns
+    var sgc="#2a4a1a",sgc2="#1a3a0a",ec="#4ae84a";
+    if(skin){sgc=skin.palette.ar||sgc;sgc2=skin.palette.sh||sgc2;ec=skin.palette.ey||ec;}
+    out+=pb(20,0,16,36,sgc,4); // robe L
+    out+=pb(44,0,16,36,sgc,4); // robe R
+    out+=pb(18,0,44,36,sgc,5); // robe front
+    out+=pb(36,0,8,36,"#1a3a0a",0); // center fold
+    out+=pb(16,24,48,20,sgc2,3); // robe hem
+    // leaf pattern on robe
+    out+=pb(22,10,8,6,ec+'44',3,'border-radius:0 50% 0 50%;animation:rune-glow 3s ease-in-out infinite;');
+    out+=pb(50,16,8,6,ec+'33',3,'border-radius:50% 0 50% 0;animation:rune-glow 3s ease-in-out infinite .5s;');
+    out+=pb(30,22,8,6,ec+'44',3,'border-radius:0 50% 0 50%;animation:rune-glow 3s ease-in-out infinite 1s;');
+    out+=pb(4,30,13,38,sgc,5); // sleeve L
+    out+=pb(63,30,13,38,sgc,5); // sleeve R
+    // vine on sleeves
+    out+=pb(6,34,3,24,ec+'44',1,'animation:rune-glow 3s ease-in-out infinite;');
+    out+=pb(71,38,3,18,ec+'33',1,'animation:rune-glow 3s ease-in-out infinite .6s;');
+    out+=pb(28,66,24,8,skinCol,3); // neck
+    out+=pb(18,72,44,34,skinCol,9); // head
+    out+=pb(12,98,56,22,sgc,10); // hood
+    out+=pb(16,96,48,14,sgc2,8); // hood shadow
+    // antlers/branch crown
+    out+=pb(20,112,6,14,sgc2,2,'transform:rotate(-20deg);transform-origin:bottom center;');
+    out+=pb(54,112,6,14,sgc2,2,'transform:rotate(20deg);transform-origin:bottom center;');
+    out+=pb(18,118,8,4,sgc2,1,'transform:rotate(-40deg);transform-origin:bottom center;');
+    out+=pb(54,118,8,4,sgc2,1,'transform:rotate(40deg);transform-origin:bottom center;');
+    out+=pb(24,88,8,7,ec,8,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+'88;animation:arcane-pulse 2s ease-in-out infinite;'); // eye L
+    out+=pb(48,88,8,7,ec,8,'box-shadow:0 0 '+Math.ceil(6*sc)+'px '+ec+'88;animation:arcane-pulse 2s ease-in-out infinite .4s;'); // eye R
+    // floating leaves
+    if(px>=60){
+      out+='<div style="position:absolute;left:'+Math.round(70*sc)+'px;bottom:'+Math.round(55*sc)+'px;width:'+Math.round(8*sc)+'px;height:'+Math.round(10*sc)+'px;background:'+ec+'88;border-radius:0 50% 0 50%;animation:leaf-drift 3s ease-in-out infinite;"></div>';
+      out+='<div style="position:absolute;left:'+Math.round(-10*sc)+'px;bottom:'+Math.round(65*sc)+'px;width:'+Math.round(7*sc)+'px;height:'+Math.round(9*sc)+'px;background:'+ec+'66;border-radius:50% 0 50% 0;animation:leaf-drift 3s ease-in-out infinite .9s;"></div>';
+    }
+  }
+
+  return out;
+}
+
 // ── Character Skins ──────────────────────────────────
 // Each skin overrides the color palette for all classes
 // palette: {sk, ha, ar, tr, ey, sh} same keys as CLASS_PALETTES
@@ -1572,7 +1884,7 @@ function openAvModal(){
     var canAfford=!!(cls.cost&&G.gold>=cls.cost);
     var notEnoughMsg="showToast('Not enough gold! Need "+cls.cost+"g. Do more quests.')";
     var clickFn=isUnlocked?"selAvClass("+cls.id+")":(canAfford?"buyClass("+cls.id+")":notEnoughMsg);
-    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:44px;height:44px;border-radius:6px;overflow:hidden;margin:0 auto;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
+    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:44px;height:44px;border-radius:6px;overflow:visible;margin:0 auto;position:relative;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
   }).join("");
   // Accessories section
   var accCells=ACCESSORIES.map(function(acc){
@@ -1603,7 +1915,7 @@ function openAvModal(){
     '<div class="av-modal-bg" onclick="if(event.target===this)closeAvModal()"><div class="av-modal">'+
       '<div class="av-modal-title">Choose Your Character</div>'+
       '<div class="av-modal-sub">'+tnames[tier]+' · Lv.'+tl+(tier<5?" · Next form at Lv."+nlvs[tier]:" · Max tier!")+'</div>'+
-      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:88px;border-radius:10px;overflow:hidden;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;"></div></div>'+
+      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:88px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;position:relative;"></div></div>'+
       lockStatusHTML+
       '<div class="av-class-grid">'+cells+'</div>'+
       '<div class="cosm-title">Skins</div>'+
