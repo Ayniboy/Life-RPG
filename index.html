@@ -600,6 +600,11 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .xp-pop-gold{font-family:"Cinzel",serif;font-size:13px;color:#f4c842;text-shadow:0 2px 8px rgba(0,0,0,.8);}
   @keyframes xpPopFloat{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-48px) scale(1.1);}100%{opacity:0;transform:translateY(-80px) scale(.9);}}
 
+  /* ── Update Banner ── */
+  .update-banner{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border-bottom:1px solid #2ab88a55;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;z-index:99999;animation:slideDown .3s ease;}
+  .update-banner-text{font-family:"Cinzel",serif;font-size:11px;color:#2ab88a;}
+  .update-banner-btn{background:#2ab88a;border:none;border-radius:8px;padding:6px 14px;font-family:"Cinzel",serif;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
+
   /* ── Password Recovery Modal ── */
   .recovery-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;}
   .recovery-card{background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid var(--border2);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;}
@@ -917,8 +922,20 @@ function earnXP(skillId,amount,label,eg){
   updateStreak();savePersist();render();
 }
 
+function showUpdateBanner(){
+  var existing=document.getElementById("updateBanner");
+  if(existing)return;
+  var div=document.createElement("div");
+  div.id="updateBanner";
+  div.className="update-banner";
+  div.innerHTML=
+    '<span class="update-banner-text">🚀 New update available!</span>'+
+    '<button class="update-banner-btn" onclick="window.location.reload(true)">Refresh</button>';
+  document.body.appendChild(div);
+}
+
 // ════════════════════════════════════════════════
-// WHAT'S NEW / PATCH NOTES
+// WHAT\'S NEW / PATCH NOTES
 // ════════════════════════════════════════════════
 var CURRENT_VERSION=23;
 var PATCH_NOTES=[
@@ -4513,6 +4530,26 @@ function scheduleSyncSave(){
   _syncTimer=setTimeout(syncSave,3000);
 }
 
+// Auto-refresh JWT token every 30 minutes to prevent expiry
+async function refreshSessionToken(){
+  if(!_sbSession||!_sbSession.refresh_token)return;
+  try{
+    var resp=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SB_KEY},
+      body:JSON.stringify({refresh_token:_sbSession.refresh_token})
+    });
+    if(resp.ok){
+      var data=await resp.json();
+      if(data.access_token){
+        _sbSession=data;
+        localStorage.setItem("sb_session",JSON.stringify(data));
+      }
+    }
+  }catch(e){}
+}
+setInterval(refreshSessionToken, 30*60*1000);
+
 // Try to restore session from stored token
 async function tryRestoreSession(){
   var stored=localStorage.getItem("sb_session");
@@ -4742,7 +4779,27 @@ window.doPasswordRecovery=async function(accessToken){
   }
 };
 
-if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){});}
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js").then(function(reg){
+    reg.addEventListener("updatefound", function(){
+      var newWorker=reg.installing;
+      newWorker.addEventListener("statechange", function(){
+        if(newWorker.state==="installed"&&navigator.serviceWorker.controller){
+          // New version available
+          showUpdateBanner();
+        }
+      });
+    });
+  }).catch(function(){});
+  // Check for updates when page gains focus
+  document.addEventListener("visibilitychange", function(){
+    if(!document.hidden){
+      navigator.serviceWorker.getRegistration().then(function(reg){
+        if(reg)reg.update();
+      });
+    }
+  });
+}
 checkStreakShield();
 refreshRotatingQuests();
 checkWeeklyPetKey();
