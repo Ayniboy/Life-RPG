@@ -494,9 +494,10 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   /* Main character card */
   .hero-main-card{background:linear-gradient(160deg,#0f1828,#080e1a);border:1px solid var(--border2);border-radius:20px;margin:0 16px 12px;overflow:hidden;position:relative;}
   .hero-main-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(244,200,66,.06),transparent 60%);pointer-events:none;}
-  .hero-card-top{display:flex;flex-direction:column;align-items:center;padding:28px 20px 20px;position:relative;}
-  .hero-av-wrap{display:inline-block;position:relative;margin-bottom:14px;}
-  .hero-av-img{width:100px;height:100px;border-radius:16px;overflow:hidden;margin:0 auto;}
+  .hero-card-top{display:flex;align-items:center;gap:16px;padding:20px;position:relative;}
+  .hero-card-info{display:flex;flex-direction:column;flex:1;min-width:0;}
+  .hero-av-wrap{display:inline-block;position:relative;flex-shrink:0;}
+  .hero-av-img{width:90px;height:90px;border-radius:14px;overflow:hidden;}
   .hero-av-ring{position:absolute;inset:-3px;border-radius:19px;border:2px solid transparent;}
   .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:20px;}
   .hero-name{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;margin-bottom:6px;letter-spacing:1px;}
@@ -3962,10 +3963,12 @@ function rHero(){
           '<div class="hero-av-ring" style="border-color:'+rc+';box-shadow:0 0 16px '+rc+'55;border-width:2px;border-style:solid;"></div>'+
           (acc?'<div class="hero-av-accessory">'+acc.icon+'</div>':'')+
         '</div>'+
-        '<div class="hero-name">'+(G.avatarName||"Hero")+'</div>'+
-        '<div class="hero-class-badge" style="color:'+rc+';border-color:'+rc+'44;background:'+rc+'11;">'+cls.icon+' '+cls.name+'</div>'+
-        '<div class="hero-title-badge">'+title+'</div>'+
-        lockInfo+
+        '<div class="hero-card-info">'+
+          '<div class="hero-name">'+(G.avatarName||"Hero")+'</div>'+
+          '<div class="hero-class-badge" style="color:'+rc+';border-color:'+rc+'44;background:'+rc+'11;">'+cls.icon+' '+cls.name+'</div>'+
+          '<div class="hero-title-badge">'+title+'</div>'+
+          lockInfo+
+        '</div>'+
       '</div>'+
       '<div class="hero-stats-strip">'+
         '<div class="hero-strip-stat"><div class="hero-strip-val">'+tl+'</div><div class="hero-strip-lbl">Level</div></div>'+
