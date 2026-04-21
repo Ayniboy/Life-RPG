@@ -747,7 +747,7 @@ var SKINS=[
   {id:"streak30",  name:"Legendary Flame",icon:"💫", desc:"30-day login streak reward.", cost:0,   unlock:"streak30",
    palette:{sk:"#fff8e0",ha:"#f4c842",ar:"#e8923a",tr:"#ffffff",ey:"#f4c842",sh:"#c87a10"}},
 ];
-if(level>=20)return"#f4c842";if(level>=12)return"#c456a0";if(level>=8)return"#2ab88a";if(level>=5)return"#4a8fff";if(level>=3)return"#e8923a";return"#6a8aaa";}
+function ringColor(level){if(level>=20)return"#f4c842";if(level>=12)return"#c456a0";if(level>=8)return"#2ab88a";if(level>=5)return"#4a8fff";if(level>=3)return"#e8923a";return"#6a8aaa";}
 
 var STORAGE_KEY="liferp_save_v4";
 var OLD_KEYS=["liferp_save_v3","liferp_save_v2","liferp_save_v1"];
