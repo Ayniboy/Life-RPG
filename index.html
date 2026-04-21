@@ -1252,16 +1252,28 @@ function rQuests(){
       '<input class="cq-input" id="cqTitle" placeholder="Quest title..." />'+
       '<input class="cq-input" id="cqDesc" placeholder="Description (optional)..." />'+
       '<div class="cq-row">'+
-        '<input class="cq-input" id="cqXP" type="number" placeholder="XP reward (max 500)" min="10" max="500" value="100" style="margin-bottom:0;" />'+
-        '<input class="cq-input" id="cqGold" type="number" placeholder="Gold reward" min="0" max="200" value="30" style="margin-bottom:0;" />'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">⚡ XP REWARD</div>'+
+          '<input class="cq-input" id="cqXP" type="number" placeholder="10–500" min="10" max="500" value="100" style="margin-bottom:0;" />'+
+        '</div>'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">💰 GOLD REWARD</div>'+
+          '<input class="cq-input" id="cqGold" type="number" placeholder="0–200" min="0" max="200" value="30" style="margin-bottom:0;" />'+
+        '</div>'+
       '</div>'+
       '<div class="cq-row" style="margin-top:8px;">'+
-        '<select class="cq-select" id="cqSkill"><option value="">Skill trained...</option>'+skillOptions+'</select>'+
-        '<select class="cq-select" id="cqTrack"><option value="">Manual completion</option>'+actionOptions+'</select>'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">🎯 SKILL TRAINED</div>'+
+          '<select class="cq-select" id="cqSkill" style="margin-bottom:0;"><option value="">Choose skill...</option>'+skillOptions+'</select>'+
+        '</div>'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">📋 COMPLETION TYPE</div>'+
+          '<select class="cq-select" id="cqTrack" style="margin-bottom:0;"><option value="">Manual (tap to complete)</option>'+actionOptions+'</select>'+
+        '</div>'+
       '</div>'+
-      '<div style="margin-top:8px;display:flex;gap:8px;align-items:center;">'+
-        '<span style="font-size:12px;color:var(--text2);">Target count:</span>'+
-        '<input class="cq-input" id="cqTarget" type="number" min="1" max="100" value="1" style="width:80px;margin-bottom:0;" />'+
+      '<div style="margin-top:8px;">'+
+        '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">🔢 HOW MANY TIMES TO COMPLETE</div>'+
+        '<input class="cq-input" id="cqTarget" type="number" min="1" max="100" value="1" style="width:100px;margin-bottom:0;" />'+
       '</div>'+
       '<button class="cq-add-btn" onclick="addCustomQuest()">+ Add Quest</button>'+
     '</div>';
