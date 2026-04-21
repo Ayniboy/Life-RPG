@@ -491,48 +491,49 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
 
   /* ── Hero Profile ── */
   .hero-page{max-width:480px;margin:0 auto;padding:8px 0 24px;}
-  .hero-avatar-section{text-align:center;padding:24px 16px 20px;position:relative;}
-  .hero-av-wrap{display:inline-block;position:relative;margin-bottom:12px;}
-  .hero-av-img{width:120px;height:120px;border-radius:20px;overflow:hidden;margin:0 auto;}
-  .hero-av-ring{position:absolute;inset:-4px;border-radius:24px;border:3px solid transparent;background:linear-gradient(135deg,#f4c842,#e8923a,#f4c842) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;}
-  .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:22px;}
-  .hero-name{font-family:"Cinzel",serif;font-size:24px;font-weight:700;color:#e8d5a0;margin-bottom:4px;}
-  .hero-class-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-family:"Cinzel",serif;font-size:12px;color:var(--text2);margin-bottom:6px;}
-  .hero-title-badge{font-family:"Cinzel",serif;font-size:11px;color:#f4c842;letter-spacing:.5px;margin-bottom:16px;font-style:italic;}
-  .hero-level-row{display:flex;gap:12px;justify-content:center;margin-bottom:20px;}
-  .hero-stat-pill{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 16px;text-align:center;}
-  .hero-stat-pill-val{font-family:"Cinzel",serif;font-size:18px;font-weight:700;color:#f4c842;}
-  .hero-stat-pill-lbl{font-size:9px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
-  /* Class bonus card */
-  .hero-class-card{background:linear-gradient(135deg,#0f1a2a,#07090f);border-radius:16px;padding:16px;margin:0 16px 12px;border:1px solid var(--border2);}
-  .hero-class-card-title{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
-  .hero-class-bonus-row{display:flex;align-items:center;gap:10px;}
-  .hero-class-bonus-icon{font-size:32px;}
-  .hero-class-bonus-text{font-size:13px;color:var(--success);font-style:italic;}
-  .hero-class-bonus-name{font-family:"Cinzel",serif;font-size:14px;color:#e8d5a0;margin-bottom:3px;}
+  /* Main character card */
+  .hero-main-card{background:linear-gradient(160deg,#0f1828,#080e1a);border:1px solid var(--border2);border-radius:20px;margin:0 16px 12px;overflow:hidden;position:relative;}
+  .hero-main-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(244,200,66,.06),transparent 60%);pointer-events:none;}
+  .hero-card-top{display:flex;flex-direction:column;align-items:center;padding:28px 20px 20px;position:relative;}
+  .hero-av-wrap{display:inline-block;position:relative;margin-bottom:14px;}
+  .hero-av-img{width:100px;height:100px;border-radius:16px;overflow:hidden;margin:0 auto;}
+  .hero-av-ring{position:absolute;inset:-3px;border-radius:19px;border:2px solid transparent;}
+  .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:20px;}
+  .hero-name{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;margin-bottom:6px;letter-spacing:1px;}
+  .hero-class-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 14px;font-family:"Cinzel",serif;font-size:12px;margin-bottom:4px;border:1px solid;}
+  .hero-title-badge{font-family:"Cinzel",serif;font-size:11px;color:#f4c842;letter-spacing:1px;font-style:italic;margin-bottom:16px;}
+  /* Key stats strip */
+  .hero-stats-strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);}
+  .hero-strip-stat{padding:14px 8px;text-align:center;border-right:1px solid var(--border);}
+  .hero-strip-stat:last-child{border-right:none;}
+  .hero-strip-val{font-family:"Cinzel",serif;font-size:18px;font-weight:700;color:#f4c842;line-height:1;}
+  .hero-strip-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+  /* Section cards */
+  .hero-section-card{background:linear-gradient(135deg,#0d1520,#080e1a);border:1px solid var(--border);border-radius:16px;margin:0 16px 10px;padding:14px 16px;}
+  .hero-section-title{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
+  /* Class bonus */
+  .hero-class-bonus-row{display:flex;align-items:center;gap:12px;}
+  .hero-class-bonus-icon{font-size:28px;}
+  .hero-class-bonus-name{font-family:"Cinzel",serif;font-size:13px;color:#e8d5a0;margin-bottom:2px;}
+  .hero-class-bonus-text{font-size:12px;color:var(--success);font-style:italic;}
+  /* Chronicle grid */
+  .hero-chronicle-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .hero-chronicle-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;}
+  .hero-chronicle-icon{font-size:18px;}
+  .hero-chronicle-val{font-family:"Cinzel",serif;font-size:15px;font-weight:700;color:#e8d5a0;}
+  .hero-chronicle-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;}
   /* Companions */
-  .hero-section{margin:0 16px 12px;}
-  .hero-section-title{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
-  .hero-companions{display:flex;gap:10px;}
-  .hero-companion{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;flex:1;text-align:center;}
-  .hero-companion-icon{font-size:28px;margin-bottom:4px;}
-  .hero-companion-name{font-family:"Cinzel",serif;font-size:10px;color:#e8d5a0;}
-  .hero-companion-bonus{font-size:9px;color:var(--text2);font-style:italic;margin-top:2px;}
-  .hero-companion-empty{background:var(--bg);border:1px dashed var(--border);border-radius:12px;padding:12px;flex:1;text-align:center;font-size:11px;color:var(--text3);font-style:italic;}
-  /* Stats grid */
-  .hero-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .hero-stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
-  .hero-stat-icon{font-size:20px;}
-  .hero-stat-val{font-family:"Cinzel",serif;font-size:16px;font-weight:700;color:#e8d5a0;}
-  .hero-stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;}
+  .hero-companions{display:flex;gap:8px;}
+  .hero-companion{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;flex:1;text-align:center;}
+  .hero-companion-icon{font-size:24px;margin-bottom:3px;}
+  .hero-companion-name{font-family:"Cinzel",serif;font-size:9px;color:#e8d5a0;}
+  .hero-companion-bonus{font-size:9px;color:var(--text2);font-style:italic;margin-top:1px;}
   /* Titles */
-  .hero-titles{display:flex;flex-wrap:wrap;gap:8px;}
-  .hero-title-chip{background:rgba(244,200,66,.08);border:1px solid rgba(244,200,66,.3);border-radius:20px;padding:5px 12px;font-family:"Cinzel",serif;font-size:10px;color:#f4c842;}
+  .hero-titles{display:flex;flex-wrap:wrap;gap:6px;}
+  .hero-title-chip{background:rgba(244,200,66,.08);border:1px solid rgba(244,200,66,.25);border-radius:20px;padding:4px 11px;font-family:"Cinzel",serif;font-size:10px;color:#f4c842;}
   /* Share button */
   .hero-share-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:14px;padding:14px;font-family:"Cinzel",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;width:calc(100% - 32px);margin:4px 16px 0;letter-spacing:.5px;}
   .hero-share-btn:active{transform:scale(.98);}
-  /* Time played */
-  .hero-time{font-size:11px;color:var(--text3);text-align:center;margin-top:4px;font-style:italic;}
 
   /* ── Daily Challenge ── */
   .dc-banner{background:linear-gradient(135deg,#1a0a2a,#0f0518);border:1px solid #8b6fe844;border-radius:14px;padding:14px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
@@ -3919,57 +3920,62 @@ function rHero(){
   var questsDone=getTotalQuestsCompleted();
   var goldEarned=getTotalGoldEarned();
   var earnedTitles=getEarnedTitles();
-
-  // Active pets
   var pet0=getActivePetData(0);
   var pet1=getActivePetData(1);
+  var acc=G.equippedAccessory?ACCESSORIES.filter(function(a){return a.id===G.equippedAccessory;})[0]:null;
+
   var companionHTML=
     '<div class="hero-companion">'+(pet0
       ?'<div class="hero-companion-icon">'+pet0.icon+'</div><div class="hero-companion-name">'+pet0.name+'</div><div class="hero-companion-bonus">'+pet0.bonus+'</div>'
-      :'<div style="font-size:24px;opacity:.3;">🐾</div><div style="font-size:10px;color:var(--text3);">No pet</div>')+
+      :'<div style="font-size:22px;opacity:.25;">🐾</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">No companion</div>')+
     '</div>'+
     '<div class="hero-companion">'+(pet1
       ?'<div class="hero-companion-icon">'+pet1.icon+'</div><div class="hero-companion-name">'+pet1.name+'</div><div class="hero-companion-bonus">'+pet1.bonus+'</div>'
-      :'<div style="font-size:24px;opacity:.3;">🐾</div><div style="font-size:10px;color:var(--text3);">No pet</div>')+
+      :'<div style="font-size:22px;opacity:.25;">🐾</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">No companion</div>')+
     '</div>';
 
-  // Accessory
-  var acc=G.equippedAccessory?ACCESSORIES.filter(function(a){return a.id===G.equippedAccessory;})[0]:null;
+  var chronicleHTML=
+    '<div class="hero-chronicle-item"><div class="hero-chronicle-icon">⚔️</div><div><div class="hero-chronicle-val">'+actionsLogged+'</div><div class="hero-chronicle-lbl">Actions</div></div></div>'+
+    '<div class="hero-chronicle-item"><div class="hero-chronicle-icon">📜</div><div><div class="hero-chronicle-val">'+questsDone+'</div><div class="hero-chronicle-lbl">Quests</div></div></div>'+
+    '<div class="hero-chronicle-item"><div class="hero-chronicle-icon">💰</div><div><div class="hero-chronicle-val">'+goldEarned+'g</div><div class="hero-chronicle-lbl">Gold Earned</div></div></div>'+
+    '<div class="hero-chronicle-item"><div class="hero-chronicle-icon">💎</div><div><div class="hero-chronicle-val">'+G.gems+'</div><div class="hero-chronicle-lbl">Gems</div></div></div>'+
+    '<div class="hero-chronicle-item"><div class="hero-chronicle-icon">🔥</div><div><div class="hero-chronicle-val">'+G.streakDays+'</div><div class="hero-chronicle-lbl">Streak</div></div></div>'+
+    '<div class="hero-chronicle-item"><div class="hero-chronicle-icon">📦</div><div><div class="hero-chronicle-val">'+(G.totalChestsEarned||0)+'</div><div class="hero-chronicle-lbl">Chests</div></div></div>';
 
-  // Stats grid
-  var statsHTML=
-    '<div class="hero-stat-card"><div class="hero-stat-icon">⚔️</div><div><div class="hero-stat-val">'+actionsLogged+'</div><div class="hero-stat-lbl">Actions Logged</div></div></div>'+
-    '<div class="hero-stat-card"><div class="hero-stat-icon">📜</div><div><div class="hero-stat-val">'+questsDone+'</div><div class="hero-stat-lbl">Quests Done</div></div></div>'+
-    '<div class="hero-stat-card"><div class="hero-stat-icon">💰</div><div><div class="hero-stat-val">'+goldEarned+'g</div><div class="hero-stat-lbl">Gold Earned</div></div></div>'+
-    '<div class="hero-stat-card"><div class="hero-stat-icon">💎</div><div><div class="hero-stat-val">'+G.gems+'</div><div class="hero-stat-lbl">Gems Owned</div></div></div>'+
-    '<div class="hero-stat-card"><div class="hero-stat-icon">🔥</div><div><div class="hero-stat-val">'+G.streakDays+'</div><div class="hero-stat-lbl">Day Streak</div></div></div>'+
-    '<div class="hero-stat-card"><div class="hero-stat-icon">📦</div><div><div class="hero-stat-val">'+(G.totalChestsEarned||0)+'</div><div class="hero-stat-lbl">Chests Earned</div></div></div>';
-
-  // Titles
   var titlesHTML=earnedTitles.length>0
     ?earnedTitles.map(function(t){return'<div class="hero-title-chip">'+t+'</div>';}).join("")
     :'<div style="font-size:12px;color:var(--text3);font-style:italic;">Complete quests to earn titles</div>';
 
+  // Class lock status
+  var lockInfo="";
+  if(G.lastClassChange){
+    var daysLeft=7-Math.floor((Date.now()-G.lastClassChange)/(1000*60*60*24));
+    if(daysLeft>0)lockInfo='<div style="font-size:10px;color:var(--text3);margin-top:6px;font-style:italic;">🔒 Class locked for '+daysLeft+' more day'+(daysLeft===1?"":"s")+'</div>';
+  }
+
   return'<div class="hero-page">'+
-    // Avatar section
-    '<div class="hero-avatar-section">'+
-      '<div class="hero-av-wrap">'+
-        '<div class="hero-av-img" id="heroAvImg" style="border-radius:20px;overflow:hidden;"></div>'+
-        '<div class="hero-av-ring" style="border-color:'+rc+';box-shadow:0 0 20px '+rc+'44;"></div>'+
-        (acc?'<div class="hero-av-accessory">'+acc.icon+'</div>':'')+
+    // Main character card
+    '<div class="hero-main-card">'+
+      '<div class="hero-card-top">'+
+        '<div class="hero-av-wrap">'+
+          '<div class="hero-av-img" id="heroAvImg"></div>'+
+          '<div class="hero-av-ring" style="border-color:'+rc+';box-shadow:0 0 16px '+rc+'55;border-width:2px;border-style:solid;"></div>'+
+          (acc?'<div class="hero-av-accessory">'+acc.icon+'</div>':'')+
+        '</div>'+
+        '<div class="hero-name">'+(G.avatarName||"Hero")+'</div>'+
+        '<div class="hero-class-badge" style="color:'+rc+';border-color:'+rc+'44;background:'+rc+'11;">'+cls.icon+' '+cls.name+'</div>'+
+        '<div class="hero-title-badge">'+title+'</div>'+
+        lockInfo+
       '</div>'+
-      '<div class="hero-name">'+(G.avatarName||"Hero")+'</div>'+
-      '<div class="hero-class-badge">'+cls.icon+' '+cls.name+'</div>'+
-      '<div class="hero-title-badge">'+title+'</div>'+
-      '<div class="hero-level-row">'+
-        '<div class="hero-stat-pill"><div class="hero-stat-pill-val">'+tl+'</div><div class="hero-stat-pill-lbl">Total Level</div></div>'+
-        '<div class="hero-stat-pill"><div class="hero-stat-pill-val">'+timePlayed+'</div><div class="hero-stat-pill-lbl">Time Played</div></div>'+
-        '<div class="hero-stat-pill"><div class="hero-stat-pill-val">'+(topSkill?topSkill.name:"—")+'</div><div class="hero-stat-pill-lbl">Top Skill</div></div>'+
+      '<div class="hero-stats-strip">'+
+        '<div class="hero-strip-stat"><div class="hero-strip-val">'+tl+'</div><div class="hero-strip-lbl">Level</div></div>'+
+        '<div class="hero-strip-stat"><div class="hero-strip-val">'+timePlayed+'</div><div class="hero-strip-lbl">Played</div></div>'+
+        '<div class="hero-strip-stat"><div class="hero-strip-val">'+(topSkill?topSkill.name:"—")+'</div><div class="hero-strip-lbl">Top Skill</div></div>'+
       '</div>'+
     '</div>'+
     // Class bonus
-    '<div class="hero-class-card">'+
-      '<div class="hero-class-card-title">Class Bonus</div>'+
+    '<div class="hero-section-card">'+
+      '<div class="hero-section-title">Class Bonus</div>'+
       '<div class="hero-class-bonus-row">'+
         '<div class="hero-class-bonus-icon">'+cls.icon+'</div>'+
         '<div><div class="hero-class-bonus-name">'+cls.name+'</div><div class="hero-class-bonus-text">'+cls.bonus+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;font-style:italic;">'+cls.desc+'</div></div>'+
@@ -3978,21 +3984,20 @@ function rHero(){
        '<div style="margin-top:10px;font-size:11px;color:#f4c842;font-style:italic;">✨ Evolution available! Coming soon.</div>')+
     '</div>'+
     // Companions
-    '<div class="hero-section">'+
+    '<div class="hero-section-card">'+
       '<div class="hero-section-title">Companions</div>'+
       '<div class="hero-companions">'+companionHTML+'</div>'+
     '</div>'+
-    // Stats
-    '<div class="hero-section">'+
+    // Chronicle
+    '<div class="hero-section-card">'+
       '<div class="hero-section-title">Chronicle</div>'+
-      '<div class="hero-stats-grid">'+statsHTML+'</div>'+
+      '<div class="hero-chronicle-grid">'+chronicleHTML+'</div>'+
     '</div>'+
     // Titles
-    '<div class="hero-section">'+
+    '<div class="hero-section-card">'+
       '<div class="hero-section-title">Titles Earned</div>'+
       '<div class="hero-titles">'+titlesHTML+'</div>'+
     '</div>'+
-    // Share button
     '<button class="hero-share-btn" onclick="shareHero()">📤 Share Your Hero</button>'+
   '</div>';
 }
