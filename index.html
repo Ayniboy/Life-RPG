@@ -715,13 +715,39 @@ var CLASS_PALETTES=[[{sk:"#f5c89a",ha:"#5a3a1a",ar:"#7a8a9a",tr:"#aabaca",ey:"#3
 function drawSVG(classId,level,px){
   var tier=level>=20?5:level>=12?4:level>=8?3:level>=5?2:level>=3?1:0;
   var p=CLASS_PALETTES[classId][tier];
+  // Override with equipped skin if any
+  if(typeof G!=="undefined"&&G.equippedSkin&&G.equippedSkin!=="default"){
+    var skin=SKINS.filter(function(s){return s.id===G.equippedSkin;})[0];
+    if(skin&&skin.palette)p=skin.palette;
+  }
   var map={s:p.sk,h:p.ha,a:p.ar,t:p.tr,e:p.ey,d:p.sh};
   var sprite=SPRITES[classId];var sc=px/16;
   var out='<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" shape-rendering="crispEdges"><rect width="'+px+'" height="'+px+'" fill="#0d1220"/>';
   for(var y=0;y<16;y++){var row=sprite[y];for(var x=0;x<16;x++){var ch=row[x];var col=map[ch];if(!col)continue;var rx=Math.round(x*sc),ry=Math.round(y*sc),rw=Math.ceil((x+1)*sc)-rx,rh=Math.ceil((y+1)*sc)-ry;out+='<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" fill="'+col+'"/>';}}
   return out+'</svg>';
 }
-function ringColor(level){if(level>=20)return"#f4c842";if(level>=12)return"#c456a0";if(level>=8)return"#2ab88a";if(level>=5)return"#4a8fff";if(level>=3)return"#e8923a";return"#6a8aaa";}
+// ── Character Skins ──────────────────────────────────
+// Each skin overrides the color palette for all classes
+// palette: {sk, ha, ar, tr, ey, sh} same keys as CLASS_PALETTES
+var SKINS=[
+  {id:"default",   name:"Default",      icon:"⚔️",  desc:"Your class colors.",         cost:0,    unlock:"default",
+   palette:null}, // null = use default class palette
+  {id:"shadow",    name:"Shadow",        icon:"🖤",  desc:"Dark as night. Earned from Legendary Chests.", cost:0, unlock:"legendary",
+   palette:{sk:"#2a2a2a",ha:"#0a0a0a",ar:"#1a1a1a",tr:"#3a3a3a",ey:"#ff2a2a",sh:"#050505"}},
+  {id:"gold",      name:"Golden",        icon:"✨",  desc:"Pure gold. Costs 500g.",     cost:500,  unlock:"gold",
+   palette:{sk:"#f4c842",ha:"#c89820",ar:"#e8b830",tr:"#fff8e0",ey:"#c87a10",sh:"#a06010"}},
+  {id:"ice",       name:"Frost",         icon:"❄️",  desc:"Icy blue. Costs 400g.",      cost:400,  unlock:"gold",
+   palette:{sk:"#d4eeff",ha:"#5a9acc",ar:"#7ab4ea",tr:"#e8f4ff",ey:"#2a6aaa",sh:"#3a7aaa"}},
+  {id:"fire",      name:"Inferno",       icon:"🔥",  desc:"Blazing red. 7-day streak.", cost:0,    unlock:"streak7",
+   palette:{sk:"#f4a060",ha:"#8a1a00",ar:"#c83a00",tr:"#f4c842",ey:"#ff4400",sh:"#6a1000"}},
+  {id:"nature",    name:"Nature",        icon:"🌿",  desc:"Forest green. Costs 350g.",  cost:350,  unlock:"gold",
+   palette:{sk:"#c8e8a0",ha:"#2a5a10",ar:"#4a8a20",tr:"#a0d060",ey:"#1a4a08",sh:"#1a3a08"}},
+  {id:"void",      name:"Void",          icon:"🌌",  desc:"Deep purple. Rare Chest.",   cost:0,    unlock:"rare",
+   palette:{sk:"#c8a0e8",ha:"#2a0a4a",ar:"#5a1a8a",tr:"#8a4ac8",ey:"#c456a0",sh:"#1a0530"}},
+  {id:"streak30",  name:"Legendary Flame",icon:"💫", desc:"30-day login streak reward.", cost:0,   unlock:"streak30",
+   palette:{sk:"#fff8e0",ha:"#f4c842",ar:"#e8923a",tr:"#ffffff",ey:"#f4c842",sh:"#c87a10"}},
+];
+if(level>=20)return"#f4c842";if(level>=12)return"#c456a0";if(level>=8)return"#2ab88a";if(level>=5)return"#4a8fff";if(level>=3)return"#e8923a";return"#6a8aaa";}
 
 var STORAGE_KEY="liferp_save_v4";
 var OLD_KEYS=["liferp_save_v3","liferp_save_v2","liferp_save_v1"];
@@ -801,7 +827,8 @@ var G={
   dailyDone:sv&&sv.dailyDone||{},
   avatarName:sv&&sv.avatarName||"",
   avatarClass:sv&&sv.avatarClass!=null?sv.avatarClass:0,
-  lastClassChange:sv&&sv.lastClassChange||null,
+  equippedSkin:sv&&sv.equippedSkin||"default",
+  unlockedSkins:sv&&sv.unlockedSkins||["default"],
   freeJournalEntries:sv&&sv.freeJournalEntries||[],
   streakDays:sv&&sv.streakDays||0,
   lastStreakDate:sv&&sv.lastStreakDate||null,
@@ -1038,6 +1065,16 @@ function checkLoginStreak(){
     else if(reward.chest==="legendary")G.legendaryChests=(G.legendaryChests||0)+1;
     if(reward.chest)G.totalChestsEarned=(G.totalChestsEarned||0)+1;
   }
+  // Unlock streak skins
+  if(!G.unlockedSkins)G.unlockedSkins=["default"];
+  if(G.loginStreakDays>=7&&G.unlockedSkins.indexOf("fire")===-1){
+    G.unlockedSkins.push("fire");
+    showToast("🔥 Inferno skin unlocked! 7-day streak reward!");
+  }
+  if(G.loginStreakDays>=30&&G.unlockedSkins.indexOf("streak30")===-1){
+    G.unlockedSkins.push("streak30");
+    showToast("💫 Legendary Flame skin unlocked! 30-day streak!");
+  }
   savePersist();
   setTimeout(function(){showLoginStreakPopup(G.loginStreakDays,reward);},1200);
 }
@@ -1113,9 +1150,13 @@ function rActions(){
   var domains=["All","Health","Productivity","Learning","Mindset","Spiritual"];
   var fBtns=domains.map(function(f){return'<button class="filter-btn'+(G.filter===f?" active":"")+'" onclick="setFilter(\''+f+'\')">'+f+'</button>';}).join("");
   var filtered=QUICK_ACTIONS.filter(function(a){return G.filter==="All"||a.domain===G.filter;});
+  var today=new Date().toLocaleDateString();
   var items=filtered.map(function(a){
     var sk=skById(a.skill);var dt=!a.repeatable&&doneToday(a.id);
-    var rtag=a.repeatable?'<span style="font-size:10px;color:var(--success);">repeatable</span>':dt?'<span style="font-size:10px;color:var(--text3);">done today</span>':"";
+    var todayCount=a.repeatable?G.log.filter(function(e){return e.label===a.label&&e.date===today;}).length:0;
+    var rtag=a.repeatable
+      ?'<span class="action-tag-pill" style="color:var(--success);">✓ '+(todayCount>0?todayCount+'x today':'repeatable')+'</span>'
+      :dt?'<span class="action-tag-pill" style="color:var(--text3);">done today</span>':"";
     var domainColor=DOMAIN_COLORS[a.domain]||"var(--text2)";
     return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags">'+
       (sk?'<span class="action-tag-pill" style="color:'+(sk.color)+';">'+sk.name+'</span>':'')+
@@ -1532,6 +1573,20 @@ function openAvModal(){
     var priceOrUnlock=!isUnlocked?(acc.cost?'<div class="cosm-cell-price" style="color:'+priceColor+';">'+acc.cost+'g</div>':''):isEquipped?'<div style="font-size:8px;color:#2ab88a;margin-top:3px;">Equipped</div>':"";
     return'<div class="cosm-acc-cell'+(isEquipped?" equipped":"")+(isUnlocked?"":(acc.cost?(canAffordAcc?" locked can-afford":" locked cant-afford"):" locked cant-afford"))+'" onclick="'+accClickFn+'"><div class="cosm-acc-icon">'+acc.icon+'</div><div class="cosm-acc-label">'+acc.label+'</div>'+priceOrUnlock+'</div>';
   }).join("");
+  var skinCells=SKINS.map(function(skin){
+    var isUnlocked=(G.unlockedSkins||["default"]).indexOf(skin.id)!==-1;
+    var isEquipped=G.equippedSkin===skin.id;
+    var canAfford=skin.cost>0&&G.gold>=skin.cost;
+    var clickFn=isUnlocked?"equipSkin('"+skin.id+"')":(skin.cost>0?(canAfford?"buySkin('"+skin.id+"')":"showToast('Need "+skin.cost+"g to unlock')"):"showToast('"+skin.desc+"')");
+    return'<div onclick="'+clickFn+'" style="background:var(--bg'+(isEquipped?"3":"2")+');border:1px solid '+(isEquipped?rc:"var(--border)")+';border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;'+(isEquipped?"box-shadow:0 0 10px "+rc+"44;":"")+'">'+
+      '<div style="font-size:24px;margin-bottom:4px;">'+skin.icon+'</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:'+(isEquipped?rc:"#e8d5a0")+';margin-bottom:2px;">'+skin.name+'</div>'+
+      (isUnlocked
+        ?'<div style="font-size:9px;color:'+(isEquipped?"#2ab88a":"var(--text3)")+';">'+(isEquipped?"Equipped":"Tap to equip")+'</div>'
+        :(skin.cost>0?'<div style="font-size:9px;color:var(--gold);">'+skin.cost+'g</div>':'<div style="font-size:9px;color:var(--text3);">🔒</div>')
+      )+
+    '</div>';
+  }).join("");
   document.getElementById("avModal").innerHTML=
     '<div class="av-modal-bg" onclick="if(event.target===this)closeAvModal()"><div class="av-modal">'+
       '<div class="av-modal-title">Choose Your Character</div>'+
@@ -1539,6 +1594,8 @@ function openAvModal(){
       '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:88px;border-radius:10px;overflow:hidden;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;"></div></div>'+
       lockStatusHTML+
       '<div class="av-class-grid">'+cells+'</div>'+
+      '<div class="cosm-title">Skins</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;">'+skinCells+'</div>'+
       '<div class="cosm-title">Accessories</div>'+
       '<div class="cosm-acc-grid">'+accCells+'</div>'+
       '<div style="font-size:12px;color:var(--text2);margin-bottom:7px;">Hero name</div>'+
@@ -1580,6 +1637,29 @@ window.selAvClass=function(id){
   // Update header avatar
   var slot=document.getElementById("avImg");if(slot)slot.innerHTML=drawSVG(id,totalLv(),40);
 };
+window.equipSkin=function(id){
+  G.equippedSkin=id;
+  savePersist();
+  openAvModal(); // refresh modal
+  var slot=document.getElementById("avImg");
+  if(slot)slot.innerHTML=drawSVG(G.avatarClass,totalLv(),40);
+};
+
+window.buySkin=function(id){
+  var skin=SKINS.filter(function(s){return s.id===id;})[0];
+  if(!skin||!skin.cost)return;
+  if(G.gold<skin.cost){showToast("Need "+skin.cost+"g to unlock this skin!");return;}
+  G.gold-=skin.cost;
+  if(!G.unlockedSkins)G.unlockedSkins=["default"];
+  G.unlockedSkins.push(id);
+  G.equippedSkin=id;
+  savePersist();
+  showToast("✓ "+skin.name+" skin unlocked!");
+  openAvModal();
+  var slot=document.getElementById("avImg");
+  if(slot)slot.innerHTML=drawSVG(G.avatarClass,totalLv(),40);
+};
+
 window.closeAvModal=function(){document.getElementById("avModal").innerHTML="";};
 window.saveAvName=function(){
   var inp=document.getElementById("avNameIn");
@@ -2421,6 +2501,14 @@ window.openChest=function(btn){
   reward.apply();
   // Legendary chest gives 1 gem
   if(tier==="legendary"){G.gems=(G.gems||0)+1;showToast("+1 💎 for opening a Legendary Chest!");}
+  // Chance to unlock skins from chests
+  if(!G.unlockedSkins)G.unlockedSkins=["default"];
+  if(tier==="legendary"&&G.unlockedSkins.indexOf("shadow")===-1&&Math.random()<0.4){
+    G.unlockedSkins.push("shadow");showToast("🖤 Shadow skin unlocked from Legendary Chest!");
+  }
+  if(tier==="rare"&&G.unlockedSkins.indexOf("void")===-1&&Math.random()<0.25){
+    G.unlockedSkins.push("void");showToast("🌌 Void skin unlocked from Rare Chest!");
+  }
   applyClassChestBonus();
 
   // Log it
@@ -4504,6 +4592,7 @@ function buildSaveObj(){
     log:G.log,purchases:G.purchases,gratitudeEntries:G.gratitudeEntries,
     iamEntries:G.iamEntries,dailyDone:G.dailyDone,avatarName:G.avatarName,
     avatarClass:G.avatarClass,lastClassChange:G.lastClassChange,freeJournalEntries:G.freeJournalEntries,
+    equippedSkin:G.equippedSkin,unlockedSkins:G.unlockedSkins,
     streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
     loginStreakDays:G.loginStreakDays,lastLoginStreakDate:G.lastLoginStreakDate,
     saveVersion:23,
