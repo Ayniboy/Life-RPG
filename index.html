@@ -58,7 +58,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimso
 .header-sub{font-size:11px;color:var(--text2);letter-spacing:.5px;margin-top:2px;}
 .gold-pill{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:20px;padding:5px 12px;font-family:"Cinzel",serif;font-size:13px;font-weight:600;color:var(--gold);white-space:nowrap;}
 .av-wrap{text-align:center;cursor:pointer;flex-shrink:0;min-width:0;}
-.av-img{width:40px;height:40px;border-radius:8px;overflow:visible;border:2px solid #2a3a55;position:relative;}
+.av-img{width:40px;height:65px;border-radius:8px;overflow:visible;border:2px solid #2a3a55;position:relative;}
 .av-name{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);margin-top:2px;white-space:nowrap;}
 .tl-box{background:linear-gradient(135deg,#1a1f30,#0f1420);border:1px solid #2a3a55;border-radius:12px;padding:5px 11px;text-align:center;min-width:62px;}
 .tl-num{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;line-height:1;}
@@ -497,7 +497,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .hero-card-top{display:flex;align-items:center;gap:16px;padding:20px;position:relative;}
   .hero-card-info{display:flex;flex-direction:column;flex:1;min-width:0;}
   .hero-av-wrap{display:inline-block;position:relative;flex-shrink:0;}
-  .hero-av-img{width:90px;height:90px;border-radius:14px;overflow:visible;position:relative;}
+  .hero-av-img{width:90px;height:146px;border-radius:14px;overflow:visible;position:relative;}
   .hero-av-ring{position:absolute;inset:-3px;border-radius:19px;border:2px solid transparent;}
   .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:20px;}
   .hero-name{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;margin-bottom:6px;letter-spacing:1px;}
@@ -718,9 +718,10 @@ function getSkinOverride(){
 
 function drawSVG(classId,level,px){
   var skin=getSkinOverride();
-  var sc=px/80; // base design is 80px
-  var w=px,h=px;
-  var html='<div class="ch" style="width:'+w+'px;height:'+h+'px;background:#0d1220;border-radius:'+(px>50?'14px':'8px')+';overflow:hidden;">';
+  var sc=px/80;
+  // Characters are ~130 units tall on an 80-unit wide base
+  var charH=Math.round(130*sc);
+  var html='<div class="ch" style="width:'+px+'px;height:'+charH+'px;background:#0d1220;border-radius:'+(px>50?'14px':'8px')+';overflow:visible;position:relative;">';
   html+=buildChar(classId,level,px,skin);
   html+='</div>';
   return html;
@@ -1884,7 +1885,7 @@ function openAvModal(){
     var canAfford=!!(cls.cost&&G.gold>=cls.cost);
     var notEnoughMsg="showToast('Not enough gold! Need "+cls.cost+"g. Do more quests.')";
     var clickFn=isUnlocked?"selAvClass("+cls.id+")":(canAfford?"buyClass("+cls.id+")":notEnoughMsg);
-    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:44px;height:44px;border-radius:6px;overflow:visible;margin:0 auto;position:relative;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
+    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:44px;height:72px;border-radius:6px;overflow:visible;margin:0 auto;position:relative;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
   }).join("");
   // Accessories section
   var accCells=ACCESSORIES.map(function(acc){
@@ -1915,7 +1916,7 @@ function openAvModal(){
     '<div class="av-modal-bg" onclick="if(event.target===this)closeAvModal()"><div class="av-modal">'+
       '<div class="av-modal-title">Choose Your Character</div>'+
       '<div class="av-modal-sub">'+tnames[tier]+' · Lv.'+tl+(tier<5?" · Next form at Lv."+nlvs[tier]:" · Max tier!")+'</div>'+
-      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:88px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;position:relative;"></div></div>'+
+      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:143px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;position:relative;"></div></div>'+
       lockStatusHTML+
       '<div class="av-class-grid">'+cells+'</div>'+
       '<div class="cosm-title">Skins</div>'+
