@@ -58,7 +58,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimso
 .header-sub{font-size:11px;color:var(--text2);letter-spacing:.5px;margin-top:2px;}
 .gold-pill{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:20px;padding:5px 12px;font-family:"Cinzel",serif;font-size:13px;font-weight:600;color:var(--gold);white-space:nowrap;}
 .av-wrap{text-align:center;cursor:pointer;flex-shrink:0;min-width:0;}
-.av-img{width:40px;height:65px;border-radius:8px;overflow:visible;border:2px solid #2a3a55;position:relative;}
+.av-img{width:36px;height:58px;border-radius:6px;overflow:visible;border:2px solid #2a3a55;position:relative;}
 .av-name{font-family:"Cinzel",serif;font-size:10px;color:var(--text2);margin-top:2px;white-space:nowrap;}
 .tl-box{background:linear-gradient(135deg,#1a1f30,#0f1420);border:1px solid #2a3a55;border-radius:12px;padding:5px 11px;text-align:center;min-width:62px;}
 .tl-num{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;line-height:1;}
@@ -494,12 +494,12 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   /* Main character card */
   .hero-main-card{background:linear-gradient(160deg,#0f1828,#080e1a);border:1px solid var(--border2);border-radius:20px;margin:0 16px 12px;overflow:hidden;position:relative;}
   .hero-main-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(244,200,66,.06),transparent 60%);pointer-events:none;}
-  .hero-card-top{display:flex;align-items:center;gap:16px;padding:20px;position:relative;}
+  .hero-card-top{display:flex;align-items:center;gap:16px;padding:16px;position:relative;}
   .hero-card-info{display:flex;flex-direction:column;flex:1;min-width:0;}
   .hero-av-wrap{display:inline-block;position:relative;flex-shrink:0;}
-  .hero-av-img{width:90px;height:146px;border-radius:14px;overflow:visible;position:relative;}
-  .hero-av-ring{position:absolute;inset:-3px;border-radius:19px;border:2px solid transparent;}
-  .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:20px;}
+  .hero-av-img{width:70px;height:114px;border-radius:10px;overflow:visible;position:relative;}
+  .hero-av-ring{position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;border-radius:13px;border:2px solid transparent;pointer-events:none;}
+  .hero-av-accessory{position:absolute;top:-8px;right:-8px;font-size:18px;}
   .hero-name{font-family:"Cinzel",serif;font-size:22px;font-weight:700;color:#e8d5a0;margin-bottom:6px;letter-spacing:1px;}
   .hero-class-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 14px;font-family:"Cinzel",serif;font-size:12px;margin-bottom:4px;border:1px solid;}
   .hero-title-badge{font-family:"Cinzel",serif;font-size:11px;color:#f4c842;letter-spacing:1px;font-style:italic;margin-bottom:16px;}
@@ -1845,9 +1845,9 @@ document.getElementById("app").innerHTML=
     '<div class="content">'+content+'</div>';
   requestAnimationFrame(function(){
     var slot=document.getElementById("avImg");
-    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,40);
+    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,36);
     var heroSlot=document.getElementById("heroAvImg");
-    if(heroSlot)heroSlot.innerHTML=drawSVG(G.avatarClass,tl,120);
+    if(heroSlot)heroSlot.innerHTML=drawSVG(G.avatarClass,tl,70);
   });
 }
 
@@ -1885,7 +1885,7 @@ function openAvModal(){
     var canAfford=!!(cls.cost&&G.gold>=cls.cost);
     var notEnoughMsg="showToast('Not enough gold! Need "+cls.cost+"g. Do more quests.')";
     var clickFn=isUnlocked?"selAvClass("+cls.id+")":(canAfford?"buyClass("+cls.id+")":notEnoughMsg);
-    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:44px;height:72px;border-radius:6px;overflow:visible;margin:0 auto;position:relative;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
+    return'<div class="cosm-cell'+(isSel?" selected":"")+(isUnlocked?"":" locked")+'" onclick="'+clickFn+'" id="avc'+cls.id+'">'+lockBadge+'<div id="avci'+cls.id+'" style="width:40px;height:65px;border-radius:6px;overflow:visible;margin:0 auto;position:relative;"></div><div class="cosm-cell-label">'+cls.name+'</div>'+priceTag+'</div>';
   }).join("");
   // Accessories section
   var accCells=ACCESSORIES.map(function(acc){
@@ -1916,7 +1916,7 @@ function openAvModal(){
     '<div class="av-modal-bg" onclick="if(event.target===this)closeAvModal()"><div class="av-modal">'+
       '<div class="av-modal-title">Choose Your Character</div>'+
       '<div class="av-modal-sub">'+tnames[tier]+' · Lv.'+tl+(tier<5?" · Next form at Lv."+nlvs[tier]:" · Max tier!")+'</div>'+
-      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:88px;height:143px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;position:relative;"></div></div>'+
+      '<div style="text-align:center;margin-bottom:13px;"><div id="avBig" style="width:80px;height:130px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 14px '+rc+'66;display:inline-block;position:relative;"></div></div>'+
       lockStatusHTML+
       '<div class="av-class-grid">'+cells+'</div>'+
       '<div class="cosm-title">Skins</div>'+
@@ -1930,10 +1930,10 @@ function openAvModal(){
     '</div></div>';
   setTimeout(function(){
     var big=document.getElementById("avBig");
-    if(big)big.innerHTML=drawSVG(G.avatarClass,tl,88);
+    if(big)big.innerHTML=drawSVG(G.avatarClass,tl,80);
     AVATAR_CLASSES.forEach(function(cls){
       var s=document.getElementById("avci"+cls.id);
-      if(s)s.innerHTML=drawSVG(cls.id,tl,44);
+      if(s)s.innerHTML=drawSVG(cls.id,tl,40);
     });
   },50);
 }
@@ -1958,16 +1958,16 @@ window.selAvClass=function(id){
   var sel=document.getElementById("avc"+id);
   var rc=ringColor(totalLv());
   if(sel){sel.style.border="2px solid "+rc;sel.style.boxShadow="0 0 10px "+rc+"44";sel.style.background="var(--bg3)";}
-  var big=document.getElementById("avBig");if(big)big.innerHTML=drawSVG(id,totalLv(),88);
+  var big=document.getElementById("avBig");if(big)big.innerHTML=drawSVG(id,totalLv(),80);
   // Update header avatar
-  var slot=document.getElementById("avImg");if(slot)slot.innerHTML=drawSVG(id,totalLv(),40);
+  var slot=document.getElementById("avImg");if(slot)slot.innerHTML=drawSVG(id,totalLv(),36);
 };
 window.equipSkin=function(id){
   G.equippedSkin=id;
   savePersist();
   openAvModal(); // refresh modal
   var slot=document.getElementById("avImg");
-  if(slot)slot.innerHTML=drawSVG(G.avatarClass,totalLv(),40);
+  if(slot)slot.innerHTML=drawSVG(G.avatarClass,totalLv(),36);
 };
 
 window.buySkin=function(id){
@@ -1982,7 +1982,7 @@ window.buySkin=function(id){
   showToast("✓ "+skin.name+" skin unlocked!");
   openAvModal();
   var slot=document.getElementById("avImg");
-  if(slot)slot.innerHTML=drawSVG(G.avatarClass,totalLv(),40);
+  if(slot)slot.innerHTML=drawSVG(G.avatarClass,totalLv(),36);
 };
 
 window.closeAvModal=function(){document.getElementById("avModal").innerHTML="";};
@@ -4125,7 +4125,7 @@ window.obDoRestore=async function(){
       var el=document.getElementById("ob-container");
       if(el)el.remove();
       render();
-      if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){setTimeout(showDCPicker,600);}
+      if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){setTimeout(showDCPicker,60000);}
       showToast(merge.usedLocal?"✓ Logged in! Your local progress is ahead — keeping it.":"✓ Progress restored! Welcome back.");
     } else {
       // No cloud save found — still log them in but warn
@@ -4439,7 +4439,7 @@ function rHero(){
 function injectHeroAvatar(){
   var el=document.getElementById("heroAvImg");
   if(el){
-    el.innerHTML=drawSVG(G.avatarClass||0,totalLv(),120);
+    el.innerHTML=drawSVG(G.avatarClass||0,totalLv(),70);
   } else {
     // retry if not ready yet
     setTimeout(injectHeroAvatar,100);
@@ -4511,13 +4511,13 @@ function getDCKey(){return getDayKey();}
 function initDailyChallenge(){
   var dk=getDCKey();
   if(G.lastDCKey===dk){
-    // Same day — if player hasn't picked yet, show picker again
+    // Same day — if player hasn't picked yet, show picker after 60s
     if(!G.dailyChallenge&&G.dcOptions&&G.dcOptions.length){
-      setTimeout(showDCPicker,800);
+      setTimeout(showDCPicker,60000);
     }
     return;
   }
-  // New day — generate 3 fresh options
+  // New day — generate 3 fresh options, show after 60s
   var shuffled=DC_POOL.slice().sort(function(){return Math.random()-.5;});
   G.dcOptions=shuffled.slice(0,3);
   G.dailyChallenge=null;
@@ -4525,12 +4525,13 @@ function initDailyChallenge(){
   G.dcClaimed=false;
   G.lastDCKey=dk;
   savePersist();
-  setTimeout(showDCPicker,800);
+  setTimeout(showDCPicker,60000);
 }
 
 function showDCPicker(){
   var options=G.dcOptions||[];
   if(!options.length)return;
+  if(G.dailyChallenge)return; // already picked
   var existing=document.getElementById("dcPicker");
   if(existing)existing.remove();
   var div=document.createElement("div");
@@ -4549,9 +4550,19 @@ function showDCPicker(){
     '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#e8d5a0;margin-bottom:4px;">Choose Your Challenge</div>'+
     '<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:16px;">Pick one optional challenge for today. Complete it to earn the reward.</div>'+
     cards+
+    '<button onclick="skipDailyChallenge()" style="background:transparent;border:none;width:100%;padding:10px;font-size:12px;color:var(--text3);cursor:pointer;font-family:\"Cinzel\",serif;letter-spacing:.5px;">Skip for today</button>'+
   '</div>';
   document.body.appendChild(div);
 }
+
+window.skipDailyChallenge=function(){
+  var el=document.getElementById("dcPicker");
+  if(el)el.remove();
+  // Mark as skipped so it doesn't pop up again today
+  G.dcOptions=null;
+  savePersist();
+  showToast("Challenge skipped. Come back tomorrow!");
+};
 
 window.pickDailyChallenge=function(idx){
   var options=G.dcOptions||[];
