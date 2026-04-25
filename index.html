@@ -1142,6 +1142,10 @@ var G={
   avatarClass:sv&&sv.avatarClass!=null?sv.avatarClass:0,
   equippedSkin:sv&&sv.equippedSkin||"default",
   unlockedSkins:sv&&sv.unlockedSkins||["default"],
+  todos:sv&&sv.todos||[],
+  todoClaimedToday:sv&&sv.todoClaimedToday||false,
+  todoClaimedCount:sv&&sv.todoClaimedCount||0,
+  _todoClearDate:sv&&sv._todoClearDate||"",
   freeJournalEntries:sv&&sv.freeJournalEntries||[],
   streakDays:sv&&sv.streakDays||0,
   lastStreakDate:sv&&sv.lastStreakDate||null,
@@ -1723,6 +1727,138 @@ function rShop(){
     '<div class="shop-grid">'+cards+'</div>'+hist;
 }
 
+// ── To-Do List ──────────────────────────────────────
+var TODO_XP=30; // XP per completed batch of 5+
+
+function rTodo(){
+  var todos=G.todos||[];
+  var done=todos.filter(function(t){return t.done;}).length;
+  var total=todos.length;
+  var pending=todos.filter(function(t){return !t.done;}).length;
+  var canClaim=done>=5&&!G.todoClaimedToday;
+  var claimedXP=(G.todoClaimedCount||0)*TODO_XP;
+
+  // Progress bar
+  var pct=total>0?Math.round(done/total*100):0;
+  var progressBar=total>0?
+    '<div style="background:var(--bg);border-radius:8px;height:8px;margin:12px 0 4px;overflow:hidden;">'+
+      '<div style="height:8px;width:'+pct+'%;background:linear-gradient(90deg,#2ab88a,#4ae8aa);border-radius:8px;transition:width .4s;"></div>'+
+    '</div>'+
+    '<div style="font-size:11px;color:var(--text3);text-align:right;">'+done+' / '+total+' done</div>':
+    '';
+
+  // XP reward banner
+  var xpBanner=canClaim?
+    '<div style="background:linear-gradient(135deg,#0f2a1a,#07150d);border:1px solid #2ab88a55;border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">'+
+      '<div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:#2ab88a;margin-bottom:2px;">'+done+' tasks completed!</div>'+
+        '<div style="font-size:11px;color:var(--text2);">Claim your XP reward</div>'+
+      '</div>'+
+      '<button onclick="claimTodoXP()" style="background:linear-gradient(135deg,#2ab88a,#1a9a6a);border:none;border-radius:10px;padding:10px 16px;font-family:\"Cinzel\",serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;">+'+TODO_XP+' XP</button>'+
+    '</div>':
+    (G.todoClaimedToday&&done>=5?
+      '<div style="background:rgba(42,184,138,.08);border:1px solid rgba(42,184,138,.2);border-radius:14px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:#2ab88a;text-align:center;">✓ XP claimed today! Keep completing tasks.</div>':'');
+
+  // Reward hint
+  var hint=done<5&&total>0?
+    '<div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:12px;font-style:italic;">Complete '+(5-done)+' more task'+(5-done===1?'':'s')+' to earn +'+TODO_XP+' XP</div>':'';
+
+  // Todo items
+  var itemsHTML=todos.length===0?
+    '<div style="text-align:center;padding:32px 16px;color:var(--text3);font-size:13px;font-style:italic;">No tasks yet. Add your first to-do below!</div>':
+    todos.map(function(t,i){
+      return'<div style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid '+(t.done?'rgba(42,184,138,.3)':'var(--border)')+';border-radius:12px;padding:12px 14px;margin-bottom:8px;opacity:'+(t.done?.6:1)+';">'+
+        '<button onclick="toggleTodo('+i+')" style="width:24px;height:24px;border-radius:6px;border:2px solid '+(t.done?'#2ab88a':'var(--border2)')+';background:'+(t.done?'#2ab88a':'transparent')+';cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;">'+
+          (t.done?'✓':'')+
+        '</button>'+
+        '<div style="flex:1;font-size:13px;color:'+(t.done?'var(--text3)':'#e8d5a0')+';'+(t.done?'text-decoration:line-through;':'')+' line-height:1.4;">'+t.text+'</div>'+
+        '<button onclick="deleteTodo('+i+')" style="background:transparent;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0;">×</button>'+
+      '</div>';
+    }).join("");
+
+  // Completed section header
+  var completedHeader=done>0&&pending>0?'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;font-family:\"Cinzel\",serif;">Completed ('+done+')</div>':'';
+
+  return'<div style="max-width:480px;margin:0 auto;padding:8px 16px 32px;">'+
+    '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#e8d5a0;margin-bottom:4px;">To-Do List</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-bottom:16px;font-style:italic;">Complete 5+ tasks to earn XP. No gold — just progress.</div>'+
+    xpBanner+
+    hint+
+    progressBar+
+    '<div style="margin-top:14px;">'+itemsHTML+'</div>'+
+    // Add new todo
+    '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:16px;">'+
+      '<div style="font-size:11px;color:var(--text2);font-family:\"Cinzel\",serif;letter-spacing:.5px;margin-bottom:8px;">ADD TASK</div>'+
+      '<div style="display:flex;gap:8px;">'+
+        '<input id="todoInput" type="text" maxlength="120" placeholder="What do you need to do?" autocapitalize="sentences" style="flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:13px;color:#e8d5a0;outline:none;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addTodo()"/>'+
+        '<button onclick="addTodo()" style="background:linear-gradient(135deg,#2a4a8a,#3a6aaa);border:none;border-radius:10px;padding:10px 18px;font-family:\"Cinzel\",serif;font-size:12px;color:#e8d5a0;cursor:pointer;white-space:nowrap;">+ Add</button>'+
+      '</div>'+
+    '</div>'+
+    // Clear completed
+    (done>0?'<button onclick="clearDoneTodos()" style="background:transparent;border:none;color:var(--text3);font-size:11px;cursor:pointer;margin-top:12px;text-decoration:underline;display:block;text-align:center;">Clear completed tasks</button>':'')+
+  '</div>';
+}
+
+window.addTodo=function(){
+  var inp=document.getElementById("todoInput");
+  if(!inp)return;
+  var text=inp.value.trim();
+  if(!text){showToast("Type a task first!");return;}
+  if(!G.todos)G.todos=[];
+  G.todos.unshift({text:text,done:false,createdAt:Date.now()});
+  inp.value="";
+  savePersist();
+  G.tab="todo";render();
+};
+
+window.toggleTodo=function(idx){
+  if(!G.todos||!G.todos[idx])return;
+  G.todos[idx].done=!G.todos[idx].done;
+  G.todos[idx].doneAt=G.todos[idx].done?Date.now():null;
+  G.todos.sort(function(a,b){return (a.done===b.done)?0:a.done?1:-1;});
+  savePersist();
+  G.tab="todo";render();
+  var done=G.todos.filter(function(t){return t.done;}).length;
+  if(done===5)showToast("🎉 5 tasks done! Claim your +"+TODO_XP+" XP reward!");
+};
+
+window.deleteTodo=function(idx){
+  if(!G.todos)return;
+  G.todos.splice(idx,1);
+  savePersist();
+  G.tab="todo";render();
+};
+
+window.clearDoneTodos=function(){
+  if(!G.todos)return;
+  G.todos=G.todos.filter(function(t){return !t.done;});
+  savePersist();
+  G.tab="todo";render();
+  showToast("Completed tasks cleared.");
+};
+
+window.claimTodoXP=function(){
+  var done=(G.todos||[]).filter(function(t){return t.done;}).length;
+  if(done<5){showToast("Complete at least 5 tasks first!");return;}
+  var xp=TODO_XP;
+  G.xp=(G.xp||0)+xp;
+  G.totalXP=(G.totalXP||0)+xp;
+  G.todoClaimedToday=true;
+  G.todoClaimedCount=(G.todoClaimedCount||0)+1;
+  savePersist();
+  G.tab="todo";render();
+  showToast("+"+xp+" XP earned! Keep building good habits.");
+};
+
+// Reset todo claim flag daily
+function resetTodoClaim(){
+  var dk=getDayKey();
+  if(G._todoClearDate===dk)return;
+  G._todoClearDate=dk;
+  G.todoClaimedToday=false;
+  savePersist();
+}
+
 function rLog(){
   var resetBtnHTML='<div style="padding:0 0 12px;"><button onclick="confirmReset()" style="background:transparent;border:1px solid #e85d3a66;border-radius:12px;padding:16px;color:#e85d3a;font-size:14px;cursor:pointer;width:100%;font-family:\"Cinzel\",serif;letter-spacing:.5px;">⚠ Reset All Progress</button></div>';
   var syncActive=!!_sbSession;
@@ -1761,6 +1897,7 @@ var NAV_TABS=[
   {id:"actions",   icon:"⚔",  label:"Actions"},
   {id:"quests",    icon:"📜", label:"Quests"},
   {id:"hero",      icon:"🧙", label:"Hero"},
+  {id:"todo",      icon:"✅", label:"To-Do"},
   {id:"journal",   icon:"🙏", label:"Journal"},
   {id:"fjournal",  icon:"📓", label:"My Notes"},
   {id:"timer",     icon:"⏱", label:"Timer"},
@@ -1786,6 +1923,7 @@ function render(){
   else if(G.tab==="inventory")content=rInventory();
   else if(G.tab==="shop")content=rShop();
   else if(G.tab==="log")content=rLog();
+  else if(G.tab==="todo")content=rTodo();
   else if(G.tab==="hero")content=rHero();
   var streakH="";
   if(G.streakDays>0){var fc=flameColor(G.streakDays);streakH='<div class="streak-inline"><span class="flame" style="font-size:20px;color:'+fc+';filter:drop-shadow(0 0 6px '+fc+'99);">🔥</span><span class="streak-num" style="color:'+fc+';">'+G.streakDays+'</span></div>';}
@@ -4929,6 +5067,7 @@ function buildSaveObj(){
     iamEntries:G.iamEntries,dailyDone:G.dailyDone,avatarName:G.avatarName,
     avatarClass:G.avatarClass,lastClassChange:G.lastClassChange,freeJournalEntries:G.freeJournalEntries,
     equippedSkin:G.equippedSkin,unlockedSkins:G.unlockedSkins,
+    todos:G.todos,todoClaimedToday:G.todoClaimedToday,todoClaimedCount:G.todoClaimedCount,_todoClearDate:G._todoClearDate,
     streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
     loginStreakDays:G.loginStreakDays,lastLoginStreakDate:G.lastLoginStreakDate,
     saveVersion:23,
@@ -5248,6 +5387,7 @@ handleAuthRedirect().then(async function(wasRedirect){
   checkLoginStreak();
   checkLoginNag();
   checkWhatsNew();
+  resetTodoClaim();
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
     G._obStep=0;
