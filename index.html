@@ -1654,6 +1654,56 @@ function rQuests(){
   return dcHTML+formHTML+rotatingHTML+customHTML+standardHTML;
 }
 
+// ── Reflection Prompts ──────────────────────────────
+var REFLECTION_PROMPTS={
+  gratitude:[
+    "What small moment today made you smile?",
+    "Who helped you recently, even in a tiny way?",
+    "What part of your body are you grateful for today?",
+    "What skill or ability do you have that others might envy?",
+    "What challenge are you grateful for, even if it was hard?",
+    "What place makes you feel safe or happy?",
+    "What food, smell or sound made today better?",
+    "What opportunity is in front of you right now?",
+    "What have you learned recently that excited you?",
+    "Who in your life consistently shows up for you?",
+    "What progress have you made that you haven't celebrated?",
+    "What simple pleasure did you enjoy today?",
+  ],
+  iam:[
+    "What strength did you show today, even quietly?",
+    "What fear did you face recently, even a small one?",
+    "What do people come to you for help with?",
+    "What have you done that your past self would be proud of?",
+    "What quality in yourself has helped others?",
+    "What difficult thing have you survived that made you stronger?",
+    "What do you do better than most people you know?",
+    "What value do you hold that you refuse to compromise?",
+    "What makes you uniquely you?",
+    "What would your best friend say is your greatest quality?",
+  ],
+  free:[
+    "What's been on your mind that you haven't said out loud?",
+    "What would tomorrow's version of you do differently?",
+    "What's draining your energy right now — and what's filling it?",
+    "What's one thing you're avoiding and why?",
+    "Rate your day 1-10. What made it that number?",
+    "What do you want more of in your life right now?",
+    "What conversation do you need to have but haven't?",
+    "If you had one extra hour today, what would you actually use it for?",
+    "What habit is helping you most right now?",
+    "What are you overthinking? Write it out and let it go.",
+    "What's your biggest win this week, even a small one?",
+    "What would make next week better than this one?",
+  ]
+};
+
+function getRandomPrompt(type){
+  var pool=REFLECTION_PROMPTS[type]||REFLECTION_PROMPTS.free;
+  var idx=Math.floor(Math.random()*pool.length);
+  return pool[idx];
+}
+
 function rJournal(){
   var isG=G.journalTab==="gratitude";
   var entries=isG?G.gratitudeEntries:G.iamEntries;
@@ -1665,12 +1715,26 @@ function rJournal(){
     var its=entry.items.map(function(item,j){return'<li class="entry-item-row"><span class="entry-num">'+(j+1)+'.</span><span>'+item+'</span></li>';}).join("");
     return'<div class="entry-card"><div class="entry-card-header"><div class="entry-date">'+entry.date+' · '+entry.time+'</div><div class="entry-badge '+(isG?"entry-badge-g":"entry-badge-i")+'">'+entry.items.length+' items · +'+entry.xp+' XP</div></div><ul class="entry-items">'+its+'</ul></div>';
   }).join("");
+
+  // Reflection prompt box
+  var promptType=isG?"gratitude":"iam";
+  var prompt=getRandomPrompt(promptType);
+  var promptBox='<div style="background:linear-gradient(135deg,#0a1a14,#060f0a);border:1px solid rgba(42,184,138,.25);border-radius:14px;padding:14px 16px;margin-bottom:14px;">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#2ab88a;letter-spacing:1.5px;">💭 REFLECTION PROMPT</div>'+
+      '<button onclick="refreshPrompt(\''+promptType+'\')" style="background:transparent;border:1px solid rgba(42,184,138,.2);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text3);cursor:pointer;">new ↻</button>'+
+    '</div>'+
+    '<div id="reflectionPrompt" style="font-size:13px;color:#e8d5a0;line-height:1.6;font-style:italic;">'+prompt+'</div>'+
+    '<button onclick="usePrompt(\''+promptType+'\')" style="margin-top:10px;background:rgba(42,184,138,.1);border:1px solid rgba(42,184,138,.3);border-radius:8px;padding:6px 14px;font-size:11px;color:#2ab88a;cursor:pointer;font-family:\"Cinzel\",serif;">Use this prompt</button>'+
+  '</div>';
+
   return tabs+
     '<div class="journal-box">'+
       '<div class="journal-header">'+
         '<div><div class="journal-title">'+(isG?"Gratitude List":"I AM List")+'</div><div class="journal-subtitle">'+ds+'</div></div>'+
         '<div style="text-align:right;" id="xpPreview"><div class="xp-preview-val" style="color:var(--text3)">—</div><div class="xp-preview-label">XP on save</div></div>'+
       '</div>'+
+      promptBox+
       '<textarea class="journal-textarea" id="journalInput" placeholder="'+ph+'" oninput="onJI()" rows="7"></textarea>'+
       '<div class="journal-footer">'+
         '<div class="journal-count" id="journalCount">0 items</div>'+
@@ -1680,6 +1744,28 @@ function rJournal(){
     '</div>'+
     (entries.length>0?'<div class="card-title" style="margin-bottom:10px;">Past Entries — '+entries.length+' saved</div>'+ec:'<div class="empty">No entries yet.</div>');
 }
+
+window.refreshPrompt=function(type){
+  var el=document.getElementById("reflectionPrompt");
+  if(!el)return;
+  el.style.opacity="0";
+  el.style.transition="opacity .3s";
+  setTimeout(function(){
+    el.textContent=getRandomPrompt(type);
+    el.style.opacity="1";
+  },300);
+};
+
+window.usePrompt=function(type){
+  var el=document.getElementById("reflectionPrompt");
+  var inp=document.getElementById("journalInput");
+  if(!el||!inp)return;
+  var prompt=el.textContent;
+  inp.value=(inp.value?inp.value+"\n":"")+prompt+"\n";
+  inp.focus();
+  inp.dispatchEvent(new Event("input"));
+  showToast("Prompt added — now write your answer below it!");
+};
 
 function rFreeJournal(){
   var q=(G.fjSearch||"").toLowerCase();
@@ -1693,11 +1779,24 @@ function rFreeJournal(){
   }).join("");
   var ds=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
   var srch=entries.length>0?'<input class="fj-search" type="text" placeholder="Search entries..." value="'+esc(G.fjSearch||"")+'" oninput="setFJSearch(this.value)" />':"";
+
+  // Free journal prompt
+  var freePrompt=getRandomPrompt("free");
+  var freePromptBox='<div style="background:linear-gradient(135deg,#0d1020,#07090f);border:1px solid rgba(139,111,232,.25);border-radius:14px;padding:14px 16px;margin-bottom:14px;">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#8b6fe8;letter-spacing:1.5px;">💭 REFLECTION PROMPT</div>'+
+      '<button onclick="refreshFreePrompt()" style="background:transparent;border:1px solid rgba(139,111,232,.2);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text3);cursor:pointer;">new ↻</button>'+
+    '</div>'+
+    '<div id="freePromptEl" style="font-size:13px;color:#e8d5a0;line-height:1.6;font-style:italic;">'+freePrompt+'</div>'+
+    '<button onclick="useFreePrompt()" style="margin-top:10px;background:rgba(139,111,232,.1);border:1px solid rgba(139,111,232,.3);border-radius:8px;padding:6px 14px;font-size:11px;color:#8b6fe8;cursor:pointer;font-family:\"Cinzel\",serif;">Use this prompt</button>'+
+  '</div>';
+
   return'<div class="journal-box" style="margin-bottom:12px;">'+
     '<div class="journal-header" style="margin-bottom:10px;">'+
       '<div><div class="journal-title">Free Journal</div><div class="journal-subtitle">'+ds+'</div></div>'+
       '<div style="text-align:right;"><div style="font-family:"Cinzel",serif;font-size:18px;font-weight:700;color:var(--text2);">'+entries.length+'</div><div style="font-size:11px;color:var(--text3);">entries</div></div>'+
     '</div>'+
+    freePromptBox+
     '<textarea class="fj-textarea" id="fjInput" placeholder="Write anything — thoughts, reflections, plans, wins, struggles." oninput="onFJI()" rows="6"></textarea>'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">'+
       '<span style="font-size:11px;color:var(--text3);" id="fjCC">0 chars</span>'+
@@ -1708,6 +1807,27 @@ function rFreeJournal(){
   (filtered.length===0&&q?'<div class="empty" style="padding:20px;">No results for "'+esc(q)+'"</div>':"")+(entries.length===0?'<div class="empty">No entries yet.</div>':"")+
   ecards;
 }
+
+window.refreshFreePrompt=function(){
+  var el=document.getElementById("freePromptEl");
+  if(!el)return;
+  el.style.opacity="0";
+  el.style.transition="opacity .3s";
+  setTimeout(function(){
+    el.textContent=getRandomPrompt("free");
+    el.style.opacity="1";
+  },300);
+};
+
+window.useFreePrompt=function(){
+  var el=document.getElementById("freePromptEl");
+  var inp=document.getElementById("fjInput");
+  if(!el||!inp)return;
+  inp.value=(inp.value?inp.value+"\n":"")+el.textContent+"\n";
+  inp.focus();
+  inp.dispatchEvent(new Event("input"));
+  showToast("Prompt added — write your answer below it!");
+};
 
 function rShop(){
   var cards=SHOP.map(function(item){
