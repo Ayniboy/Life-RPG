@@ -16,7 +16,7 @@
 <title>Life RPG</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 /* ── Cross-browser compatibility ── */
 *{-webkit-box-sizing:border-box;box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
@@ -1099,10 +1099,10 @@ function showLaunchScreen(){
   if(existing)existing.remove();
   var tl=totalLv();
   var rc=ringColor(tl);
-  var cls=CLASS_BONUSES[G.avatarClass||0];
+  var cls=(typeof CLASS_BONUSES!=="undefined")?CLASS_BONUSES[G.avatarClass||0]:{icon:"⚔",name:"Warrior"};
   var streak=G.streakDays||0;
-  var xpNeeded=xpForLevel(tl+1)||1;
-  var xpPct=Math.min(100,Math.round((G.totalXP%xpNeeded)/xpNeeded*100));
+  var xpNeeded=Math.floor(100*Math.pow(1.4,tl-1))||1;
+  var xpPct=Math.min(100,Math.round(((G.totalXP||0)%xpNeeded)/xpNeeded*100));
   var goldEarned=getTotalGoldEarned?getTotalGoldEarned():G.gold||0;
 
   // Grid lines
@@ -1154,11 +1154,9 @@ function showLaunchScreen(){
 }
 
 function buildLaunchChar(){
-  // Hooded cyberpunk character for launch screen — uses class color as neon
   var tl=totalLv();
   var rc=ringColor(tl);
-  var cls=CLASS_BONUSES[G.avatarClass||0];
-  // Map class to neon color
+  // Map class to neon color without CLASS_BONUSES
   var neons=["#4a8fff","#8b3fe8","#4a8fff","#f4c842","#f4c842","#c456a0","#2ab88a","#ff2d78","#2ab88a"];
   var nc=neons[G.avatarClass||0];
   var nc2=rc;
@@ -5725,7 +5723,7 @@ handleAuthRedirect().then(async function(wasRedirect){
   checkLoginNag();
   checkWhatsNew();
   resetTodoClaim();
-  showLaunchScreen();
+  try{showLaunchScreen();}catch(e){console.warn("Launch screen error:",e);}
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
     G._obStep=0;
