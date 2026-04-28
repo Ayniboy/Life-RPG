@@ -524,6 +524,12 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .launch-stat-lbl{font-size:8px;color:rgba(180,160,200,.6);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
   .launch-enter-btn{width:100%;padding:15px;background:linear-gradient(135deg,#8b3fe8,#c456a0);border:none;border-radius:16px;font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;cursor:pointer;animation:launchbtnpulse 3s ease-in-out infinite;}
   @keyframes launchbtnpulse{0%,100%{box-shadow:0 4px 24px rgba(139,63,232,.4);}50%{box-shadow:0 4px 44px rgba(196,86,160,.7);}}
+  /* ── Section Header & Back Button ── */
+  .section-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;background:var(--bg);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);}
+  .back-btn{background:linear-gradient(135deg,#1a2a3a,#0d1828);border:1px solid var(--border2);border-radius:12px;padding:8px 14px;font-family:"Cinzel",serif;font-size:12px;font-weight:700;color:#e8d5a0;cursor:pointer;letter-spacing:.5px;white-space:nowrap;flex-shrink:0;}
+  .back-btn:active{transform:scale(.96);}
+  .section-title{font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#e8d5a0;flex:1;text-align:center;}
+  .section-header-right{display:flex;gap:6px;align-items:center;flex-shrink:0;}
   .hero-page{max-width:480px;margin:0 auto;padding:8px 0 24px;}
   /* Main character card */
   .hero-main-card{background:linear-gradient(160deg,#0f1828,#080e1a);border:1px solid var(--border2);border-radius:20px;margin:0 16px 12px;overflow:hidden;position:relative;}
@@ -2283,42 +2289,36 @@ function render(){
     '</button>';
   }).join("");
 
-  // Will inject hero avatar after render if on hero tab
-  var _needHeroAv = G.tab==="hero";
-  // Sync indicator
-document.getElementById("app").innerHTML=
-    '<div class="header">'+
-      '<div class="hdr-row1">'+
-        '<div class="hdr-left">'+
-          '<div class="av-wrap" onclick="openAvModal()">'+
-            '<div style="position:relative;display:inline-block;">'+'<div class="av-img" id="avImg" style="border-color:'+rc+';box-shadow:0 0 8px '+rc+'44;"></div>'+(G.equippedAccessory?(function(){var a=ACCESSORIES.filter(function(x){return x.id===G.equippedAccessory;})[0];return a?'<div class="av-accessory">'+a.icon+'</div>':'';}()):'')+'</div>'+
-            '<div class="av-name" id="avName">'+(G.avatarName||'Hero')+'</div>'+
-          '</div>'+
-        '</div>'+
-        '<div class="hdr-mid">'+
-          '<div class="hdr-game-title">LIFE RPG</div>'+
-        '</div>'+
-        '<div class="hdr-right">'+streakH+'<div class="gems-pill">'+G.gems+'💎</div>'+'<div class="gold-pill">'+G.gold+'g</div></div>'+
+  var isDashboard=G.tab==="dashboard";
+
+  if(isDashboard){
+    // Dashboard — no header, no nav bar, just full screen nav cards
+    document.getElementById("app").innerHTML=
+      '<div class="content" style="padding-top:0;">'+content+'</div>';
+    setTimeout(function(){
+      var slot=document.getElementById("dashAvImg");
+      if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,36);
+    },50);
+    return;
+  }
+
+  // Section pages — minimal header with back button, no bottom nav
+  var pageTitle=NAV_TABS.filter(function(t){return t.id===G.tab;})[0];
+  var titleStr=pageTitle?(pageTitle.icon+" "+pageTitle.label):"LIFE RPG";
+
+  document.getElementById("app").innerHTML=
+    '<div class="section-header">'+
+      '<button class="back-btn" onclick="goHome()">← Home</button>'+
+      '<div class="section-title">'+titleStr+'</div>'+
+      '<div class="section-header-right">'+
+        '<div class="gold-pill" style="font-size:11px;">'+G.gold+'g</div>'+
+        '<div class="gems-pill" style="font-size:11px;">'+G.gems+'💎</div>'+
       '</div>'+
-      '<div class="hdr-row2">'+
-        '<span class="hdr-lv-num">Lv.'+tl+'</span>'+
-        '<span class="hdr-lv-title">'+playerTitle()+'</span>'+
-        '<div class="hdr-xp-wrap"><div class="tl-bar-wrap" style="flex:1;"><div class="tl-bar" style="width:'+pct+'%;"></div></div>'+
-        '<span class="tl-xp">'+prog.earned+'/'+prog.needed+' XP</span></div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="nav">'+navBtns+'</div>'+
-    '<div class="drawer-overlay'+(drawerOpen?' open':'')+'" onclick="closeDrawer()"></div>'+
-    '<div class="drawer'+(drawerOpen?' open':'')+'" id="mainDrawer">'+
-      '<div class="drawer-handle"></div>'+
-      '<div class="drawer-title">Navigate</div>'+
-      '<div class="drawer-grid">'+drawerBtns+'</div>'+
     '</div>'+
     (isBoostActive()?'<div class="boost-banner"><span class="boost-banner-icon">⚡</span><span class="boost-banner-text">XP BOOST ACTIVE &nbsp;<span class="boost-badge">'+getBoostLabel()+'</span></span><span class="boost-banner-icon">⚡</span></div>':'')+
     '<div class="content">'+content+'</div>';
+
   requestAnimationFrame(function(){
-    var slot=document.getElementById("avImg");
-    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,36);
     var heroSlot=document.getElementById("heroAvImg");
     if(heroSlot)heroSlot.innerHTML=drawSVG(G.avatarClass,tl,70);
   });
@@ -2471,7 +2471,8 @@ window.openAvModal=openAvModal;
 // Handlers
 var questCountdownTick=null;
 
-window.setTab=function(tOrEl){var t=typeof tOrEl==="string"?tOrEl:tOrEl.dataset.id;
+window.goHome=function(){G.tab="dashboard";render();};
+window.setTab=function(tOrEl){var t=typeof tOrEl==="string"?tOrEl:(tOrEl&&tOrEl.dataset?tOrEl.dataset.id:String(tOrEl));
   G.tab=t;render();
   if(t==="spin"){
     requestAnimationFrame(function(){
