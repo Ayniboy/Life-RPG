@@ -92,6 +92,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Crimso
 .drawer-icon{font-size:24px;line-height:1;}
 .drawer-label{font-family:"Cinzel",serif;font-size:9px;font-weight:600;letter-spacing:.3px;white-space:nowrap;}
 .content{padding:16px;padding-bottom:calc(16px + var(--safe-bot));flex:1;overflow-x:hidden;}
+#app{padding-top:0;}
 .card{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
 .card-title{font-family:"Cinzel",serif;font-size:11px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
 .domain-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px;}
@@ -511,7 +512,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .launch-logo-main{font-family:"Cinzel Decorative",cursive,serif;font-size:clamp(22px,7vw,30px);font-weight:700;color:#fff;letter-spacing:3px;animation:launchglow 3s ease-in-out infinite;}
   .launch-logo-sub{font-size:9px;letter-spacing:9px;color:rgba(255,230,150,.9);margin-top:3px;text-shadow:0 0 12px rgba(255,180,80,.6);}
   @keyframes launchglow{0%,100%{text-shadow:0 0 20px rgba(255,200,80,1),0 0 50px rgba(255,140,40,.7);}50%{text-shadow:0 0 30px rgba(255,220,100,1),0 0 80px rgba(255,160,60,.9);}}
-  .launch-bottom{position:absolute;bottom:0;left:0;right:0;padding:18px 22px 36px;background:linear-gradient(0deg,rgba(10,4,24,.98) 55%,transparent);}
+  .launch-bottom{position:absolute;bottom:0;left:0;right:0;padding:18px 22px calc(36px + env(safe-area-inset-bottom));background:linear-gradient(0deg,rgba(10,4,24,.98) 55%,transparent);}
   .launch-hero-name{font-size:20px;font-weight:700;color:#e8d5a0;letter-spacing:1px;margin-bottom:2px;}
   .launch-hero-sub{font-size:10px;color:rgba(180,140,255,.8);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase;}
   .launch-xp-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
@@ -525,7 +526,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .launch-enter-btn{width:100%;padding:15px;background:linear-gradient(135deg,#8b3fe8,#c456a0);border:none;border-radius:16px;font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;cursor:pointer;animation:launchbtnpulse 3s ease-in-out infinite;}
   @keyframes launchbtnpulse{0%,100%{box-shadow:0 4px 24px rgba(139,63,232,.4);}50%{box-shadow:0 4px 44px rgba(196,86,160,.7);}}
   /* ── Section Header & Back Button ── */
-  .section-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;background:var(--bg);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);}
+  .section-header{display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 16px 10px;background:var(--bg);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);}
   .back-btn{background:linear-gradient(135deg,#1a2a3a,#0d1828);border:1px solid var(--border2);border-radius:12px;padding:8px 14px;font-family:"Cinzel",serif;font-size:12px;font-weight:700;color:#e8d5a0;cursor:pointer;letter-spacing:.5px;white-space:nowrap;flex-shrink:0;}
   .back-btn:active{transform:scale(.96);}
   .section-title{font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#e8d5a0;flex:1;text-align:center;}
@@ -2294,7 +2295,7 @@ function render(){
   if(isDashboard){
     // Dashboard — no header, no nav bar, just full screen nav cards
     document.getElementById("app").innerHTML=
-      '<div class="content" style="padding-top:0;">'+content+'</div>';
+      '<div class="content" style="padding-top:calc(20px + env(safe-area-inset-top));">'+content+'</div>';
     setTimeout(function(){
       var slot=document.getElementById("dashAvImg");
       if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,36);
