@@ -489,7 +489,41 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   .ob-dot.active{background:#f4c842;width:20px;border-radius:4px;}
   .ob-progress{font-size:11px;color:var(--text3);margin-bottom:20px;font-family:"Cinzel",serif;letter-spacing:.5px;}
 
-  /* ── Hero Profile ── */
+  /* ── Launch Screen ── */
+  .launch{position:fixed;inset:0;z-index:99999;overflow:hidden;font-family:"Cinzel",serif;}
+  .launch-sky{position:absolute;inset:0;background:linear-gradient(180deg,#87ceeb 0%,#f0c060 32%,#f4a030 52%,#c05080 68%,#5020a0 83%,#180a30 100%);}
+  .launch-sun{position:absolute;top:14%;left:50%;transform:translateX(-50%);width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,#fffbe0 0%,#ffe080 50%,#ffaa40 80%,transparent 100%);animation:launchsun 4s ease-in-out infinite;}
+  @keyframes launchsun{0%,100%{box-shadow:0 0 50px 25px rgba(255,200,80,.4),0 0 100px 50px rgba(255,150,50,.2);}50%{box-shadow:0 0 70px 35px rgba(255,200,80,.6),0 0 140px 70px rgba(255,150,50,.3);}}
+  .launch-mtn1{position:absolute;bottom:30%;left:0;right:0;height:140px;background:#2a1560;clip-path:polygon(0% 100%,10% 45%,22% 75%,33% 20%,46% 60%,58% 8%,70% 50%,80% 18%,92% 55%,100% 30%,100% 100%);opacity:.75;}
+  .launch-mtn2{position:absolute;bottom:28%;left:0;right:0;height:115px;background:#1a0d40;clip-path:polygon(0% 100%,15% 55%,28% 75%,42% 28%,55% 62%,68% 22%,80% 58%,90% 35%,100% 65%,100% 100%);opacity:.9;}
+  .launch-ground{position:absolute;bottom:0;left:0;right:0;height:32%;background:linear-gradient(180deg,#1a0a38 0%,#100620 100%);}
+  .launch-grid{position:absolute;bottom:0;left:0;right:0;height:32%;overflow:hidden;}
+  .launch-gh{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(180,100,255,.5) 50%,transparent 100%);}
+  .launch-gv{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent 0%,rgba(180,100,255,.25) 100%);}
+  .launch-glow{position:absolute;left:50%;transform:translateX(-50%);width:220px;height:24px;background:radial-gradient(ellipse,rgba(200,120,255,.55) 0%,transparent 70%);filter:blur(8px);}
+  .launch-char{position:absolute;left:50%;transform:translateX(-50%);animation:launchfloat 5s ease-in-out infinite;}
+  @keyframes launchfloat{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-14px);}}
+  .launch-char-shadow{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:70px;height:10px;background:rgba(0,0,0,.4);border-radius:50%;filter:blur(5px);animation:launchshadow 5s ease-in-out infinite;}
+  @keyframes launchshadow{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.4;}50%{transform:translateX(-50%) scaleX(.6);opacity:.15;}}
+  .launch-logo{position:absolute;top:-108px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;animation:launchlogodrift 5s ease-in-out infinite;}
+  @keyframes launchlogodrift{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-10px);}}
+  .launch-logo-line{width:1px;height:26px;background:linear-gradient(180deg,rgba(255,200,100,.7),transparent);margin:0 auto 6px;}
+  .launch-logo-main{font-family:"Cinzel Decorative",cursive,serif;font-size:clamp(22px,7vw,30px);font-weight:700;color:#fff;letter-spacing:3px;animation:launchglow 3s ease-in-out infinite;}
+  .launch-logo-sub{font-size:9px;letter-spacing:9px;color:rgba(255,230,150,.9);margin-top:3px;text-shadow:0 0 12px rgba(255,180,80,.6);}
+  @keyframes launchglow{0%,100%{text-shadow:0 0 20px rgba(255,200,80,1),0 0 50px rgba(255,140,40,.7);}50%{text-shadow:0 0 30px rgba(255,220,100,1),0 0 80px rgba(255,160,60,.9);}}
+  .launch-bottom{position:absolute;bottom:0;left:0;right:0;padding:18px 22px 36px;background:linear-gradient(0deg,rgba(10,4,24,.98) 55%,transparent);}
+  .launch-hero-name{font-size:20px;font-weight:700;color:#e8d5a0;letter-spacing:1px;margin-bottom:2px;}
+  .launch-hero-sub{font-size:10px;color:rgba(180,140,255,.8);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase;}
+  .launch-xp-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .launch-xp-bar{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+  .launch-xp-fill{height:100%;background:linear-gradient(90deg,#8b3fe8,#c456a0);border-radius:3px;transition:width .6s;}
+  .launch-xp-lbl{font-size:9px;color:rgba(180,140,255,.6);letter-spacing:1px;white-space:nowrap;}
+  .launch-stats{display:flex;gap:8px;margin-bottom:16px;}
+  .launch-stat{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 6px;text-align:center;}
+  .launch-stat-val{font-size:15px;font-weight:700;color:#f4c842;}
+  .launch-stat-lbl{font-size:8px;color:rgba(180,160,200,.6);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
+  .launch-enter-btn{width:100%;padding:15px;background:linear-gradient(135deg,#8b3fe8,#c456a0);border:none;border-radius:16px;font-family:"Cinzel",serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;cursor:pointer;animation:launchbtnpulse 3s ease-in-out infinite;}
+  @keyframes launchbtnpulse{0%,100%{box-shadow:0 4px 24px rgba(139,63,232,.4);}50%{box-shadow:0 4px 44px rgba(196,86,160,.7);}}
   .hero-page{max-width:480px;margin:0 auto;padding:8px 0 24px;}
   /* Main character card */
   .hero-main-card{background:linear-gradient(160deg,#0f1828,#080e1a);border:1px solid var(--border2);border-radius:20px;margin:0 16px 12px;overflow:hidden;position:relative;}
@@ -1060,6 +1094,137 @@ var SKINS=[
   {id:"streak30",  name:"Legendary Flame",icon:"💫", desc:"30-day login streak reward.", cost:0,   unlock:"streak30",
    palette:{sk:"#fff8e0",ha:"#f4c842",ar:"#e8923a",tr:"#ffffff",ey:"#f4c842",sh:"#c87a10"}},
 ];
+function showLaunchScreen(){
+  var existing=document.getElementById("launchScreen");
+  if(existing)existing.remove();
+  var tl=totalLv();
+  var rc=ringColor(tl);
+  var cls=CLASS_BONUSES[G.avatarClass||0];
+  var streak=G.streakDays||0;
+  var xpNeeded=xpForLevel(tl+1)||1;
+  var xpPct=Math.min(100,Math.round((G.totalXP%xpNeeded)/xpNeeded*100));
+  var goldEarned=getTotalGoldEarned?getTotalGoldEarned():G.gold||0;
+
+  // Grid lines
+  var ghLines=[28,52,72,88,100,110].map(function(b){return'<div class="launch-gh" style="bottom:'+b+'px"></div>';}).join("");
+  var gvLines=[8,20,32,44,50,56,68,80,92].map(function(l){return'<div class="launch-gv" style="left:'+l+'%"></div>';}).join("");
+
+  // Character SVG inline
+  var charSVG=buildLaunchChar();
+
+  // Ground glow position
+  var groundH=Math.round(window.innerHeight*0.32);
+  var glowBottom=groundH-18;
+
+  var div=document.createElement("div");
+  div.id="launchScreen";
+  div.className="launch";
+  div.innerHTML=
+    '<div class="launch-sky"></div>'+
+    '<div class="launch-sun"></div>'+
+    '<div class="launch-mtn1"></div>'+
+    '<div class="launch-mtn2"></div>'+
+    '<div class="launch-ground"></div>'+
+    '<div class="launch-grid">'+ghLines+gvLines+'</div>'+
+    '<div class="launch-glow" style="bottom:'+glowBottom+'px"></div>'+
+    '<div class="launch-char" style="bottom:'+(groundH+8)+'px">'+
+      '<div class="launch-char-shadow"></div>'+
+      '<div class="launch-logo">'+
+        '<div class="launch-logo-line"></div>'+
+        '<div class="launch-logo-main">LIFE RPG</div>'+
+        '<div class="launch-logo-sub">YOUR STORY BEGINS</div>'+
+      '</div>'+
+      charSVG+
+    '</div>'+
+    '<div class="launch-bottom">'+
+      '<div class="launch-hero-name">'+(G.avatarName||"Hero")+'</div>'+
+      '<div class="launch-hero-sub">'+cls.icon+' '+cls.name+' · '+playerTitle()+'</div>'+
+      '<div class="launch-xp-row">'+
+        '<div class="launch-xp-bar"><div class="launch-xp-fill" style="width:'+xpPct+'%"></div></div>'+
+        '<div class="launch-xp-lbl">LV '+tl+' · '+xpPct+'%</div>'+
+      '</div>'+
+      '<div class="launch-stats">'+
+        '<div class="launch-stat"><div class="launch-stat-val">'+streak+'🔥</div><div class="launch-stat-lbl">Streak</div></div>'+
+        '<div class="launch-stat"><div class="launch-stat-val">'+(G.totalXP||0).toLocaleString()+'</div><div class="launch-stat-lbl">Total XP</div></div>'+
+        '<div class="launch-stat"><div class="launch-stat-val">'+(G.gold||0)+'g</div><div class="launch-stat-lbl">Gold</div></div>'+
+      '</div>'+
+      '<button class="launch-enter-btn" onclick="enterGame()">⚔ ENTER THE GAME</button>'+
+    '</div>';
+  document.body.appendChild(div);
+}
+
+function buildLaunchChar(){
+  // Hooded cyberpunk character for launch screen — uses class color as neon
+  var tl=totalLv();
+  var rc=ringColor(tl);
+  var cls=CLASS_BONUSES[G.avatarClass||0];
+  // Map class to neon color
+  var neons=["#4a8fff","#8b3fe8","#4a8fff","#f4c842","#f4c842","#c456a0","#2ab88a","#ff2d78","#2ab88a"];
+  var nc=neons[G.avatarClass||0];
+  var nc2=rc;
+  return'<svg width="110" height="155" viewBox="0 0 110 155" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs>'+
+      '<filter id="lcg"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '<filter id="lcb"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+    '</defs>'+
+    '<ellipse cx="55" cy="85" rx="44" ry="56" fill="'+nc+'" opacity="0.06" filter="url(#lcb)"/>'+
+    // energy slashes
+    '<path d="M6,50 Q22,64 38,80" fill="none" stroke="'+nc+'" stroke-width="1.8" stroke-linecap="round" opacity="0.6" style="animation:pulse 3s ease-in-out infinite"/>'+
+    '<path d="M8,43 Q24,58 38,73" fill="none" stroke="'+nc+'" stroke-width="0.7" stroke-linecap="round" opacity="0.3" style="animation:pulse 3s ease-in-out infinite .3s"/>'+
+    '<path d="M104,48 Q88,62 72,78" fill="none" stroke="'+nc2+'" stroke-width="1.8" stroke-linecap="round" opacity="0.6" style="animation:pulse 3s ease-in-out infinite .5s"/>'+
+    '<path d="M102,41 Q86,56 72,71" fill="none" stroke="'+nc2+'" stroke-width="0.7" stroke-linecap="round" opacity="0.3" style="animation:pulse 3s ease-in-out infinite .8s"/>'+
+    // body
+    '<path d="M14,153 Q16,110 24,90 Q33,74 44,68 Q50,64 55,64 Q60,64 66,68 Q77,74 86,90 Q94,110 96,153 Z" fill="#12032a"/>'+
+    '<path d="M38,68 Q42,82 47,88 Q50,92 55,92 Q60,92 63,88 Q68,82 72,68" fill="#180438"/>'+
+    '<line x1="55" y1="70" x2="55" y2="128" stroke="'+nc+'" stroke-width="0.5" opacity="0.25"/>'+
+    '<path d="M44,68 Q40,90 38,118" fill="none" stroke="'+nc+'" stroke-width="0.9" opacity="0.45" style="animation:pulse 4s ease-in-out infinite"/>'+
+    '<path d="M66,68 Q70,90 72,118" fill="none" stroke="'+nc2+'" stroke-width="0.9" opacity="0.45" style="animation:pulse 4s ease-in-out infinite .5s"/>'+
+    '<circle cx="55" cy="88" r="11" fill="none" stroke="'+nc+'" stroke-width="0.8" opacity="0.4" style="animation:pulse 4s ease-in-out infinite"/>'+
+    '<circle cx="55" cy="88" r="7" fill="none" stroke="'+nc2+'" stroke-width="0.6" opacity="0.3" style="animation:pulse 4s ease-in-out infinite 1s"/>'+
+    '<circle cx="55" cy="88" r="2.5" fill="'+nc+'" opacity="0.5" style="animation:pulse 2s ease-in-out infinite"/>'+
+    // neck
+    '<path d="M42,62 Q41,69 44,73 Q49,78 55,78 Q61,78 66,73 Q69,69 68,62 Q62,58 55,58 Q48,58 42,62 Z" fill="#c8905a"/>'+
+    // mask
+    '<path d="M38,64 Q39,74 43,79 Q49,85 55,85 Q61,85 67,79 Q71,74 72,64 Q63,70 55,71 Q47,70 38,64 Z" fill="#0d0220"/>'+
+    '<path d="M40,66 Q52,72 55,73 Q58,72 70,66" fill="none" stroke="'+nc+'" stroke-width="0.8" opacity="0.55" style="animation:pulse 3s ease-in-out infinite"/>'+
+    // eyes
+    '<ellipse cx="44" cy="59" rx="8" ry="5" fill="#06010e"/>'+
+    '<ellipse cx="66" cy="59" rx="8" ry="5" fill="#06010e"/>'+
+    '<ellipse cx="44" cy="59" rx="5.5" ry="3.5" fill="'+nc+'" opacity="0.8" filter="url(#lcg)" style="animation:pulse 2.5s ease-in-out infinite"/>'+
+    '<ellipse cx="66" cy="59" rx="5.5" ry="3.5" fill="'+nc+'" opacity="0.8" filter="url(#lcg)" style="animation:pulse 2.5s ease-in-out infinite .3s"/>'+
+    '<ellipse cx="44" cy="59" rx="3.5" ry="2.3" fill="'+nc+'"/>'+
+    '<ellipse cx="66" cy="59" rx="3.5" ry="2.3" fill="'+nc+'"/>'+
+    '<ellipse cx="44" cy="59" rx="1.5" ry="2" fill="#030108"/>'+
+    '<ellipse cx="66" cy="59" rx="1.5" ry="2" fill="#030108"/>'+
+    '<ellipse cx="42" cy="57.8" rx="1.8" ry="1.1" fill="#fff" opacity="0.85"/>'+
+    '<ellipse cx="64" cy="57.8" rx="1.8" ry="1.1" fill="#fff" opacity="0.85"/>'+
+    '<path d="M36,56 Q44,51 52,56" fill="none" stroke="#0a0315" stroke-width="1.8" stroke-linecap="round"/>'+
+    '<path d="M58,56 Q66,51 74,56" fill="none" stroke="#0a0315" stroke-width="1.8" stroke-linecap="round"/>'+
+    // hood
+    '<ellipse cx="55" cy="42" rx="31" ry="29" fill="#060112"/>'+
+    '<path d="M22,45 Q20,23 55,13 Q90,23 88,45 Q88,61 80,70 Q68,64 64,53 Q68,40 66,27 Q60,15 55,13 Q50,15 44,27 Q42,40 46,53 Q42,64 30,70 Q22,61 22,45 Z" fill="#100328"/>'+
+    '<path d="M24,60 Q30,70 42,71" fill="none" stroke="'+nc+'" stroke-width="1.4" stroke-linecap="round" opacity="0.8" style="animation:pulse 3s ease-in-out infinite"/>'+
+    '<path d="M68,71 Q80,70 86,60" fill="none" stroke="'+nc+'" stroke-width="1.4" stroke-linecap="round" opacity="0.8" style="animation:pulse 3s ease-in-out infinite .4s"/>'+
+    '<path d="M22,32 Q40,50 52,66" fill="none" stroke="'+nc2+'" stroke-width="1.1" stroke-linecap="round" opacity="0.4" style="animation:pulse 2.5s ease-in-out infinite"/>'+
+    '<path d="M88,30 Q70,48 58,66" fill="none" stroke="'+nc+'" stroke-width="1.1" stroke-linecap="round" opacity="0.4" style="animation:pulse 2.5s ease-in-out infinite .5s"/>'+
+    '<path d="M36,17 Q55,9 74,17" fill="none" stroke="'+nc+'" stroke-width="0.9" stroke-linecap="round" opacity="0.35"/>'+
+    // hair
+    '<path d="M28,29 Q24,19 32,12 Q35,9 36,15 Q34,21 33,29 Z" fill="#1a1a28"/>'+
+    '<path d="M38,21 Q36,11 46,4 Q49,1 49,9 Q48,17 47,22 Z" fill="#1e1e30"/>'+
+    '<path d="M72,21 Q74,11 64,4 Q61,1 61,9 Q62,17 63,22 Z" fill="#1e1e30"/>'+
+    '<path d="M82,29 Q86,19 78,12 Q75,9 74,15 Q76,21 77,29 Z" fill="#1a1a28"/>'+
+  '</svg>';
+}
+
+window.enterGame=function(){
+  var launch=document.getElementById("launchScreen");
+  if(launch){
+    launch.style.transition="opacity .5s";
+    launch.style.opacity="0";
+    setTimeout(function(){launch.remove();},500);
+  }
+};
+
 function ringColor(level){if(level>=20)return"#f4c842";if(level>=12)return"#c456a0";if(level>=8)return"#2ab88a";if(level>=5)return"#4a8fff";if(level>=3)return"#e8923a";return"#6a8aaa";}
 
 var STORAGE_KEY="liferp_save_v4";
@@ -1457,11 +1622,63 @@ function updateStreak(){
 }
 
 function rDashboard(){
+  var tl=totalLv();
+  var rc=ringColor(tl);
+  var cls=CLASS_BONUSES[G.avatarClass||0];
+  var streak=G.streakDays||0;
   var dcBanner=renderDCBanner();
-  var sr=SKILLS.map(function(sk){var s=G.skills[sk.id]||(G.skills[sk.id]={xp:0,level:1}),need=xpForSkillLv(s.level),pct=Math.min(100,Math.round(s.xp/need*100));return'<div class="skill-row"><div class="skill-meta"><div><span class="skill-name">'+sk.name+'</span><span style="color:var(--text3);margin:0 6px;">|</span><span class="skill-tag" style="color:'+DOMAIN_COLORS[sk.domain]+';">'+sk.domain+'</span></div><div><span class="skill-level" style="color:'+sk.color+'">Lv.'+s.level+'</span><span class="skill-xp">'+s.xp+' / '+need+' XP</span></div></div><div class="xp-wrap"><div class="xp-fill" style="width:'+pct+'%;background:'+sk.color+';box-shadow:0 0 8px '+sk.color+'55;"></div></div></div>';}).join("");
-  var logH=G.log.length>0?'<div class="card" style="padding:4px 16px;"><div class="card-title" style="padding-top:14px;">Recent Deeds</div>'+G.log.slice(0,6).map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>':'<div class="empty">Your legend has not yet begun. Head to Actions.</div>';
-  return'<div class="card"><div class="card-title">Skill Trees</div>'+sr+'</div>'+logH;
+
+  // Big nav cards
+  var NAV_CARDS=[
+    {id:"actions",  icon:"⚔",  label:"Actions",    desc:"Log your daily deeds",        color:"#4a8fff", bg:"rgba(74,143,255,.08)"},
+    {id:"quests",   icon:"📜", label:"Quests",     desc:"Your active missions",         color:"#f4c842", bg:"rgba(244,200,66,.08)"},
+    {id:"todo",     icon:"✅", label:"To-Do",      desc:"Tasks & daily goals",          color:"#2ab88a", bg:"rgba(42,184,138,.08)"},
+    {id:"journal",  icon:"🌿", label:"Journal",    desc:"Gratitude & I AM",             color:"#8b3fe8", bg:"rgba(139,63,232,.08)"},
+    {id:"fjournal", icon:"📓", label:"My Notes",   desc:"Free writing & reflections",   color:"#c456a0", bg:"rgba(196,86,160,.08)"},
+    {id:"spin",     icon:"🎰", label:"Spin",       desc:"Daily wheel of fortune",       color:"#e8923a", bg:"rgba(232,146,58,.08)"},
+    {id:"inventory",icon:"🎒", label:"Inventory",  desc:"Gear, pets & chests",          color:"#2ab88a", bg:"rgba(42,184,138,.08)"},
+    {id:"shop",     icon:"🛒", label:"Shop",       desc:"Spend your gold",              color:"#f4c842", bg:"rgba(244,200,66,.08)"},
+    {id:"timer",    icon:"⏱", label:"Timer",      desc:"Focus & breathing",            color:"#4a8fff", bg:"rgba(74,143,255,.08)"},
+  ];
+
+  var cards=NAV_CARDS.map(function(c){
+    return'<div onclick="setTab(\''+c.id+'\')" style="background:'+c.bg+';border:1px solid '+c.color+'30;border-radius:18px;padding:18px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+      '<div style="font-size:28px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:'+c.color+'15;border-radius:12px;flex-shrink:0;">'+c.icon+'</div>'+
+      '<div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:14px;font-weight:700;color:#e8d5a0;margin-bottom:2px;">'+c.label+'</div>'+
+        '<div style="font-size:11px;color:var(--text2);">'+c.desc+'</div>'+
+      '</div>'+
+      '<div style="margin-left:auto;color:'+c.color+';font-size:16px;opacity:.5;">›</div>'+
+    '</div>';
+  }).join("");
+
+  // Mini hero strip at top
+  var heroStrip=
+    '<div onclick="setTab(\'hero\')" style="background:linear-gradient(135deg,#0d1828,#080e1a);border:1px solid '+rc+'33;border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer;">'+
+      '<div style="width:44px;height:44px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 10px '+rc+'44;flex-shrink:0;" id="dashAvImg"></div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:15px;color:#e8d5a0;font-weight:700;">'+(G.avatarName||"Hero")+'</div>'+
+        '<div style="font-size:11px;color:'+rc+';">'+cls.icon+' '+cls.name+' · Lv.'+tl+'</div>'+
+      '</div>'+
+      '<div style="text-align:right;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:14px;color:#f4c842;">'+streak+'🔥</div>'+
+        '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">streak</div>'+
+      '</div>'+
+    '</div>';
+
+  setTimeout(function(){
+    var slot=document.getElementById("dashAvImg");
+    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,36);
+  },50);
+
+  return'<div style="padding:4px 0 24px;">'+
+    heroStrip+
+    dcBanner+
+    '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Navigate</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;">'+cards+'</div>'+
+  '</div>';
 }
+
 
 function rActions(){
   var domains=["All","Health","Productivity","Learning","Mindset","Spiritual"];
@@ -5508,6 +5725,7 @@ handleAuthRedirect().then(async function(wasRedirect){
   checkLoginNag();
   checkWhatsNew();
   resetTodoClaim();
+  showLaunchScreen();
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
     G._obStep=0;
