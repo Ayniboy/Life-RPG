@@ -1631,54 +1631,149 @@ function rDashboard(){
   var rc=ringColor(tl);
   var cls=CLASS_BONUSES[G.avatarClass||0];
   var streak=G.streakDays||0;
-  var dcBanner=renderDCBanner();
+  var today=new Date().toLocaleDateString();
+  var xpNeeded=Math.floor(100*Math.pow(1.4,tl-1))||1;
+  var xpPct=Math.min(100,Math.round(((G.totalXP||0)%xpNeeded)/xpNeeded*100));
 
-  // Big nav cards
-  var NAV_CARDS=[
-    {id:"actions",  icon:"⚔",  label:"Actions",    desc:"Log your daily deeds",        color:"#4a8fff", bg:"rgba(74,143,255,.08)"},
-    {id:"quests",   icon:"📜", label:"Quests",     desc:"Your active missions",         color:"#f4c842", bg:"rgba(244,200,66,.08)"},
-    {id:"todo",     icon:"✅", label:"To-Do",      desc:"Tasks & daily goals",          color:"#2ab88a", bg:"rgba(42,184,138,.08)"},
-    {id:"journal",  icon:"🌿", label:"Journal",    desc:"Gratitude & I AM",             color:"#8b3fe8", bg:"rgba(139,63,232,.08)"},
-    {id:"fjournal", icon:"📓", label:"My Notes",   desc:"Free writing & reflections",   color:"#c456a0", bg:"rgba(196,86,160,.08)"},
-    {id:"spin",     icon:"🎰", label:"Spin",       desc:"Daily wheel of fortune",       color:"#e8923a", bg:"rgba(232,146,58,.08)"},
-    {id:"inventory",icon:"🎒", label:"Inventory",  desc:"Gear, pets & chests",          color:"#2ab88a", bg:"rgba(42,184,138,.08)"},
-    {id:"shop",     icon:"🛒", label:"Shop",       desc:"Spend your gold",              color:"#f4c842", bg:"rgba(244,200,66,.08)"},
-    {id:"timer",    icon:"⏱", label:"Timer",      desc:"Focus & breathing",            color:"#4a8fff", bg:"rgba(74,143,255,.08)"},
-  ];
+  // Today's actions logged
+  var actionsToday=G.log.filter(function(e){return e.date===today;}).length;
 
-  var cards=NAV_CARDS.map(function(c){
-    return'<div onclick="setTab(\''+c.id+'\')" style="background:'+c.bg+';border:1px solid '+c.color+'30;border-radius:18px;padding:18px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
-      '<div style="font-size:28px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:'+c.color+'15;border-radius:12px;flex-shrink:0;">'+c.icon+'</div>'+
-      '<div>'+
-        '<div style="font-family:\"Cinzel\",serif;font-size:14px;font-weight:700;color:#e8d5a0;margin-bottom:2px;">'+c.label+'</div>'+
-        '<div style="font-size:11px;color:var(--text2);">'+c.desc+'</div>'+
-      '</div>'+
-      '<div style="margin-left:auto;color:'+c.color+';font-size:16px;opacity:.5;">›</div>'+
+  // Journal done today
+  var gratDone=(G.gratitudeEntries||[]).length>0&&(G.gratitudeEntries[0].date===new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}));
+  var spinDone=G.lastSpinDate===getDayKey();
+  var todosTotal=(G.todos||[]).length;
+  var todosDone=(G.todos||[]).filter(function(t){return t.done;}).length;
+
+  // Active quest progress
+  var activeQuest=(G.rotatingQuests||[]).filter(function(q){return!q.done;})[0]||(G.customQuests||[]).filter(function(q){return!q.done;})[0]||null;
+
+  // Daily challenge
+  var dc=G.dailyChallenge?DC_POOL.filter(function(d){return d.id===G.dailyChallenge;})[0]:null;
+  var dcProgress=G.dcProgress||0;
+
+  function badge(text,type){
+    var colors={done:"background:rgba(42,184,138,.15);color:#2ab88a;border:1px solid rgba(42,184,138,.3);",
+      miss:"background:rgba(255,255,255,.04);color:var(--text2);border:1px solid var(--border);",
+      go:"background:rgba(74,143,255,.12);color:#4a8fff;border:1px solid rgba(74,143,255,.3);"};
+    return'<span style="font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap;'+colors[type]+'">'+text+'</span>';
+  }
+
+  function row(icon,label,badgeHTML){
+    return'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">'+
+      '<div style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;">'+
+        '<span style="font-size:15px;">'+icon+'</span>'+label+
+      '</div>'+badgeHTML+
     '</div>';
-  }).join("");
+  }
 
-  // Mini hero strip at top
+  // ── HERO STRIP ──
   var heroStrip=
-    '<div onclick="setTab(\'hero\')" style="background:linear-gradient(135deg,#0d1828,#080e1a);border:1px solid '+rc+'33;border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer;">'+
-      '<div style="width:44px;height:44px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 10px '+rc+'44;flex-shrink:0;" id="dashAvImg"></div>'+
-      '<div style="flex:1;">'+
-        '<div style="font-family:\"Cinzel\",serif;font-size:15px;color:#e8d5a0;font-weight:700;">'+(G.avatarName||"Hero")+'</div>'+
-        '<div style="font-size:11px;color:'+rc+';">'+cls.icon+' '+cls.name+' · Lv.'+tl+'</div>'+
+    '<div onclick="setTab(\'hero\')" style="background:linear-gradient(135deg,#0d1828,#080e1a);border:1px solid '+rc+'33;border-radius:18px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;">'+
+      '<div style="width:48px;height:78px;border-radius:10px;overflow:visible;border:2px solid '+rc+';box-shadow:0 0 12px '+rc+'44;flex-shrink:0;" id="dashAvImg"></div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:16px;color:#e8d5a0;font-weight:700;margin-bottom:2px;">'+(G.avatarName||"Hero")+'</div>'+
+        '<div style="font-size:11px;color:'+rc+';margin-bottom:8px;">'+cls.icon+' '+cls.name+' · Lv.'+tl+'</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;">'+
+          '<div style="flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;">'+
+            '<div style="height:100%;width:'+xpPct+'%;background:linear-gradient(90deg,'+rc+','+rc+'99);border-radius:3px;"></div>'+
+          '</div>'+
+          '<div style="font-size:10px;color:var(--text3);white-space:nowrap;">'+xpPct+'%</div>'+
+        '</div>'+
       '</div>'+
-      '<div style="text-align:right;">'+
-        '<div style="font-family:\"Cinzel\",serif;font-size:14px;color:#f4c842;">'+streak+'🔥</div>'+
+      '<div style="text-align:right;flex-shrink:0;">'+
+        '<div style="font-size:22px;font-weight:700;color:#f4c842;">'+streak+'🔥</div>'+
         '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">streak</div>'+
       '</div>'+
     '</div>';
 
+  // ── STATS ROW ──
+  var statsRow=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">'+
+      '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:18px;font-weight:700;color:#e8d5a0;">'+(G.totalXP||0).toLocaleString()+'</div>'+
+        '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Total XP</div>'+
+      '</div>'+
+      '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:18px;font-weight:700;color:#f4c842;">'+(G.gold||0)+'g</div>'+
+        '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Gold</div>'+
+      '</div>'+
+      '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:18px;font-weight:700;color:#4a8fff;">'+actionsToday+'</div>'+
+        '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Today</div>'+
+      '</div>'+
+    '</div>';
+
+  // ── TODAY'S PROGRESS ──
+  var questBadge=activeQuest
+    ?(activeQuest.progress||0)>0?badge((activeQuest.progress||0)+' / '+activeQuest.target,'go'):badge('Not started','miss')
+    :badge('All done','done');
+  var todoBadge=todosTotal>0?badge(todosDone+' / '+todosTotal,'go'):badge('Empty','miss');
+
+  var progressCard=
+    '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin-bottom:10px;">'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Today\'s Progress</div>'+
+      row('⚔','Actions logged',badge(actionsToday>0?actionsToday+' logged':'None yet',actionsToday>0?'done':'miss'))+
+      row('📜','Active quest',questBadge)+
+      row('✅','To-do list',todoBadge)+
+      row('🌿','Gratitude journal',badge(gratDone?'Done':'Not done',gratDone?'done':'miss'))+
+      row('🎰','Spin the wheel',badge(spinDone?'Claimed':'Available',spinDone?'done':'go'))+
+    '</div>';
+
+  // ── DAILY CHALLENGE ──
+  var challengeCard='';
+  if(dc){
+    challengeCard=
+      '<div style="background:linear-gradient(135deg,#0f1a2a,#07090f);border:1px solid rgba(139,63,232,.3);border-radius:18px;padding:14px 16px;margin-bottom:10px;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#8b3fe8;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Daily Challenge</div>'+
+        '<div style="font-size:13px;color:#e8d5a0;margin-bottom:10px;line-height:1.5;">'+dc.desc+'</div>'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;">'+
+          '<div style="font-size:11px;color:var(--text2);">'+dc.reward+'</div>'+
+          badge(dcProgress+' / '+dc.target,'go')+
+        '</div>'+
+      '</div>';
+  } else if(G.dcOptions&&G.dcOptions.length){
+    challengeCard=
+      '<div onclick="showDCPicker()" style="background:linear-gradient(135deg,#0f1a2a,#07090f);border:1px solid rgba(139,63,232,.3);border-radius:18px;padding:14px 16px;margin-bottom:10px;cursor:pointer;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#8b3fe8;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Daily Challenge</div>'+
+        '<div style="font-size:13px;color:#e8d5a0;line-height:1.5;">You haven\'t picked your challenge yet!</div>'+
+        '<div style="font-size:11px;color:#8b3fe8;margin-top:8px;">Tap to choose →</div>'+
+      '</div>';
+  }
+
+  // ── NAV CARDS ──
+  var NAV_CARDS=[
+    {id:"actions",  icon:"⚔",  label:"Actions",    desc:"Log your daily deeds",       color:"#4a8fff"},
+    {id:"quests",   icon:"📜", label:"Quests",     desc:"Your active missions",        color:"#f4c842"},
+    {id:"todo",     icon:"✅", label:"To-Do",      desc:"Tasks & daily goals",         color:"#2ab88a"},
+    {id:"journal",  icon:"🌿", label:"Journal",    desc:"Gratitude & I AM",            color:"#8b3fe8"},
+    {id:"fjournal", icon:"📓", label:"My Notes",   desc:"Free writing & reflections",  color:"#c456a0"},
+    {id:"spin",     icon:"🎰", label:"Spin",       desc:"Daily wheel of fortune",      color:"#e8923a"},
+    {id:"inventory",icon:"🎒", label:"Inventory",  desc:"Gear, pets & chests",         color:"#2ab88a"},
+    {id:"shop",     icon:"🛒", label:"Shop",       desc:"Spend your gold",             color:"#f4c842"},
+    {id:"timer",    icon:"⏱", label:"Timer",      desc:"Focus & breathing",           color:"#4a8fff"},
+  ];
+
+  var cards=NAV_CARDS.map(function(c){
+    return'<div onclick="setTab(\''+c.id+'\')" style="background:'+c.color+'08;border:1px solid '+c.color+'28;border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+      '<div style="font-size:24px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:'+c.color+'12;border-radius:10px;flex-shrink:0;">'+c.icon+'</div>'+
+      '<div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#e8d5a0;margin-bottom:2px;">'+c.label+'</div>'+
+        '<div style="font-size:11px;color:var(--text2);">'+c.desc+'</div>'+
+      '</div>'+
+      '<div style="margin-left:auto;color:'+c.color+';font-size:18px;opacity:.4;">›</div>'+
+    '</div>';
+  }).join("");
+
   setTimeout(function(){
     var slot=document.getElementById("dashAvImg");
-    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,36);
+    if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,48);
   },50);
 
-  return'<div style="padding:4px 0 24px;">'+
+  return'<div style="padding:4px 0 32px;">'+
     heroStrip+
-    dcBanner+
+    statsRow+
+    progressCard+
+    challengeCard+
     '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Navigate</div>'+
     '<div style="display:flex;flex-direction:column;gap:8px;">'+cards+'</div>'+
   '</div>';
