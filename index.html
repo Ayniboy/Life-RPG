@@ -1945,8 +1945,16 @@ async function updatePushActivity(){
 window.enableNotifications=async function(){
   var granted=await requestPushPermission();
   if(!granted){showToast("Notifications blocked — enable in browser settings.");return;}
+  showToast("Setting up notifications...");
   var ok=await subscribeToPush();
-  if(ok){G.notificationsEnabled=true;savePersist();showToast("🔔 Notifications enabled!");render();}
+  if(ok){
+    G.notificationsEnabled=true;
+    savePersist();
+    showToast("🔔 Notifications enabled!");
+    render();
+  } else {
+    showToast("Could not enable notifications. Try a different browser.");
+  }
 };
 
 window.disableNotifications=function(){
