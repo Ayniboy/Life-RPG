@@ -1315,6 +1315,7 @@ var G={
   unlockedSkins:sv&&sv.unlockedSkins||["default"],
   todos:sv&&sv.todos||[],
   actionDomain:null,
+  leaderboardOptIn:sv&&sv.leaderboardOptIn||false,
   todoClaimedToday:sv&&sv.todoClaimedToday||false,
   todoClaimedCount:sv&&sv.todoClaimedCount||0,
   _todoClearDate:sv&&sv._todoClearDate||"",
@@ -1520,7 +1521,345 @@ function checkStreakShield(){
   }
 }
 
-// ── Daily Login Streak ──────────────────────────────
+// ════════════════════════════════════════════════
+// LEADERBOARD & FRIENDS SYSTEM
+// ════════════════════════════════════════════════
+
+// ── Publish public profile to Supabase ──
+async function publishProfile(){
+  if(!_sbSession||!G.avatarName)return;
+  var uid=_sbSession.user.id;
+  var profile={
+    user_id:uid,
+    hero_name:G.avatarName,
+    class_id:G.avatarClass||0,
+    total_xp:G.totalXP||0,
+    streak:G.streakDays||0,
+    level:totalLv(),
+    title:playerTitle(),
+    skin:G.equippedSkin||"default",
+    opt_in:G.leaderboardOptIn||false,
+    updated_at:new Date().toISOString(),
+  };
+  try{
+    await fetch(SB_URL+"/rest/v1/profiles",{
+      method:"POST",
+      headers:Object.assign({},sbHeaders(),{"Prefer":"resolution=merge-duplicates"}),
+      body:JSON.stringify(profile),
+    });
+  }catch(e){}
+}
+
+// ── Check name uniqueness ──
+async function checkNameUnique(name){
+  if(!_sbSession)return true; // skip if not logged in
+  var uid=_sbSession.user.id;
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/profiles?hero_name=eq."+encodeURIComponent(name)+"&user_id=neq."+uid+"&select=hero_name",{
+      headers:sbHeaders()
+    });
+    var data=await resp.json();
+    return!data||data.length===0;
+  }catch(e){return true;}
+}
+
+// ── Fetch leaderboard ──
+async function fetchLeaderboard(){
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/profiles?opt_in=eq.true&order=total_xp.desc&limit=50&select=hero_name,class_id,total_xp,streak,level,title,user_id",{
+      headers:sbHeaders()
+    });
+    return await resp.json();
+  }catch(e){return[];}
+}
+
+// ── Fetch friends ──
+async function fetchFriends(){
+  if(!_sbSession)return[];
+  var uid=_sbSession.user.id;
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/friends?or=(user_id.eq."+uid+",friend_id.eq."+uid+")&status=eq.accepted&select=*",{
+      headers:sbHeaders()
+    });
+    return await resp.json();
+  }catch(e){return[];}
+}
+
+// ── Fetch pending friend requests ──
+async function fetchPendingRequests(){
+  if(!_sbSession)return[];
+  var uid=_sbSession.user.id;
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/friends?friend_id=eq."+uid+"&status=eq.pending&select=*",{
+      headers:sbHeaders()
+    });
+    return await resp.json();
+  }catch(e){return[];}
+}
+
+// ── Send friend request ──
+async function sendFriendRequest(targetUserId){
+  if(!_sbSession)return false;
+  var uid=_sbSession.user.id;
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/friends",{
+      method:"POST",
+      headers:Object.assign({},sbHeaders(),{"Prefer":"resolution=merge-duplicates"}),
+      body:JSON.stringify({user_id:uid,friend_id:targetUserId,status:"pending",created_at:new Date().toISOString()}),
+    });
+    return resp.ok;
+  }catch(e){return false;}
+}
+
+// ── Accept friend request ──
+async function acceptFriendRequest(requestId){
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/friends?id=eq."+requestId,{
+      method:"PATCH",
+      headers:sbHeaders(),
+      body:JSON.stringify({status:"accepted"}),
+    });
+    return resp.ok;
+  }catch(e){return false;}
+}
+
+// ── Search player by name ──
+async function searchPlayerByName(name){
+  try{
+    var resp=await fetch(SB_URL+"/rest/v1/profiles?hero_name=ilike."+encodeURIComponent("%"+name+"%")+"&select=hero_name,class_id,total_xp,streak,level,title,user_id&limit=10",{
+      headers:sbHeaders()
+    });
+    return await resp.json();
+  }catch(e){return[];}
+}
+
+// ── Leaderboard Tab ──
+function rLeaderboard(){
+  if(!_sbSession){
+    return'<div style="text-align:center;padding:48px 24px;">'+
+      '<div style="font-size:48px;margin-bottom:16px;">🏆</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:18px;color:#e8d5a0;margin-bottom:8px;">Leaderboard</div>'+
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:24px;">Create an account to join the leaderboard and compete with other players.</div>'+
+      '<button onclick="showLoginFromLog()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:14px;padding:13px 32px;font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;">Create Account</button>'+
+    '</div>';
+  }
+
+  // Opt-in toggle
+  var optInBanner='';
+  if(!G.leaderboardOptIn){
+    optInBanner=
+      '<div style="background:linear-gradient(135deg,#0f1828,#07090f);border:1px solid rgba(244,200,66,.3);border-radius:16px;padding:16px;margin-bottom:14px;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:#f4c842;margin-bottom:6px;">Join the Leaderboard?</div>'+
+        '<div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;">Your hero name and stats will be visible to other players. You can opt out anytime.</div>'+
+        '<div style="display:flex;gap:8px;">'+
+          '<button onclick="joinLeaderboard()" style="flex:1;background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:10px;padding:10px;font-family:\"Cinzel\",serif;font-size:12px;font-weight:700;color:#1a1200;cursor:pointer;">⚔ Join</button>'+
+          '<button onclick="G.leaderboardOptIn=false;savePersist();render();" style="flex:1;background:transparent;border:1px solid var(--border2);border-radius:10px;padding:10px;font-family:\"Cinzel\",serif;font-size:12px;color:var(--text2);cursor:pointer;">Stay Private</button>'+
+        '</div>'+
+      '</div>';
+  } else {
+    optInBanner=
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:10px 14px;background:rgba(42,184,138,.08);border:1px solid rgba(42,184,138,.2);border-radius:12px;">'+
+        '<div style="font-size:12px;color:#2ab88a;">✓ You\'re on the leaderboard</div>'+
+        '<button onclick="leaveLeaderboard()" style="background:transparent;border:none;font-size:11px;color:var(--text3);cursor:pointer;text-decoration:underline;">Leave</button>'+
+      '</div>';
+  }
+
+  // Friends section
+  var friendsHTML=
+    '<div style="margin-bottom:16px;">'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Friends</div>'+
+      '<div style="display:flex;gap:8px;margin-bottom:10px;">'+
+        '<input id="friendSearch" type="text" placeholder="Search by hero name..." style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:13px;color:#e8d5a0;outline:none;" />'+
+        '<button onclick="doFriendSearch()" style="background:linear-gradient(135deg,#1a3a6a,#2a5aaa);border:none;border-radius:10px;padding:10px 16px;font-family:\"Cinzel\",serif;font-size:12px;color:#e8d5a0;cursor:pointer;">Search</button>'+
+      '</div>'+
+      '<div id="friendSearchResults"></div>'+
+      '<div id="pendingRequests"></div>'+
+      '<div id="friendsList"></div>'+
+    '</div>';
+
+  var html=
+    '<div style="padding-bottom:32px;">'+
+      optInBanner+
+      friendsHTML+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Global Rankings</div>'+
+      '<div id="leaderboardList"><div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Loading...</div></div>'+
+    '</div>';
+
+  // Load data async
+  setTimeout(function(){loadLeaderboardData();},100);
+  return html;
+}
+
+async function loadLeaderboardData(){
+  // Load leaderboard
+  var players=await fetchLeaderboard();
+  var uid=_sbSession?_sbSession.user.id:"";
+  var el=document.getElementById("leaderboardList");
+  if(!el)return;
+
+  if(!players||players.length===0){
+    el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;font-style:italic;">No players yet — be the first to join!</div>';
+  } else {
+    var neons=["#4a8fff","#8b3fe8","#4a8fff","#f4c842","#f4c842","#c456a0","#2ab88a","#ff2d78","#2ab88a"];
+    el.innerHTML=players.map(function(p,i){
+      var isMe=p.user_id===uid;
+      var nc=neons[p.class_id||0];
+      var medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
+      return'<div onclick="showPlayerProfile(\''+p.user_id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:'+(isMe?"rgba(244,200,66,.06)":"var(--bg2)")+';border:1px solid '+(isMe?"rgba(244,200,66,.2)":"var(--border)")+';border-radius:14px;margin-bottom:8px;cursor:pointer;" onpointerdown="this.style.transform=\'scale(.98)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:var(--text3);width:28px;text-align:center;">'+(medal||(i+1)+'.')+'</div>'+
+        '<div style="width:36px;height:36px;border-radius:8px;background:'+nc+'18;border:1px solid '+nc+'44;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+["⚔","📖","👟","💰","🏆","🧘","⚗","🗡","🌿"][p.class_id||0]+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:'+(isMe?"#f4c842":"#e8d5a0")+';font-weight:700;">'+(isMe?"⭐ ":"")+p.hero_name+'</div>'+
+          '<div style="font-size:11px;color:var(--text2);">'+p.title+' · Lv.'+p.level+'</div>'+
+        '</div>'+
+        '<div style="text-align:right;flex-shrink:0;">'+
+          '<div style="font-family:\"Cinzel\",serif;font-size:13px;color:'+nc+';">'+(p.total_xp||0).toLocaleString()+' XP</div>'+
+          '<div style="font-size:10px;color:var(--text3);">'+p.streak+'🔥</div>'+
+        '</div>'+
+      '</div>';
+    }).join("");
+  }
+
+  // Load pending requests
+  var pending=await fetchPendingRequests();
+  var pendEl=document.getElementById("pendingRequests");
+  if(pendEl&&pending&&pending.length>0){
+    pendEl.innerHTML='<div style="font-family:\"Cinzel\",serif;font-size:10px;color:#f4c842;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Friend Requests</div>'+
+      pending.map(function(r){
+        return'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(244,200,66,.06);border:1px solid rgba(244,200,66,.2);border-radius:12px;margin-bottom:6px;">'+
+          '<div style="font-size:13px;color:#e8d5a0;">'+r.user_name+'</div>'+
+          '<div style="display:flex;gap:6px;">'+
+            '<button onclick="doAcceptFriend(\''+r.id+'\')" style="background:linear-gradient(135deg,#2ab88a,#1a9a6a);border:none;border-radius:8px;padding:6px 14px;font-family:\"Cinzel\",serif;font-size:11px;color:#fff;cursor:pointer;">Accept</button>'+
+            '<button onclick="doDeclineFriend(\''+r.id+'\')" style="background:transparent;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--text3);cursor:pointer;">Decline</button>'+
+          '</div>'+
+        '</div>';
+      }).join("");
+  }
+
+  // Load friends list
+  var friends=await fetchFriends();
+  var friendsEl=document.getElementById("friendsList");
+  if(friendsEl&&friends&&friends.length>0){
+    var myId=_sbSession.user.id;
+    friendsEl.innerHTML='<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin:10px 0 8px;">Your Friends</div>'+
+      friends.map(function(f){
+        var friendName=f.user_id===myId?f.friend_name:f.user_name;
+        var friendId=f.user_id===myId?f.friend_id:f.user_id;
+        return'<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:6px;">'+
+          '<div style="font-size:18px;">⚔</div>'+
+          '<div style="flex:1;font-size:13px;color:#e8d5a0;">'+friendName+'</div>'+
+        '</div>';
+      }).join("");
+  }
+}
+
+window.joinLeaderboard=async function(){
+  G.leaderboardOptIn=true;
+  savePersist();
+  await publishProfile();
+  render();
+  showToast("You're on the leaderboard! Good luck!");
+};
+
+window.leaveLeaderboard=function(){
+  G.leaderboardOptIn=false;
+  savePersist();
+  // Remove from profiles
+  if(_sbSession){
+    fetch(SB_URL+"/rest/v1/profiles?user_id=eq."+_sbSession.user.id,{
+      method:"PATCH",headers:sbHeaders(),
+      body:JSON.stringify({opt_in:false}),
+    }).catch(function(){});
+  }
+  render();
+  showToast("You've left the leaderboard.");
+};
+
+window.doFriendSearch=async function(){
+  var inp=document.getElementById("friendSearch");
+  if(!inp||!inp.value.trim())return;
+  var results=await searchPlayerByName(inp.value.trim());
+  var el=document.getElementById("friendSearchResults");
+  if(!el)return;
+  var myId=_sbSession?_sbSession.user.id:"";
+  if(!results||results.length===0){
+    el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0;">No players found.</div>';
+    return;
+  }
+  el.innerHTML=results.filter(function(p){return p.user_id!==myId;}).map(function(p){
+    return'<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:6px;">'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:13px;color:#e8d5a0;font-weight:700;">'+p.hero_name+'</div>'+
+        '<div style="font-size:11px;color:var(--text2);">'+p.title+' · Lv.'+p.level+'</div>'+
+      '</div>'+
+      '<button onclick="doSendFriendRequest(\''+p.user_id+'\',\''+p.hero_name+'\')" style="background:linear-gradient(135deg,#1a3a6a,#2a5aaa);border:none;border-radius:8px;padding:7px 14px;font-family:\"Cinzel\",serif;font-size:11px;color:#e8d5a0;cursor:pointer;">+ Add</button>'+
+    '</div>';
+  }).join("");
+};
+
+window.doSendFriendRequest=async function(targetId,name){
+  var ok=await sendFriendRequest(targetId);
+  if(ok)showToast("Friend request sent to "+name+"!");
+  else showToast("Couldn't send request. Try again.");
+};
+
+window.doAcceptFriend=async function(reqId){
+  var ok=await acceptFriendRequest(reqId);
+  if(ok){showToast("Friend accepted!");loadLeaderboardData();}
+};
+
+window.doDeclineFriend=async function(reqId){
+  await fetch(SB_URL+"/rest/v1/friends?id=eq."+reqId,{
+    method:"DELETE",headers:sbHeaders()
+  });
+  loadLeaderboardData();
+};
+
+window.showPlayerProfile=function(userId){
+  // Show a modal with basic player stats
+  fetch(SB_URL+"/rest/v1/profiles?user_id=eq."+userId+"&select=*",{headers:sbHeaders()})
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var p=data&&data[0];
+    if(!p)return;
+    var nc=["#4a8fff","#8b3fe8","#4a8fff","#f4c842","#f4c842","#c456a0","#2ab88a","#ff2d78","#2ab88a"][p.class_id||0];
+    var div=document.createElement("div");
+    div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;";
+    div.innerHTML=
+      '<div style="background:linear-gradient(135deg,#0d1220,#07090f);border:1px solid '+nc+'44;border-radius:20px;padding:28px 24px;max-width:320px;width:100%;text-align:center;">'+
+        '<button onclick="this.parentElement.parentElement.remove()" style="position:absolute;top:14px;right:16px;background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;">✕</button>'+
+        '<div style="font-size:52px;margin-bottom:4px;">'+["⚔","📖","👟","💰","🏆","🧘","⚗","🗡","🌿"][p.class_id||0]+'</div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:20px;color:#e8d5a0;font-weight:700;margin-bottom:4px;">'+p.hero_name+'</div>'+
+        '<div style="font-size:12px;color:'+nc+';margin-bottom:20px;">'+p.title+' · Lv.'+p.level+'</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">'+
+          '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;">'+
+            '<div style="font-family:\"Cinzel\",serif;font-size:15px;color:#f4c842;font-weight:700;">'+(p.total_xp||0).toLocaleString()+'</div>'+
+            '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">XP</div>'+
+          '</div>'+
+          '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;">'+
+            '<div style="font-family:\"Cinzel\",serif;font-size:15px;color:#f4c842;font-weight:700;">'+p.streak+'🔥</div>'+
+            '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Streak</div>'+
+          '</div>'+
+          '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;">'+
+            '<div style="font-family:\"Cinzel\",serif;font-size:15px;color:#f4c842;font-weight:700;">'+p.level+'</div>'+
+            '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Level</div>'+
+          '</div>'+
+        '</div>'+
+        (p.user_id!==(_sbSession?_sbSession.user.id:"")?'<button onclick="doSendFriendRequest(\''+p.user_id+'\',\''+p.hero_name+'\');this.parentElement.parentElement.remove();" style="background:linear-gradient(135deg,#1a3a6a,#2a5aaa);border:none;border-radius:12px;padding:12px 24px;font-family:\"Cinzel\",serif;font-size:12px;color:#e8d5a0;cursor:pointer;width:100%;">+ Add as Friend</button>':'')+
+      '</div>';
+    document.body.appendChild(div);
+  }).catch(function(){});
+};
+
+// Publish profile whenever saving (if opted in)
+var _origSavePersist=savePersist;
+function savePersist(){
+  _origSavePersist();
+  if(G.leaderboardOptIn&&_sbSession){
+    setTimeout(publishProfile,2000);
+  }
+}
+
 var LOGIN_STREAK_REWARDS=[
   {day:3,  gold:50,  gems:0, chest:null,      label:"3-Day Warrior"},
   {day:7,  gold:100, gems:1, chest:"common",  label:"One Week Legend"},
@@ -1747,6 +2086,7 @@ function rDashboard(){
     {id:"actions",  icon:"⚔",  label:"Actions",    desc:"Log your daily deeds",       color:"#4a8fff"},
     {id:"quests",   icon:"📜", label:"Quests",     desc:"Your active missions",        color:"#f4c842"},
     {id:"todo",     icon:"✅", label:"To-Do",      desc:"Tasks & daily goals",         color:"#2ab88a"},
+    {id:"leaderboard",icon:"🏆",label:"Leaderboard",desc:"Rankings & friends",         color:"#f4c842"},
     {id:"journal",  icon:"🌿", label:"Journal",    desc:"Gratitude & I AM",            color:"#8b3fe8"},
     {id:"fjournal", icon:"📓", label:"My Notes",   desc:"Free writing & reflections",  color:"#c456a0"},
     {id:"spin",     icon:"🎰", label:"Spin",       desc:"Daily wheel of fortune",      color:"#e8923a"},
@@ -2411,6 +2751,7 @@ var NAV_TABS=[
   {id:"quests",    icon:"📜", label:"Quests"},
   {id:"hero",      icon:"🧙", label:"Hero"},
   {id:"todo",      icon:"✅", label:"To-Do"},
+  {id:"leaderboard",icon:"🏆",label:"Leaderboard"},
   {id:"journal",   icon:"🙏", label:"Journal"},
   {id:"fjournal",  icon:"📓", label:"My Notes"},
   {id:"timer",     icon:"⏱", label:"Timer"},
@@ -2436,6 +2777,7 @@ function render(){
   else if(G.tab==="inventory")content=rInventory();
   else if(G.tab==="shop")content=rShop();
   else if(G.tab==="log")content=rLog();
+  else if(G.tab==="leaderboard")content=rLeaderboard();
   else if(G.tab==="todo")content=rTodo();
   else if(G.tab==="hero")content=rHero();
   var streakH="";
@@ -5592,6 +5934,7 @@ function buildSaveObj(){
     avatarClass:G.avatarClass,lastClassChange:G.lastClassChange,freeJournalEntries:G.freeJournalEntries,
     equippedSkin:G.equippedSkin,unlockedSkins:G.unlockedSkins,
     todos:G.todos,todoClaimedToday:G.todoClaimedToday,todoClaimedCount:G.todoClaimedCount,_todoClearDate:G._todoClearDate,
+    leaderboardOptIn:G.leaderboardOptIn,
     streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
     loginStreakDays:G.loginStreakDays,lastLoginStreakDate:G.lastLoginStreakDate,
     saveVersion:23,
