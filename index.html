@@ -643,7 +643,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   @keyframes xpPopFloat{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-48px) scale(1.1);}100%{opacity:0;transform:translateY(-80px) scale(.9);}}
 
   /* ── Update Banner ── */
-  .update-banner{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border-bottom:1px solid #2ab88a55;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;z-index:99999;animation:slideDown .3s ease;}
+  .update-banner{position:fixed;top:env(safe-area-inset-top);left:0;right:0;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border-bottom:1px solid #2ab88a55;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:999999;animation:slideDown .3s ease;}
   .update-banner-text{font-family:"Cinzel",serif;font-size:11px;color:#2ab88a;}
   .update-banner-btn{background:#2ab88a;border:none;border-radius:8px;padding:6px 14px;font-family:"Cinzel",serif;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
 
@@ -1214,11 +1214,11 @@ function buildLaunchChar(){
     '<path d="M22,32 Q40,50 52,66" fill="none" stroke="'+nc2+'" stroke-width="1.1" stroke-linecap="round" opacity="0.4" style="animation:pulse 2.5s ease-in-out infinite"/>'+
     '<path d="M88,30 Q70,48 58,66" fill="none" stroke="'+nc+'" stroke-width="1.1" stroke-linecap="round" opacity="0.4" style="animation:pulse 2.5s ease-in-out infinite .5s"/>'+
     '<path d="M36,17 Q55,9 74,17" fill="none" stroke="'+nc+'" stroke-width="0.9" stroke-linecap="round" opacity="0.35"/>'+
-    // hair
-    '<path d="M28,29 Q24,19 32,12 Q35,9 36,15 Q34,21 33,29 Z" fill="#1a1a28"/>'+
-    '<path d="M38,21 Q36,11 46,4 Q49,1 49,9 Q48,17 47,22 Z" fill="#1e1e30"/>'+
-    '<path d="M72,21 Q74,11 64,4 Q61,1 61,9 Q62,17 63,22 Z" fill="#1e1e30"/>'+
-    '<path d="M82,29 Q86,19 78,12 Q75,9 74,15 Q76,21 77,29 Z" fill="#1a1a28"/>'+
+    // hair — softer, no spiky horns
+    '<path d="M30,32 Q28,24 34,18 Q38,14 40,20 Q38,26 37,32 Z" fill="#1a1a28" opacity="0.9"/>'+
+    '<path d="M42,24 Q41,14 50,9 Q53,7 52,14 Q50,20 49,25 Z" fill="#1e1e30" opacity="0.9"/>'+
+    '<path d="M68,24 Q69,14 60,9 Q57,7 58,14 Q60,20 61,25 Z" fill="#1e1e30" opacity="0.9"/>'+
+    '<path d="M80,32 Q82,24 76,18 Q72,14 70,20 Q72,26 73,32 Z" fill="#1a1a28" opacity="0.9"/>'+
   '</svg>';
 }
 
