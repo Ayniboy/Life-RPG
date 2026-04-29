@@ -1316,6 +1316,7 @@ var G={
   todos:sv&&sv.todos||[],
   actionDomain:null,
   leaderboardOptIn:sv&&sv.leaderboardOptIn||false,
+  notificationsEnabled:sv&&sv.notificationsEnabled||false,
   todoClaimedToday:sv&&sv.todoClaimedToday||false,
   todoClaimedCount:sv&&sv.todoClaimedCount||0,
   _todoClearDate:sv&&sv._todoClearDate||"",
@@ -1875,6 +1876,87 @@ var _origSavePersist=null;
     }
   };
 })();
+
+// ════════════════════════════════════════════════
+// PUSH NOTIFICATIONS
+// ════════════════════════════════════════════════
+var VAPID_PUBLIC_KEY='BEl62iUYgUivxIkv69yViEuiBIa40HI8TsEVlqzA7Gy1sJGnVAFcqD9NJlyTwAkWrJ8YhQPnYBRs8bA3e1YNhw';
+
+function urlBase64ToUint8Array(base64String){
+  var padding='='.repeat((4-base64String.length%4)%4);
+  var base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  var rawData=window.atob(base64);
+  var out=new Uint8Array(rawData.length);
+  for(var i=0;i<rawData.length;++i){out[i]=rawData.charCodeAt(i);}
+  return out;
+}
+
+async function requestPushPermission(){
+  if(!('Notification' in window)||!('serviceWorker' in navigator))return false;
+  var p=await Notification.requestPermission();
+  return p==='granted';
+}
+
+async function subscribeToPush(){
+  try{
+    var reg=await navigator.serviceWorker.ready;
+    var existing=await reg.pushManager.getSubscription();
+    if(existing){await savePushSubscription(existing);return true;}
+    var sub=await reg.pushManager.subscribe({
+      userVisibleOnly:true,
+      applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+    await savePushSubscription(sub);
+    return true;
+  }catch(e){console.warn('Push error:',e);return false;}
+}
+
+async function savePushSubscription(sub){
+  if(!_sbSession)return;
+  var subJson=sub.toJSON();
+  try{
+    await fetch(SB_URL+"/rest/v1/push_subscriptions",{
+      method:"POST",
+      headers:Object.assign({},sbHeaders(),{"Prefer":"resolution=merge-duplicates"}),
+      body:JSON.stringify({
+        user_id:_sbSession.user.id,
+        hero_name:G.avatarName||"Hero",
+        endpoint:subJson.endpoint,
+        p256dh:subJson.keys.p256dh,
+        auth:subJson.keys.auth,
+        streak:G.streakDays||0,
+        last_active:new Date().toISOString(),
+        timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+    });
+  }catch(e){}
+}
+
+async function updatePushActivity(){
+  if(!_sbSession||!G.notificationsEnabled)return;
+  try{
+    await fetch(SB_URL+"/rest/v1/push_subscriptions?user_id=eq."+_sbSession.user.id,{
+      method:"PATCH",headers:sbHeaders(),
+      body:JSON.stringify({last_active:new Date().toISOString(),streak:G.streakDays||0,hero_name:G.avatarName||"Hero"})
+    });
+  }catch(e){}
+}
+
+window.enableNotifications=async function(){
+  var granted=await requestPushPermission();
+  if(!granted){showToast("Notifications blocked — enable in browser settings.");return;}
+  var ok=await subscribeToPush();
+  if(ok){G.notificationsEnabled=true;savePersist();showToast("🔔 Notifications enabled!");render();}
+};
+
+window.disableNotifications=function(){
+  G.notificationsEnabled=false;savePersist();render();
+  showToast("Notifications disabled.");
+};
+
+function initPushNotifications(){
+  if(_sbSession&&G.notificationsEnabled)updatePushActivity();
+}
 
 var LOGIN_STREAK_REWARDS=[
   {day:3,  gold:50,  gems:0, chest:null,      label:"3-Day Warrior"},
@@ -2743,8 +2825,21 @@ function rLog(){
       :'<button onclick="showLoginFromLog()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:8px;padding:6px 14px;color:#1a1200;font-size:11px;font-family:\"Cinzel\",serif;cursor:pointer;font-weight:700;letter-spacing:.3px;">Log In</button>'
     )+
   '</div>';
+  var notifHTML='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid '+(G.notificationsEnabled?'rgba(139,63,232,.3)':'var(--border)')+';border-radius:12px;padding:12px 14px;">'+
+    '<div style="display:flex;align-items:center;gap:8px;">'+
+      '<div style="font-size:20px;">🔔</div>'+
+      '<div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:12px;color:'+(G.notificationsEnabled?'#8b3fe8':'#e8d5a0')+'">'+(G.notificationsEnabled?'Notifications On':'Notifications Off')+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);font-style:italic;">'+(G.notificationsEnabled?'Daily reminders active':'Get reminded to log your deeds')+'</div>'+
+      '</div>'+
+    '</div>'+
+    (G.notificationsEnabled
+      ?'<button onclick="disableNotifications()" style="background:transparent;border:1px solid #e85d3a66;border-radius:8px;padding:6px 12px;color:#e85d3a;font-size:10px;font-family:\"Cinzel\",serif;cursor:pointer;">Turn Off</button>'
+      :'<button onclick="enableNotifications()" style="background:linear-gradient(135deg,#5a1a9a,#8b3fe8);border:none;border-radius:8px;padding:6px 14px;color:#fff;font-size:11px;font-family:\"Cinzel\",serif;cursor:pointer;font-weight:700;">Enable</button>'
+    )+
+  '</div>';
   var rows=G.log.length===0?'<div class="empty">No deeds yet.</div>':'<div class="card" style="padding:4px 16px;">'+G.log.map(function(e){var sk=skById(e.skillId);return'<div class="log-item"><div><div class="log-label">'+e.label+'</div><div class="log-time">'+e.date+' · '+e.time+'</div></div><div class="log-rewards"><span style="color:'+(sk?sk.color:"var(--focus)")+'">+'+e.xp+' XP</span><span style="color:var(--gold)">+'+e.gold+'g</span></div></div>';}).join("")+'</div>';
-  return resetBtnHTML+exportImport+'<p style="font-size:12px;color:var(--text3);margin-bottom:8px;">'+G.log.length+' deed'+(G.log.length!==1?'s':'')+' recorded.</p>'+rows+'<div style="margin-top:14px;text-align:center;"></div>';
+  return resetBtnHTML+exportImport+notifHTML+'<p style="font-size:12px;color:var(--text3);margin-bottom:8px;">'+G.log.length+' deed'+(G.log.length!==1?'s':'')+' recorded.</p>'+rows+'<div style="margin-top:14px;text-align:center;"></div>';
 }
 
 function rTimer(){
@@ -5952,6 +6047,7 @@ function buildSaveObj(){
     equippedSkin:G.equippedSkin,unlockedSkins:G.unlockedSkins,
     todos:G.todos,todoClaimedToday:G.todoClaimedToday,todoClaimedCount:G.todoClaimedCount,_todoClearDate:G._todoClearDate,
     leaderboardOptIn:G.leaderboardOptIn,
+    notificationsEnabled:G.notificationsEnabled,
     streakDays:G.streakDays,lastStreakDate:G.lastStreakDate,
     loginStreakDays:G.loginStreakDays,lastLoginStreakDate:G.lastLoginStreakDate,
     saveVersion:23,
@@ -6293,6 +6389,7 @@ handleAuthRedirect().then(async function(wasRedirect){
   checkLoginNag();
   checkWhatsNew();
   resetTodoClaim();
+  initPushNotifications();
   try{showLaunchScreen();}catch(e){console.warn("Launch screen error:",e);}
   startSuddenEventTimer();
   if(!G.onboarded&&!wasRedirect){
