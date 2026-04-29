@@ -1978,6 +1978,10 @@ function rQuests(){
         '</div>'+
       '</div>'+
       '<div style="margin-top:8px;">'+
+        '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">📅 DAYS TO COMPLETE (min. 3)</div>'+
+        '<input class="cq-input" id="cqDays" type="number" min="3" max="90" value="7" style="width:100px;margin-bottom:0;" />'+
+      '</div>'+
+      '<div style="margin-top:8px;">'+
         '<div style="font-size:10px;color:var(--text2);font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-bottom:4px;">🔢 HOW MANY TIMES TO COMPLETE</div>'+
         '<input class="cq-input" id="cqTarget" type="number" min="1" max="100" value="1" style="width:100px;margin-bottom:0;" />'+
       '</div>'+
@@ -2040,7 +2044,7 @@ function rQuests(){
     '</div>';
   }
 
-  return dcHTML+formHTML+rotatingHTML+customHTML+standardHTML;
+  return dcHTML+rotatingHTML+customHTML+standardHTML+formHTML;
 }
 
 // ── Reflection Prompts ──────────────────────────────
@@ -3845,8 +3849,26 @@ window.addCustomQuest=function(){
   var skillEl=document.getElementById("cqSkill");
   var trackEl=document.getElementById("cqTrack");
   var targetEl=document.getElementById("cqTarget");
+  var daysEl=document.getElementById("cqDays");
 
   if(!title||!title.value.trim()){showToast("Quest needs a title!");return;}
+
+  var days=parseInt(daysEl?daysEl.value:"7")||7;
+
+  // Enforce minimum 3 days
+  if(days<3){
+    var div=document.createElement("div");
+    div.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;";
+    div.innerHTML=
+      '<div style="background:linear-gradient(135deg,#1a0a0a,#0f0508);border:1px solid #e85d3a55;border-radius:20px;padding:28px 24px;max-width:320px;width:100%;text-align:center;">'+
+        '<div style="font-size:40px;margin-bottom:12px;">⚔️</div>'+
+        '<div style="font-family:\'Cinzel\',serif;font-size:16px;color:#e85d3a;margin-bottom:10px;">Too Fast, Hero</div>'+
+        '<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">A worthy quest takes at least <strong style="color:#e8d5a0;">3 days</strong> to complete. True growth can\'t be rushed.</div>'+
+        '<button onclick="this.parentElement.parentElement.remove()" style="background:linear-gradient(135deg,#c8a830,#f4c842);border:none;border-radius:12px;padding:12px 32px;font-family:\'Cinzel\',serif;font-size:13px;font-weight:700;color:#1a1200;cursor:pointer;">Set 3+ Days</button>'+
+      '</div>';
+    document.body.appendChild(div);
+    return;
+  }
 
   var trackAction=trackEl?trackEl.value:"";
   var target=parseInt(targetEl?targetEl.value:"1")||1;
@@ -3864,12 +3886,15 @@ window.addCustomQuest=function(){
     type:trackAction?"count":"manual",
     actions:trackAction?[trackAction]:null,
     target:trackAction?target:1,
+    days:days,
+    createdAt:Date.now(),
+    deadline:Date.now()+(days*24*60*60*1000),
   };
 
   if(!G.customQuests)G.customQuests=[];
   G.customQuests.push(q);
   savePersist();
-  showToast("Custom quest added!");
+  showToast("Quest created! You have "+days+" days to complete it.");
   render();
 };
 
