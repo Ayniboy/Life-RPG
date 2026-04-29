@@ -2249,7 +2249,6 @@ function rDashboard(){
     var slot=document.getElementById("dashAvImg");
     if(slot)slot.innerHTML=drawSVG(G.avatarClass,tl,48);
   },50);
-
   return'<div style="padding:4px 0 32px;">'+
     heroStrip+
     statsRow+
@@ -5544,10 +5543,9 @@ function rHero(){
     // Main character card
     '<div class="hero-main-card">'+
       '<div class="hero-card-top">'+
-        '<div class="hero-av-wrap">'+
+        '<div onclick="openAvModal()" style="cursor:pointer;position:relative;flex-shrink:0;margin-bottom:8px;">'+
           '<div class="hero-av-img" id="heroAvImg"></div>'+
-          '<div class="hero-av-ring" style="border-color:'+rc+';box-shadow:0 0 16px '+rc+'55;border-width:2px;border-style:solid;"></div>'+
-          (acc?'<div class="hero-av-accessory">'+acc.icon+'</div>':'')+
+          '<div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:#f4c842;border-radius:8px;padding:2px 8px;font-size:9px;font-family:\'Cinzel\',serif;color:#1a1200;white-space:nowrap;">✏ Edit</div>'+
         '</div>'+
         '<div class="hero-card-info">'+
           '<div class="hero-name">'+(G.avatarName||"Hero")+'</div>'+
