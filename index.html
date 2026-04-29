@@ -1910,23 +1910,36 @@ async function requestPushPermission(){
 
 async function subscribeToPush(){
   try{
+    console.log('Subscribing to push...');
     var reg=await navigator.serviceWorker.ready;
+    console.log('SW ready:', reg);
     var existing=await reg.pushManager.getSubscription();
-    if(existing){await savePushSubscription(existing);return true;}
+    if(existing){
+      console.log('Existing subscription found');
+      await savePushSubscription(existing);
+      return true;
+    }
+    console.log('Creating new subscription...');
     var sub=await reg.pushManager.subscribe({
       userVisibleOnly:true,
       applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
     });
+    console.log('Subscription created:', sub.endpoint);
     await savePushSubscription(sub);
     return true;
-  }catch(e){console.warn('Push error:',e);return false;}
+  }catch(e){
+    console.error('Push subscribe error:',e);
+    showToast("Push error: "+e.message);
+    return false;
+  }
 }
 
 async function savePushSubscription(sub){
-  if(!_sbSession)return;
+  if(!_sbSession){console.warn('No session for push save');return;}
   var subJson=sub.toJSON();
+  console.log('Saving subscription to Supabase...');
   try{
-    await fetch(SB_URL+"/rest/v1/push_subscriptions",{
+    var resp=await fetch(SB_URL+"/rest/v1/push_subscriptions",{
       method:"POST",
       headers:Object.assign({},sbHeaders(),{"Prefer":"resolution=merge-duplicates"}),
       body:JSON.stringify({
@@ -1940,7 +1953,9 @@ async function savePushSubscription(sub){
         timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
     });
-  }catch(e){}
+    console.log('Save response:', resp.status, resp.statusText);
+    if(!resp.ok){var t=await resp.text();console.error('Save error:',t);}
+  }catch(e){console.error('Save fetch error:',e);}
 }
 
 async function updatePushActivity(){
