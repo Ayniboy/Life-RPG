@@ -39,11 +39,11 @@ button:focus,input:focus,textarea:focus{outline:none;}
 /* Fix iOS input zoom — keep font-size at 16px minimum */
 input,textarea,select{font-size:16px;}
 
-:root{--bg:#07090f;--bg2:#0d1220;--bg3:#111827;--border:#1e2a3a;--border2:#2a3a50;--text:#c8d4e8;--text2:#6a8aaa;--text3:#3a5570;--gold:#f4c842;--gold-bg:#1a1608;--gold-border:#3a2e08;--health:#e85d3a;--productivity:#4a8fff;--learning:#2ab88a;--mindset:#c456a0;--strength:#e85d3a;--endurance:#e8923a;--focus:#4a8fff;--discipline:#8b6fe8;--wisdom:#2ab88a;--creativity:#5ab83a;--mindset-sk:#c456a0;--serenity:#7ab4ea;--spiritual:#1a3a5a;--legendary:#f4c842;--uncommon:#4a8fff;--common:#6a8aaa;--success:#2ab88a;--danger:#e85d3a;--journal-g:#f4c842;--journal-i:#c456a0;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);}
+:root{--bg:#080510;--bg2:#100820;--bg3:#180c2a;--border:#1e1535;--border2:#2a1d45;--text:#e0d0f0;--text2:#8870aa;--text3:#4a3560;--gold:#f4c842;--gold-bg:#1a1608;--gold-border:#3a2e08;--health:#e85d3a;--productivity:#4a8fff;--learning:#2ab88a;--mindset:#c456a0;--strength:#e85d3a;--endurance:#e8923a;--focus:#4a8fff;--discipline:#8b6fe8;--wisdom:#2ab88a;--creativity:#5ab83a;--mindset-sk:#c456a0;--serenity:#7ab4ea;--spiritual:#1a3a5a;--legendary:#f4c842;--uncommon:#4a8fff;--common:#6a8aaa;--success:#2ab88a;--danger:#e85d3a;--journal-g:#f4c842;--journal-i:#c456a0;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:#07090f;color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;}
+html,body{height:100%;background:#080510;color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-#app{display:flex;flex-direction:column;min-height:100vh;max-width:680px;margin:0 auto;overflow-x:hidden;width:100%;}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;width:100%;}
 .header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(7,9,15,.98),rgba(7,9,15,.92));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);width:100%;box-sizing:border-box;}
 .hdr-row1{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:calc(10px + var(--safe-top)) 14px 10px;}
 .hdr-row2{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:1px solid var(--border);}
@@ -1315,6 +1315,7 @@ var G={
   unlockedSkins:sv&&sv.unlockedSkins||["default"],
   todos:sv&&sv.todos||[],
   actionDomain:null,
+  shopCategory:null,
   leaderboardOptIn:sv&&sv.leaderboardOptIn||false,
   notificationsEnabled:sv&&sv.notificationsEnabled||false,
   todoClaimedToday:sv&&sv.todoClaimedToday||false,
@@ -2226,22 +2227,19 @@ function rDashboard(){
     {id:"todo",     icon:"✅", label:"To-Do",      desc:"Tasks & daily goals",         color:"#2ab88a"},
     {id:"leaderboard",icon:"🏆",label:"Leaderboard",desc:"Rankings & friends",         color:"#f4c842"},
     {id:"journal",  icon:"🌿", label:"Journal",    desc:"Gratitude & I AM",            color:"#8b3fe8"},
-    {id:"fjournal", icon:"📓", label:"My Notes",   desc:"Free writing & reflections",  color:"#c456a0"},
-    {id:"spin",     icon:"🎰", label:"Spin",       desc:"Daily wheel of fortune",      color:"#e8923a"},
-    {id:"inventory",icon:"🎒", label:"Inventory",  desc:"Gear, pets & chests",         color:"#2ab88a"},
+    {id:"fjournal", icon:"📓", label:"My Notes",   desc:"Free writing",                color:"#c456a0"},
+    {id:"spin",     icon:"🎰", label:"Spin",       desc:"Daily wheel",                 color:"#e8923a"},
+    {id:"inventory",icon:"🎒", label:"Inventory",  desc:"Gear & chests",               color:"#2ab88a"},
     {id:"shop",     icon:"🛒", label:"Shop",       desc:"Spend your gold",             color:"#f4c842"},
     {id:"timer",    icon:"⏱", label:"Timer",      desc:"Focus & breathing",           color:"#4a8fff"},
     {id:"log",      icon:"📋", label:"Log",        desc:"Your activity history",       color:"#6a8aaa"},
   ];
 
   var cards=NAV_CARDS.map(function(c){
-    return'<div onclick="setTab(\''+c.id+'\')" style="background:'+c.color+'08;border:1px solid '+c.color+'28;border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
-      '<div style="font-size:24px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:'+c.color+'12;border-radius:10px;flex-shrink:0;">'+c.icon+'</div>'+
-      '<div>'+
-        '<div style="font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#e8d5a0;margin-bottom:2px;">'+c.label+'</div>'+
-        '<div style="font-size:11px;color:var(--text2);">'+c.desc+'</div>'+
-      '</div>'+
-      '<div style="margin-left:auto;color:'+c.color+';font-size:18px;opacity:.4;">›</div>'+
+    return'<div onclick="setTab(\''+c.id+'\')" style="background:'+c.color+'0d;border:1px solid '+c.color+'30;border-radius:18px;padding:18px 12px;cursor:pointer;text-align:center;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+      '<div style="font-size:28px;margin-bottom:8px;">'+c.icon+'</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#e8d5a0;margin-bottom:3px;">'+c.label+'</div>'+
+      '<div style="font-size:10px;color:var(--text2);line-height:1.4;">'+c.desc+'</div>'+
     '</div>';
   }).join("");
 
@@ -2255,7 +2253,7 @@ function rDashboard(){
     progressCard+
     challengeCard+
     '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Navigate</div>'+
-    '<div style="display:flex;flex-direction:column;gap:8px;">'+cards+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'+cards+'</div>'+
   '</div>';
 }
 
@@ -2279,24 +2277,14 @@ function rActions(){
 
     var cls=CLASS_BONUSES[G.avatarClass||0];
 
-    var cards=DOMAINS.map(function(d,i){
-      var count=QUICK_ACTIONS.filter(function(a){return a.domain===d.id;}).length;
+    var cards=DOMAINS.map(function(d){
       var maxXP=Math.max.apply(null,QUICK_ACTIONS.filter(function(a){return a.domain===d.id;}).map(function(a){return a.xp;}));
-      var doneCount=G.log.filter(function(e){return e.date===today&&QUICK_ACTIONS.find(function(a){return a.label===e.label&&a.domain===d.id;});}).length;
-      var clsBonus=(cls&&cls.domain===d.id)?' · '+cls.name+' +10%':'';
-      var isLast=i===DOMAINS.length-1;
-      return'<div onclick="setActionDomain(\''+d.id+'\')" style="'+
-        'background:'+d.color+'0d;border:1px solid '+d.color+'30;border-radius:20px;padding:20px 18px;cursor:pointer;'+
-        (isLast?'grid-column:1/-1;display:flex;align-items:center;gap:20px;':'')+
-        '" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
-        '<div style="font-size:'+(isLast?'36':'32')+'px;'+(isLast?'flex-shrink:0;':'margin-bottom:10px;')+'">'+d.icon+'</div>'+
-        '<div style="'+(isLast?'flex:1;':'')+'">'+
-          '<div style="font-family:\"Cinzel\",serif;font-size:15px;font-weight:700;color:#e8d5a0;margin-bottom:3px;">'+d.id+'</div>'+
-          '<div style="font-size:11px;color:var(--text2);margin-bottom:'+(isLast?'0':'10')+'px;">'+d.desc+'</div>'+
-          (!isLast?'<div style="display:inline-block;font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid '+d.color+'40;color:'+d.color+';">up to +'+maxXP+' XP'+clsBonus+'</div>':'')+
-        '</div>'+
-        (isLast?'<div style="font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid '+d.color+'40;color:'+d.color+';">up to +'+maxXP+' XP</div>':'')+
-        '<div style="'+(isLast?'margin-left:auto;':'position:absolute;bottom:14px;right:16px;')+'font-size:18px;color:'+d.color+';opacity:.4;position:'+(isLast?'static':'absolute')+';">›</div>'+
+      var clsBonus=(cls&&cls.domain===d.id)?' · +10%':'';
+      return'<div onclick="setActionDomain(\''+d.id+'\')" style="background:'+d.color+'0d;border:1px solid '+d.color+'30;border-radius:18px;padding:18px 12px;cursor:pointer;text-align:center;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+        '<div style="font-size:28px;margin-bottom:8px;">'+d.icon+'</div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#e8d5a0;margin-bottom:3px;">'+d.id+'</div>'+
+        '<div style="font-size:10px;color:var(--text2);margin-bottom:8px;line-height:1.4;">'+d.desc+'</div>'+
+        '<div style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid '+d.color+'40;color:'+d.color+';">+'+maxXP+' XP'+clsBonus+'</div>'+
       '</div>';
     }).join("");
 
@@ -2701,22 +2689,84 @@ window.useFreePrompt=function(){
 };
 
 function rShop(){
-  var cards=SHOP.map(function(item){
-    var canGold=G.gold>=item.cost;
-    var canGems=!item.gems||G.gems>=item.gems;
-    var can=canGold&&canGems;
-    var oc=can?" onclick=\"buyItem('"+item.id+"')\"":"";
-    var priceHTML='<div class="shop-price">'+item.cost+'g'+(item.gems?' + '+item.gems+'💎':'')+'</div>';
-    return'<div class="shop-card'+(can?"":" locked")+'"'+oc+'><div class="shop-icon">'+item.icon+'</div><div class="shop-name">'+item.name+'</div><div class="shop-desc">'+item.desc+'</div>'+priceHTML+'</div>';
-  }).join("");
-  var hist=G.purchases.length>0?'<div class="card" style="margin-top:12px;"><div class="card-title">Purchase History</div>'+G.purchases.map(function(p){return'<div class="purchase-item"><span>'+p.icon+' '+p.name+'</span><span style="color:var(--gold);font-size:12px;">−'+p.cost+'g · '+p.time+'</span></div>';}).join("")+'</div>':"";
-  var rotHTML=rRotShop();
-  return'<div class="treasury"><span style="font-size:13px;color:var(--gold);opacity:.7;">Treasury</span><div style="display:flex;gap:8px;"><span class="gems-pill">'+G.gems+'💎</span><span class="gold-pill">'+G.gold+'g</span></div></div>'+
-    '<div class="rot-shop-header"><div class="rot-shop-title">⏰ Limited Offers</div></div>'+
-    '<div class="rot-slots">'+rotHTML+'</div>'+
-    '<div class="rot-shop-header" style="margin-top:4px;"><div class="rot-shop-title">🛒 Standard Shop</div></div>'+
-    '<div class="shop-grid">'+cards+'</div>'+hist;
+  var shopCategory=G.shopCategory||null;
+
+  // ── LEVEL 1: Category cards ──
+  if(!shopCategory){
+    var SHOP_CATS=[
+      {id:"classes",  icon:"⚔",  label:"Classes",    desc:"Unlock new hero classes",    color:"#f4c842"},
+      {id:"boosts",   icon:"⚡",  label:"Boosts",     desc:"XP multipliers & power ups", color:"#4a8fff"},
+      {id:"pets",     icon:"🐾",  label:"Companions", desc:"Pets with passive bonuses",  color:"#2ab88a"},
+      {id:"gear",     icon:"🛡️",  label:"Gear",       desc:"Keys, shields & accessories",color:"#8b3fe8"},
+      {id:"limited",  icon:"⏰",  label:"Limited",    desc:"Rotating special offers",    color:"#e8923a"},
+    ];
+
+    var catCards=SHOP_CATS.map(function(c){
+      return'<div onclick="setShopCategory(\''+c.id+'\')" style="background:'+c.color+'0d;border:1px solid '+c.color+'30;border-radius:18px;padding:18px 12px;cursor:pointer;text-align:center;" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+        '<div style="font-size:28px;margin-bottom:8px;">'+c.icon+'</div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:13px;font-weight:700;color:#e8d5a0;margin-bottom:3px;">'+c.label+'</div>'+
+        '<div style="font-size:10px;color:var(--text2);line-height:1.4;">'+c.desc+'</div>'+
+      '</div>';
+    }).join("");
+
+    return'<div style="padding-bottom:32px;">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;">'+
+        '<div style="font-size:22px;font-weight:700;color:#f4c842;font-family:\"Cinzel\",serif;">'+G.gold+'g</div>'+
+        '<div style="font-size:13px;color:var(--text2);">gold</div>'+
+        '<div style="margin-left:auto;font-size:13px;font-weight:700;color:#8b3fe8;font-family:\"Cinzel\",serif;">'+G.gems+'💎</div>'+
+        '<div style="font-size:11px;color:var(--text2);">gems</div>'+
+      '</div>'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Shop Categories</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'+catCards+'</div>'+
+    '</div>';
+  }
+
+  // ── LEVEL 2: Items in category ──
+  var colorMap={classes:"#f4c842",boosts:"#4a8fff",pets:"#2ab88a",gear:"#8b3fe8",limited:"#e8923a"};
+  var nc=colorMap[shopCategory]||"#4a8fff";
+  var labelMap={classes:"Classes",boosts:"Boosts",pets:"Companions",gear:"Gear",limited:"Limited Offers"};
+
+  var filtered=[];
+  if(shopCategory==="classes") filtered=SHOP.filter(function(i){return i.type==="class";});
+  else if(shopCategory==="boosts") filtered=SHOP.filter(function(i){return i.type==="boost3"||i.type==="boost6h";});
+  else if(shopCategory==="pets") filtered=SHOP.filter(function(i){return i.type==="pet";});
+  else if(shopCategory==="gear") filtered=SHOP.filter(function(i){return i.type==="key"||i.type==="shield"||i.type==="accessory";});
+  else if(shopCategory==="limited") filtered=[];
+
+  var itemCards=shopCategory==="limited"
+    ?'<div style="text-align:center;padding:32px 16px;">'+rRotShop()+'</div>'
+    :filtered.map(function(item){
+      var canGold=G.gold>=item.cost;
+      var canGems=!item.gems||G.gems>=item.gems;
+      var can=canGold&&canGems;
+      var oc=can?" onclick=\"buyItem('"+item.id+"')\"":"";
+      return'<div'+oc+' style="background:var(--bg2);border:1px solid '+(can?nc+'44':'var(--border)')+';border-radius:18px;padding:18px 12px;cursor:'+(can?'pointer':'not-allowed')+';text-align:center;opacity:'+(can?1:.6)+';" '+(can?'onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'"':'')+'>'+
+        '<div style="font-size:28px;margin-bottom:8px;">'+item.icon+'</div>'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:12px;font-weight:700;color:#e8d5a0;margin-bottom:4px;">'+item.name+'</div>'+
+        '<div style="font-size:10px;color:var(--text2);margin-bottom:8px;line-height:1.4;">'+item.desc+'</div>'+
+        '<div style="font-size:11px;font-weight:700;color:'+nc+';">'+item.cost+'g'+(item.gems?' + '+item.gems+'💎':'')+'</div>'+
+      '</div>';
+    }).join("");
+
+  var hist=shopCategory!=="limited"&&G.purchases.length>0
+    ?'<div style="margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;">'+
+      '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Purchase History</div>'+
+      G.purchases.slice(0,5).map(function(p){return'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>'+p.icon+' '+p.name+'</span><span style="color:var(--gold);">−'+p.cost+'g</span></div>';}).join("")+
+    '</div>':'' ;
+
+  return'<div style="padding-bottom:32px;">'+
+    '<button onclick="setShopCategory(null)" style="background:'+nc+'18;border:1px solid '+nc+'35;border-radius:12px;padding:8px 16px;font-family:\"Cinzel\",serif;font-size:12px;color:'+nc+';cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:6px;">← All Categories</button>'+
+    '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">'+labelMap[shopCategory]+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'+itemCards+'</div>'+
+    hist+
+  '</div>';
 }
+
+window.setShopCategory=function(cat){
+  G.shopCategory=cat;
+  G.tab="shop";
+  render();
+};
 
 // ── To-Do List ──────────────────────────────────────
 var TODO_XP=30; // XP per completed batch of 5+
@@ -3865,10 +3915,12 @@ function rInventory(){
   // Summary cards
   var summaryHTML=
     '<div class="inv-summary">'+
+      '<div class="inv-card"><div class="inv-card-icon">💰</div><div class="inv-card-val">'+(G.gold||0)+'</div><div class="inv-card-label">Gold</div></div>'+
+      '<div class="inv-card"><div class="inv-card-icon">💎</div><div class="inv-card-val">'+(G.gems||0)+'</div><div class="inv-card-label">Gems</div></div>'+
       '<div class="inv-card"><div class="inv-card-icon">🗝️</div><div class="inv-card-val">'+(G.keys||0)+'</div><div class="inv-card-label">Keys</div></div>'+
       '<div class="inv-card"><div class="inv-card-icon">📦</div><div class="inv-card-val">'+totalChests+'</div><div class="inv-card-label">Chests</div></div>'+
       '<div class="inv-card"><div class="inv-card-icon">🛡️</div><div class="inv-card-val">'+(G.streakShield||0)+'</div><div class="inv-card-label">Shields</div></div>'+
-      '<div class="inv-card"><div class="inv-card-icon">⚡</div><div class="inv-card-val">'+(isBoostActive()?'ON':'OFF')+'</div><div class="inv-card-label" style="color:'+(isBoostActive()?'var(--success)':'var(--text2)')+';">XP Boost</div></div>'+
+      '<div class="inv-card"><div class="inv-card-icon">⚡</div><div class="inv-card-val">'+(isBoostActive()?'ON':'OFF')+'</div><div class="inv-card-label" style="color:'+(isBoostActive()?'var(--success)':'var(--text2)')+';">Boost</div></div>'+
     '</div>';
 
   // Key shop
