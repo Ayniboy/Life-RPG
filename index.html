@@ -42,6 +42,7 @@ input,textarea,select{font-size:16px;}
 :root{--bg:#080510;--bg2:#100820;--bg3:#180c2a;--border:#1e1535;--border2:#2a1d45;--text:#e0d0f0;--text2:#8870aa;--text3:#4a3560;--gold:#f4c842;--gold-bg:#1a1608;--gold-border:#3a2e08;--health:#e85d3a;--productivity:#4a8fff;--learning:#2ab88a;--mindset:#c456a0;--strength:#e85d3a;--endurance:#e8923a;--focus:#4a8fff;--discipline:#8b6fe8;--wisdom:#2ab88a;--creativity:#5ab83a;--mindset-sk:#c456a0;--serenity:#7ab4ea;--spiritual:#1a3a5a;--legendary:#f4c842;--uncommon:#4a8fff;--common:#6a8aaa;--success:#2ab88a;--danger:#e85d3a;--journal-g:#f4c842;--journal-i:#c456a0;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:#02010a;color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;display:flex;justify-content:center;}
+input,textarea,select{font-size:16px !important;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 #app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;width:100%;overflow-x:hidden;background:#080510;box-shadow:0 0 60px rgba(139,63,232,.15);}
 .header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(7,9,15,.98),rgba(7,9,15,.92));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);width:100%;box-sizing:border-box;}
@@ -177,7 +178,7 @@ html,body{height:100%;background:#02010a;color:var(--text);font-family:'Crimson 
 .entry-item-row{font-size:13px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:6px;}
 .entry-item-row:last-child{border-bottom:none;}
 .entry-num{font-family:"Cinzel",serif;font-size:11px;color:var(--text3);min-width:18px;}
-.fj-search{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;margin-bottom:12px;}
+.fj-search{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-family:'Crimson Text',serif;font-size:16px;outline:none;margin-bottom:12px;}
 .fj-search::placeholder{color:var(--text3);}
 .fj-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'Crimson Text',serif;font-size:15px;line-height:1.7;resize:vertical;min-height:130px;outline:none;-webkit-appearance:none;}
 .fj-textarea:focus{border-color:var(--border2);}
@@ -221,7 +222,7 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
 .av-class-cell{border-radius:10px;padding:8px 5px;text-align:center;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--bg);}
 .av-class-cell:active{transform:scale(.95);}
 .av-class-label{font-family:"Cinzel",serif;font-size:10px;letter-spacing:.5px;margin-top:4px;color:var(--text2);}
-.av-name-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:"Cinzel",serif;font-size:14px;outline:none;letter-spacing:1px;margin-bottom:9px;}
+.av-name-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:"Cinzel",serif;font-size:16px;outline:none;letter-spacing:1px;margin-bottom:9px;}
 .av-name-input::placeholder{color:var(--text3);font-family:'Crimson Text',serif;letter-spacing:0;font-style:italic;}
 .av-modal-save{width:100%;background:var(--focus);border:none;border-radius:10px;padding:11px;color:#fff;font-family:"Cinzel",serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;}
 .av-modal-close{width:100%;background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px;color:var(--text2);font-family:"Cinzel",serif;font-size:12px;cursor:pointer;}
@@ -334,11 +335,11 @@ mark.hl{background:rgba(244,200,66,.28);border-radius:2px;}
   /* Custom quest form */
   .cq-form{background:linear-gradient(135deg,var(--bg2),var(--bg));border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;}
   .cq-form-title{font-family:"Cinzel",serif;font-size:13px;color:#e8d5a0;margin-bottom:14px;}
-  .cq-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;margin-bottom:8px;}
+  .cq-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Text',serif;font-size:16px;outline:none;margin-bottom:8px;}
   .cq-input:focus{border-color:var(--border2);}
   .cq-input::placeholder{color:var(--text3);font-style:italic;}
   .cq-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
-  .cq-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;}
+  .cq-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Text',serif;font-size:16px;outline:none;}
   .cq-add-btn{width:100%;background:linear-gradient(135deg,#2ab88a,#1a8a6a);border:none;border-radius:10px;padding:11px;color:#fff;font-family:"Cinzel",serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;margin-top:4px;}
   .cq-add-btn:active{transform:scale(.97);}
   .quest-del-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;margin-left:6px;flex-shrink:0;}
@@ -1693,7 +1694,7 @@ function rLeaderboard(){
     '<div style="margin-bottom:16px;">'+
       '<div style="font-family:\"Cinzel\",serif;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Friends</div>'+
       '<div style="display:flex;gap:8px;margin-bottom:10px;">'+
-        '<input id="friendSearch" type="text" placeholder="Search by hero name..." style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:13px;color:#e8d5a0;outline:none;" />'+
+        '<input id="friendSearch" type="text" placeholder="Search by hero name..." style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:16px;color:#e8d5a0;outline:none;" />'+
         '<button onclick="doFriendSearch()" style="background:linear-gradient(135deg,#1a3a6a,#2a5aaa);border:none;border-radius:10px;padding:10px 16px;font-family:\"Cinzel\",serif;font-size:12px;color:#e8d5a0;cursor:pointer;">Search</button>'+
       '</div>'+
       '<div id="friendSearchResults"></div>'+
@@ -2828,7 +2829,7 @@ function rTodo(){
     '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:16px;">'+
       '<div style="font-size:11px;color:var(--text2);font-family:\"Cinzel\",serif;letter-spacing:.5px;margin-bottom:8px;">ADD TASK</div>'+
       '<div style="display:flex;gap:8px;">'+
-        '<input id="todoInput" type="text" maxlength="120" placeholder="What do you need to do?" autocapitalize="sentences" style="flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:13px;color:#e8d5a0;outline:none;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addTodo()"/>'+
+        '<input id="todoInput" type="text" maxlength="120" placeholder="What do you need to do?" autocapitalize="sentences" style="flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:16px;color:#e8d5a0;outline:none;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addTodo()"/>'+
         '<button onclick="addTodo()" style="background:linear-gradient(135deg,#2a4a8a,#3a6aaa);border:none;border-radius:10px;padding:10px 18px;font-family:\"Cinzel\",serif;font-size:12px;color:#e8d5a0;cursor:pointer;white-space:nowrap;">+ Add</button>'+
       '</div>'+
     '</div>'+
