@@ -41,9 +41,9 @@ input,textarea,select{font-size:16px;}
 
 :root{--bg:#080510;--bg2:#100820;--bg3:#180c2a;--border:#1e1535;--border2:#2a1d45;--text:#e0d0f0;--text2:#8870aa;--text3:#4a3560;--gold:#f4c842;--gold-bg:#1a1608;--gold-border:#3a2e08;--health:#e85d3a;--productivity:#4a8fff;--learning:#2ab88a;--mindset:#c456a0;--strength:#e85d3a;--endurance:#e8923a;--focus:#4a8fff;--discipline:#8b6fe8;--wisdom:#2ab88a;--creativity:#5ab83a;--mindset-sk:#c456a0;--serenity:#7ab4ea;--spiritual:#1a3a5a;--legendary:#f4c842;--uncommon:#4a8fff;--common:#6a8aaa;--success:#2ab88a;--danger:#e85d3a;--journal-g:#f4c842;--journal-i:#c456a0;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:#02010a;color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;display:flex;justify-content:center;}
+html,body{height:100%;background:#02010a;color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;overscroll-behavior:none;overflow-x:hidden;}
 input,textarea,select{font-size:16px !important;}
-::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;width:100%;margin:0 auto;overflow-x:hidden;background:#080510;}
 #app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;width:100%;overflow-x:hidden;background:#080510;box-shadow:0 0 60px rgba(139,63,232,.15);}
 .header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(7,9,15,.98),rgba(7,9,15,.92));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);width:100%;box-sizing:border-box;}
 .hdr-row1{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:calc(10px + var(--safe-top)) 14px 10px;}
