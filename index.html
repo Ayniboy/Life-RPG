@@ -1852,13 +1852,18 @@ window.showPlayerProfile=function(userId){
 };
 
 // Publish profile whenever saving (if opted in)
-var _origSavePersist=savePersist;
-function savePersist(){
-  _origSavePersist();
-  if(G.leaderboardOptIn&&_sbSession){
-    setTimeout(publishProfile,2000);
-  }
-}
+var _profilePublishTimer=null;
+var _origSavePersist=null;
+(function(){
+  _origSavePersist=savePersist;
+  savePersist=function(){
+    _origSavePersist();
+    if(G.leaderboardOptIn&&_sbSession){
+      if(_profilePublishTimer)clearTimeout(_profilePublishTimer);
+      _profilePublishTimer=setTimeout(publishProfile,3000);
+    }
+  };
+})();
 
 var LOGIN_STREAK_REWARDS=[
   {day:3,  gold:50,  gems:0, chest:null,      label:"3-Day Warrior"},
