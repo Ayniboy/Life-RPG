@@ -1313,6 +1313,7 @@ var G={
   equippedSkin:sv&&sv.equippedSkin||"default",
   unlockedSkins:sv&&sv.unlockedSkins||["default"],
   todos:sv&&sv.todos||[],
+  actionDomain:null,
   todoClaimedToday:sv&&sv.todoClaimedToday||false,
   todoClaimedCount:sv&&sv.todoClaimedCount||0,
   _todoClearDate:sv&&sv._todoClearDate||"",
@@ -1781,26 +1782,96 @@ function rDashboard(){
 
 
 function rActions(){
-  var domains=["All","Health","Productivity","Learning","Mindset","Spiritual"];
-  var fBtns=domains.map(function(f){return'<button class="filter-btn'+(G.filter===f?" active":"")+'" onclick="setFilter(\''+f+'\')">'+f+'</button>';}).join("");
-  var filtered=QUICK_ACTIONS.filter(function(a){return G.filter==="All"||a.domain===G.filter;});
+  var domain=G.actionDomain||null;
+
+  // ── LEVEL 1: Domain cards ──
+  if(!domain){
+    var today=new Date().toLocaleDateString();
+    var actionsToday=G.log.filter(function(e){return e.date===today;}).length;
+    var xpToday=G.log.filter(function(e){return e.date===today;}).reduce(function(s,e){return s+(e.xp||0);},0);
+
+    var DOMAINS=[
+      {id:"Health",      icon:"❤️", color:"#ff6450", desc:"Physical strength & wellbeing"},
+      {id:"Productivity",icon:"⚡", color:"#f4c842", desc:"Focus, work & deep flow"},
+      {id:"Learning",    icon:"📚", color:"#4a8fff", desc:"Knowledge & skill building"},
+      {id:"Mindset",     icon:"🧠", color:"#8b3fe8", desc:"Mental strength & resilience"},
+      {id:"Spiritual",   icon:"🌿", color:"#2ab88a", desc:"Inner peace & presence"},
+    ];
+
+    var cls=CLASS_BONUSES[G.avatarClass||0];
+
+    var cards=DOMAINS.map(function(d,i){
+      var count=QUICK_ACTIONS.filter(function(a){return a.domain===d.id;}).length;
+      var maxXP=Math.max.apply(null,QUICK_ACTIONS.filter(function(a){return a.domain===d.id;}).map(function(a){return a.xp;}));
+      var doneCount=G.log.filter(function(e){return e.date===today&&QUICK_ACTIONS.find(function(a){return a.label===e.label&&a.domain===d.id;});}).length;
+      var clsBonus=(cls&&cls.domain===d.id)?' · '+cls.name+' +10%':'';
+      var isLast=i===DOMAINS.length-1;
+      return'<div onclick="setActionDomain(\''+d.id+'\')" style="'+
+        'background:'+d.color+'0d;border:1px solid '+d.color+'30;border-radius:20px;padding:20px 18px;cursor:pointer;'+
+        (isLast?'grid-column:1/-1;display:flex;align-items:center;gap:20px;':'')+
+        '" onpointerdown="this.style.transform=\'scale(.97)\'" onpointerup="this.style.transform=\'scale(1)\'">'+
+        '<div style="font-size:'+(isLast?'36':'32')+'px;'+(isLast?'flex-shrink:0;':'margin-bottom:10px;')+'">'+d.icon+'</div>'+
+        '<div style="'+(isLast?'flex:1;':'')+'">'+
+          '<div style="font-family:\"Cinzel\",serif;font-size:15px;font-weight:700;color:#e8d5a0;margin-bottom:3px;">'+d.id+'</div>'+
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:'+(isLast?'0':'10')+'px;">'+d.desc+'</div>'+
+          (!isLast?'<div style="display:inline-block;font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid '+d.color+'40;color:'+d.color+';">up to +'+maxXP+' XP'+clsBonus+'</div>':'')+
+        '</div>'+
+        (isLast?'<div style="font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid '+d.color+'40;color:'+d.color+';">up to +'+maxXP+' XP</div>':'')+
+        '<div style="'+(isLast?'margin-left:auto;':'position:absolute;bottom:14px;right:16px;')+'font-size:18px;color:'+d.color+';opacity:.4;position:'+(isLast?'static':'absolute')+';">›</div>'+
+      '</div>';
+    }).join("");
+
+    return'<div style="padding-bottom:32px;">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;">'+
+        '<div style="font-family:\"Cinzel\",serif;font-size:22px;font-weight:700;color:#f4c842;">'+actionsToday+'</div>'+
+        '<div style="font-size:11px;color:var(--text2);">actions today</div>'+
+        '<div style="margin-left:auto;font-size:11px;color:#2ab88a;background:rgba(42,184,138,.1);border:1px solid rgba(42,184,138,.2);border-radius:20px;padding:4px 12px;">+'+xpToday+' XP</div>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;">'+cards+'</div>'+
+    '</div>';
+  }
+
+  // ── LEVEL 2: Actions list for selected domain ──
+  var filtered=QUICK_ACTIONS.filter(function(a){return a.domain===domain;});
   var today=new Date().toLocaleDateString();
+  var domainColor={"Health":"#ff6450","Productivity":"#f4c842","Learning":"#4a8fff","Mindset":"#8b3fe8","Spiritual":"#2ab88a"}[domain]||"#4a8fff";
+
   var items=filtered.map(function(a){
-    var sk=skById(a.skill);var dt=!a.repeatable&&doneToday(a.id);
+    var sk=skById(a.skill);
+    var dt=!a.repeatable&&doneToday(a.id);
     var todayCount=a.repeatable?G.log.filter(function(e){return e.label===a.label&&e.date===today;}).length:0;
     var rtag=a.repeatable
       ?'<span class="action-tag-pill" style="color:var(--success);">✓ '+(todayCount>0?todayCount+'x today':'repeatable')+'</span>'
       :dt?'<span class="action-tag-pill" style="color:var(--text3);">done today</span>':"";
-    var domainColor=DOMAIN_COLORS[a.domain]||"var(--text2)";
-    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)"><div style="flex:1;padding-right:12px;"><div class="action-label">'+a.label+'</div><div class="action-desc">'+a.desc+'</div><div class="action-tags">'+
-      (sk?'<span class="action-tag-pill" style="color:'+(sk.color)+';">'+sk.name+'</span>':'')+
-      '<span class="action-tag-pill" style="color:'+domainColor+';">'+a.domain+'</span>'+
-      '<span class="action-tag-pill" style="color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.5px;">'+a.rarity+'</span>'+
-      rtag+
-    '</div></div><div style="text-align:right;flex-shrink:0;"><div class="action-xp" style="color:'+(sk?sk.color:"#fff")+'">+'+a.xp+' XP</div><div class="action-gold">+'+a.gold+'g</div></div></div>';
+    return'<div class="action-item '+a.rarity+(dt?" action-done":"")+'" onclick="doAction(\''+a.id+'\',event)" style="border-radius:16px;border-color:'+domainColor+'22;">'+
+      '<div style="flex:1;padding-right:12px;">'+
+        '<div class="action-label">'+a.label+'</div>'+
+        '<div class="action-desc">'+a.desc+'</div>'+
+        '<div class="action-tags">'+
+          (sk?'<span class="action-tag-pill" style="color:'+(sk.color)+';">'+sk.name+'</span>':'')+
+          '<span class="action-tag-pill" style="color:'+RARITY_COLORS[a.rarity]+';text-transform:uppercase;letter-spacing:.5px;">'+a.rarity+'</span>'+
+          rtag+
+        '</div>'+
+      '</div>'+
+      '<div style="text-align:right;flex-shrink:0;">'+
+        '<div class="action-xp" style="color:'+(sk?sk.color:domainColor)+'">+'+a.xp+' XP</div>'+
+        '<div class="action-gold">+'+a.gold+'g</div>'+
+      '</div>'+
+    '</div>';
   }).join("");
-  return'<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-style:italic;">Tap a deed to log it. Repeatable actions can be logged multiple times a day.</p><div class="filter-row">'+fBtns+'</div>'+items;
+
+  return'<div style="padding-bottom:32px;">'+
+    '<button onclick="setActionDomain(null)" style="background:'+domainColor+'18;border:1px solid '+domainColor+'35;border-radius:12px;padding:8px 16px;font-family:\"Cinzel\",serif;font-size:12px;color:'+domainColor+';cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:6px;">← All Domains</button>'+
+    '<div style="font-family:\"Cinzel\",serif;font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">'+domain+'</div>'+
+    items+
+  '</div>';
 }
+
+window.setActionDomain=function(domain){
+  G.actionDomain=domain;
+  G.tab="actions";
+  render();
+};
 
 function renderQuestItem(q, isRotating, isCustom){
   var sk=skById(q.skill||"discipline");
@@ -2404,12 +2475,7 @@ function render(){
 
   document.getElementById("app").innerHTML=
     '<div class="section-header">'+
-      '<button class="back-btn" onclick="goHome()">← Home</button>'+
-      '<div class="section-title">'+titleStr+'</div>'+
-      '<div class="section-header-right">'+
-        '<div class="gold-pill" style="font-size:11px;">'+G.gold+'g</div>'+
-        '<div class="gems-pill" style="font-size:11px;">'+G.gems+'💎</div>'+
-      '</div>'+
+      '<button class="back-btn" onclick="goHome()">← Back</button>'+
     '</div>'+
     (isBoostActive()?'<div class="boost-banner"><span class="boost-banner-icon">⚡</span><span class="boost-banner-text">XP BOOST ACTIVE &nbsp;<span class="boost-badge">'+getBoostLabel()+'</span></span><span class="boost-banner-icon">⚡</span></div>':'')+
     '<div class="content">'+content+'</div>';
