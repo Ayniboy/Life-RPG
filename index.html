@@ -3180,9 +3180,17 @@ window.openAvModal=openAvModal;
 // Handlers
 var questCountdownTick=null;
 
-window.goHome=function(){G.tab="dashboard";render();window.scrollTo(0,0);};
+function scrollToTop(){
+  window.scrollTo(0,0);
+  document.body.scrollTo(0,0);
+  var app=document.getElementById("app");
+  if(app)app.scrollTo(0,0);
+  var content=document.querySelector(".content");
+  if(content)content.scrollTo(0,0);
+}
+window.goHome=function(){G.tab="dashboard";render();scrollToTop();};
 window.setTab=function(tOrEl){var t=typeof tOrEl==="string"?tOrEl:(tOrEl&&tOrEl.dataset?tOrEl.dataset.id:String(tOrEl));
-  G.tab=t;render();window.scrollTo(0,0);
+  G.tab=t;render();scrollToTop();
   if(t==="spin"){
     requestAnimationFrame(function(){
       var canvas=document.getElementById("spinCanvas");
